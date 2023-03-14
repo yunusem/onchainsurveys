@@ -1,0 +1,28 @@
+{
+  "name": "onchainsurveys",
+  "version": "1.0.0",
+  "description": "Onchain Surveys app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/yunusem/onchainsurveys.git"
+  },
+  "author": "Yunusemre Şentürk",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/yunusem/onchainsurveys/issues"
+  },
+  "homepage": "https://github.com/yunusem/onchainsurveys#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.1",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
+  }
+}
