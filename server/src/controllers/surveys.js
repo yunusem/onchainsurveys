@@ -2,6 +2,8 @@ const Survey = require('../models/Survey');
 
 exports.createSurvey = async (req, res) => {
   try {
+    console.log('Request body JSON:', JSON.stringify(req.body));
+
     const survey = new Survey({
       title: req.body.title,
       description: req.body.description,

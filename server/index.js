@@ -1,15 +1,13 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const authMiddleware = require('./src/middlewares/auth');
 const User = require('./src/models/User');
-const Survey = require('./src/models/Survey');
-const authController = require('./src/controllers/auth');
-const surveysController = require('./src/controllers/surveys');
-const usersController = require('./src/controllers/users');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 
 // Middleware
 app.use(express.json());
@@ -33,27 +31,13 @@ app.use('/auth', require('./src/routes/auth'));
 app.use('/users', require('./src/routes/users'));
 app.use('/surveys', require('./src/routes/surveys'));
 
-// Auth Routes
-app.post('/register', authController.register);
-app.post('/login', authController.login);
-
-// User Routes
-app.get('/users', usersController.getUsers);
-
-// Survey Routes
-app.post('/surveys', authMiddleware, surveysController.createSurvey);
-app.get('/surveys/:id', surveysController.getSurvey);
-app.get('/surveys', surveysController.getSurveys);
-app.put('/surveys/:id', authMiddleware, surveysController.updateSurvey);
-app.delete('/surveys/:id', authMiddleware, surveysController.deleteSurvey);
-
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB');
     // Start the server
-    app.listen(process.env.PORT || 3000, () => {
-      console.log('Server started on port 3000');
+    app.listen(process.env.PORT || 3001, () => {
+      console.log('Server started on port', process.env.PORT || 3001);
     });
   })
   .catch((err) => {
