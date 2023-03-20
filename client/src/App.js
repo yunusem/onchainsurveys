@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './components/Home';
 import Register from './components/Register';
 import Login from './components/Login';
+import Logout from './components/Logout';
 import SurveyList from './components/SurveyList';
 import SurveyForm from './components/SurveyForm';
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" exact component={Home} />
           <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />
+          <Route path="/logout" component={Logout} />
           <Route path="/surveys" exact component={SurveyList} />
           <Route path="/surveys/new" component={SurveyForm} />
           <Route path="/surveys/:id/edit" component={SurveyForm} />

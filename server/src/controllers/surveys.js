@@ -7,8 +7,10 @@ exports.createSurvey = async (req, res) => {
     const survey = new Survey({
       title: req.body.title,
       description: req.body.description,
-      options: req.body.options.map(option => ({ name: option })),
-      createdBy: req.user._id,
+      questions: req.body.questions,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      createdBy: req.body.createdBy,
     });
     await survey.save();
     res.status(201).json(survey);
@@ -49,7 +51,7 @@ exports.updateSurvey = async (req, res) => {
     }
     survey.title = req.body.title;
     survey.description = req.body.description;
-    survey.options = req.body.options.map(option => ({ name: option }));
+    survey.questions = req.body.questions;
     await survey.save();
     res.json(survey);
   } catch (err) {

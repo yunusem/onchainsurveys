@@ -1,24 +1,21 @@
 import React, { useState } from 'react';
 import { loginUser } from '../api';
+import { useHistory } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const history = useHistory();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await loginUser(email, password);
-
-      console.log(response);
-      if (response.status === 200) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-      }
+      await loginUser(email, password);
+      history.push('/');
     } catch (error) {
       console.error('Login failed:', error);
     }
   };
+  
 
   return (
     <div>

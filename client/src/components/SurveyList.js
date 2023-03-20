@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { fetchSurveys } from '../api';
 
 function SurveyList() {
   const [surveys, setSurveys] = useState([]);
+  const history = useHistory();
+
+  const token = localStorage.getItem('token');
+
+  
 
   useEffect(() => {
     async function loadSurveys() {
@@ -13,10 +19,14 @@ function SurveyList() {
         console.error('Failed to fetch surveys:', error);
       }
     }
-
+    if (token)
     loadSurveys();
   }, []);
 
+  if (!token) {
+    history.push('/login');
+    return null;
+  }
   return (
     <div>
       <h2>Survey List</h2>

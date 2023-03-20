@@ -5,10 +5,6 @@ const AnswerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  count: {
-    type: Number,
-    default: 0,
-  },
 });
 
 const QuestionSchema = new mongoose.Schema({
@@ -25,7 +21,7 @@ const SurveySchema = new mongoose.Schema({
     required: true,
   },
   questions: [QuestionSchema],
-  creator: {
+  createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
