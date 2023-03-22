@@ -1,13 +1,8 @@
-import './App.css';
-import { MDBBtn, MDBIcon } from 'mdb-react-ui-kit';
-import { MDBContainer, MDBRow, MDBCol } from 'mdb-react-ui-kit';
-import { MDBBadge, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
-import { MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle } from 'mdb-react-ui-kit';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Home from './components/Home';
-import Register from './components/Register';
-import Login from './components/Login';
+import Home from './pages/Home';
+import Register from './pages/Register';
+import Login from './pages/Login';
 import Logout from './components/Logout';
 import SurveyList from './components/SurveyList';
 import SurveyForm from './components/SurveyForm';
