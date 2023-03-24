@@ -1,8 +1,3 @@
-import './App.css';
-//import { MDBBtn, MDBIcon } from 'mdb-react-ui-kit';
-//import { MDBContainer, MDBRow, MDBCol } from 'mdb-react-ui-kit';
-//import { MDBBadge, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
-//import { MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle } from 'mdb-react-ui-kit';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './components/Home';
