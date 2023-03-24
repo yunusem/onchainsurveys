@@ -10,11 +10,13 @@ const authMiddleware = (req, res, next) => {
     return res.status(401).json({ message: 'Missing authorization header' });
   }
 
-  const token = authHeader.replace('Bearer ', ''); // Add this line to remove the "Bearer " prefix.
+  const token = authHeader.replace('Bearer ', '');
 
   try {
     const decoded = jwt.verify(token, secret);
-    req.user = { _id: decoded.userId };
+    console.log('Decoded token:', decoded);
+    req.user = { _id: decoded.id };
+    console.log('User object set:', req.user);
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Invalid token' });

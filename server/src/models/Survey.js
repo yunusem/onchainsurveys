@@ -15,6 +15,22 @@ const QuestionSchema = new mongoose.Schema({
   answers: [AnswerSchema],
 });
 
+const ResponseSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  answers: {
+    type: [String],
+    required: true,
+  },
+  submissionDate: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const SurveySchema = new mongoose.Schema({
   title: {
     type: String,
@@ -34,6 +50,7 @@ const SurveySchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  responses: [ResponseSchema],
 });
 
 module.exports = mongoose.model('Survey', SurveySchema);

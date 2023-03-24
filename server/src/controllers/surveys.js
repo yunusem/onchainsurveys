@@ -1,6 +1,7 @@
 const Survey = require('../models/Survey');
 
 exports.createSurvey = async (req, res) => {
+  console.log('User object:', req.user);
   try {
     console.log('Request body JSON:', JSON.stringify(req.body));
 
@@ -10,7 +11,7 @@ exports.createSurvey = async (req, res) => {
       questions: req.body.questions,
       startDate: req.body.startDate,
       endDate: req.body.endDate,
-      createdBy: req.body.createdBy,
+      createdBy: req.user._id,
     });
     await survey.save();
     res.status(201).json(survey);
@@ -71,6 +72,25 @@ exports.deleteSurvey = async (req, res) => {
     await survey.remove();
     res.json({ message: 'Survey deleted successfully' });
   } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.submitResponse = async (req, res) => {
+  try {
+    const survey = await Survey.findById(req.params.id);
+    if (!survey) {
+      return res.status(404).json({ message: 'Survey not found' });
+    }
+    const response = {
+      user: req.user._id,
+      answers: req.body.answers,
+    };
+    survey.responses.push(response);
+    await survey.save();
+    res.status(201).json({ message: 'Response submitted successfully' });
+  } catch (err) {
+    console.error('Error in submitResponse:', err);
     res.status(500).json({ message: err.message });
   }
 };

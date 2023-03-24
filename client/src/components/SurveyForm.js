@@ -26,18 +26,17 @@ function SurveyForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
-  
-    if (!token || !userId) {
+
+    if (!token) {
       console.error('Please log in again.');
       return;
     }
-  
+
     if (!id) {
       try {
-        await createSurvey({ title, questions, startDate, endDate, createdBy: userId }, token);
+        await createSurvey({ title, questions, startDate, endDate});
         history.push('/surveys');
       } catch (error) {
         console.error('Failed to create survey:', error);
@@ -75,7 +74,7 @@ function SurveyForm() {
     updatedQuestions[questionIndex].answers[answerIndex] = { text: newAnswer };
     setQuestions(updatedQuestions);
   };
-  
+
   const addQuestion = () => {
     setQuestions([...questions, { text: '', answers: [''] }]);
   };
@@ -85,8 +84,8 @@ function SurveyForm() {
     updatedQuestions[questionIndex].answers.push({ text: '' });
     setQuestions(updatedQuestions);
   };
-  
-  
+
+
   return (
     <div>
       <h2>{id ? 'Edit Survey' : 'Create Survey'}</h2>
@@ -151,7 +150,7 @@ function SurveyForm() {
         <button type="submit">{id ? 'Update' : 'Create'}</button>
       </form>
     </div>
-  );  
+  );
 }
 
 export default SurveyForm;

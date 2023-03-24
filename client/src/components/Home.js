@@ -24,7 +24,7 @@ function Home() {
               <Link to="/surveys/new">Create Survey</Link>
             </li>
             <li>
-              <Link to="/surveys">My Surveys</Link>
+              <Link to="/surveys">Attend a Survey</Link>
             </li>
           </ul>
         </div>
