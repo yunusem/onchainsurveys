@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { loginUser } from '../api';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
+import CasperWalletContext from './CasperWalletContext';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -18,6 +19,20 @@ function Login() {
   };
   
 
+  const provider = useContext(CasperWalletContext);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const isConnected = await provider.requestConnection();
+      if (isConnected) {
+        history.push('/');
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
   // const handleLogin = (e) => {
   //   e.preventDefault();
   //   handleWalletConnect();
@@ -31,7 +46,7 @@ function Login() {
       <Link to="/">
         <img src={Logo} alt="logo" width="72px" />
       </Link>
-
+      
       <h2 className="text-2xl font-semibold my-4">Login</h2>
       <form onSubmit={handleSubmit} className="w-72">
         <div className="flex flex-col">
@@ -69,7 +84,15 @@ function Login() {
           Login
         </button>
       </form>
-
+      <br></br>
+      <form onSubmit={handleLogin} className="w-72">
+        <button
+          type="submit"
+          className="bg-red-500  py-3 rounded-xl font-semibold px-5 text-white w-72"
+        >
+          Connect Wallet
+        </button>
+      </form>
       <p className="mt-2 font-medium text-sm">
         Do you haven't account?
         <Link to="/register">
