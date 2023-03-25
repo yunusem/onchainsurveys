@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import { fetchSurveys } from '../api';
+import Logout from './Logout';
 
 function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -53,12 +54,14 @@ function Home() {
               <Link to="/surveys">My Surveys</Link>
             </li>
           </ul>
+          <Logout />
           <div>
             <div className="overflow-y-auto h-64 bg-white text-black p-4 rounded-lg">
 
               <h2>Available Surveys</h2>
               <ul>
                 {surveys.map((survey) => (
+                  survey.createdBy && (
                   <li key={survey._id}>
                     <h3>{survey.title}</h3>
                     <p>Description: {survey.description}</p>
@@ -67,6 +70,7 @@ function Home() {
                     <p>Start date: {new Date(survey.startDate).toLocaleDateString()}</p>
                     <button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>
                   </li>
+                  )
                 ))}
               </ul>
             </div>
