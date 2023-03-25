@@ -33,14 +33,6 @@ function Login() {
     }
   };
 
-  // const handleLogin = (e) => {
-  //   e.preventDefault();
-  //   handleWalletConnect();
-  // };
-  
-  // Show the public key instead of the username
-  //{activePublicKey && <p>Connected as: {activePublicKey}</p>}
-
   return (
     <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
       <Link to="/">
