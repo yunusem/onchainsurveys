@@ -34,7 +34,7 @@ exports.getSurvey = async (req, res) => {
 
 exports.getSurveys = async (req, res) => {
   try {
-    const surveys = await Survey.find();
+    const surveys = await Survey.find().populate('createdBy');
     res.json(surveys);
   } catch (err) {
     res.status(500).json({ message: err.message });

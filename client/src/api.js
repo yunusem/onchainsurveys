@@ -24,7 +24,7 @@ export async function loginUser(email, password) {
 
   if (response.ok) {
     localStorage.setItem('token', data.token);
-    localStorage.setItem('userId', data.userId); // Store userId in localStorage
+    localStorage.setItem('userId', data.userId);
   } else {
     throw new Error(data.message);
   }

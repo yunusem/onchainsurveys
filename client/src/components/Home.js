@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
+import { fetchSurveys } from '../api';
 
 function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [surveys, setSurveys] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -13,6 +16,24 @@ function Home() {
       setIsAuthenticated(false);
     }
   }, []);
+
+  useEffect(() => {
+    async function loadSurveys() {
+      try {
+        const response = await fetchSurveys();
+        setSurveys(response);
+      } catch (error) {
+        console.error('Failed to fetch surveys:', error);
+      }
+    }
+    if (isAuthenticated) {
+      loadSurveys();
+    }
+  }, [isAuthenticated]);
+
+  const handleTakeSurvey = (id) => {
+    history.push(`/survey/${id}`);
+  };
 
   return (
     <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
@@ -32,6 +53,24 @@ function Home() {
               <Link to="/surveys">My Surveys</Link>
             </li>
           </ul>
+          <div>
+            <div className="overflow-y-auto h-64 bg-white text-black p-4 rounded-lg">
+
+              <h2>Available Surveys</h2>
+              <ul>
+                {surveys.map((survey) => (
+                  <li key={survey._id}>
+                    <h3>{survey.title}</h3>
+                    <p>Description: {survey.description}</p>
+                    <p>Number of questions: {survey.questions.length}</p>
+                    <p>Created by: {survey.createdBy.username}</p>
+                    <p>Start date: {new Date(survey.startDate).toLocaleDateString()}</p>
+                    <button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       ) : (
         <div>
