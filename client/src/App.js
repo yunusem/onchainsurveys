@@ -21,6 +21,8 @@ function App() {
         <p>Please install the Casper Wallet Extension.</p>
       </div>
     );
+  } else {
+    localStorage.setItem('walletprovider', provider);
   }
 
   return (
