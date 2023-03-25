@@ -8,12 +8,56 @@ import Survey from './components/Survey';
 import SurveyList from './components/SurveyList';
 import SurveyForm from './components/SurveyForm';
 import ThankYou from './components/ThankYou';
+//import { connectWallet } from './api';
+//import { useState, useEffect } from 'react';
 
 function App() {
+  // const CasperWalletProvider = window.CasperWalletProvider;
+  // const CasperWalletEventTypes = window.CasperWalletEventTypes;
+
+  // const provider = CasperWalletProvider();
+
+  // const [activePublicKey, setActivePublicKey] = useState(null);
+
+  // const handleWalletConnect = async () => {
+  //   try {
+  //     const isConnected = await connectWallet(provider);
+  //     if (isConnected) {
+  //       // Set activePublicKey upon successful connection
+  //       const publicKey = await provider.getActivePublicKey();
+  //       setActivePublicKey(publicKey);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error connecting wallet: " + error.message);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   window.addEventListener(CasperWalletEventTypes.Connected, handleConnected);
+  //   return () => {
+  //     window.removeEventListener(CasperWalletEventTypes.Connected, handleConnected);
+  //   };
+  // }, []);
+
+  // const handleConnected = (event) => {
+  //   try {
+  //     const state = JSON.parse(event.detail);
+  //     if (state.activeKey) {
+  //       setActivePublicKey(state.activeKey);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
   return (
     <Router>
       <div className="App">
         <Switch>
+          {/* <Route path="/" exact render={(props) => <Home {...props} activePublicKey={activePublicKey} />} />
+          <Route path="/register" component={Register} />
+          <Route path="/login" render={(props) => <Login {...props} activePublicKey={activePublicKey} />} />
+          <Route path="/logout" render={(props) => <Logout {...props} activePublicKey={activePublicKey} />} />
+          <Route path="/survey/:id" render={(props) => <Survey {...props} activePublicKey={activePublicKey} />} /> */}
           <Route path="/" exact component={Home} />
           <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />

@@ -98,3 +98,12 @@ export async function submitSurveyResponse(id, answers) {
   }
   return await response.json();
 }
+
+export async function connectWallet(provider) {
+  try {
+    const isConnected = await provider.requestConnection();
+    return isConnected;
+  } catch (error) {
+    throw new Error("Error connecting wallet: " + error.message);
+  }
+}
