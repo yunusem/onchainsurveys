@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../assets/images/casper-logo.svg";
 function Home() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -20,16 +20,21 @@ function Home() {
         Welcome to Onchain Surveys
       </h1>
       <br></br>
-      {isAuthenticated ? (
+      {!isAuthenticated ? (
         <div>
-          <h2>You are logged in!</h2>
-          <ul>
-            <li>
-              <Link to="/surveys/new">Create Survey</Link>
-            </li>
-            <li>
-              <Link to="/surveys">My Surveys</Link>
-            </li>
+          <h2 className="mb-4 font-semibold">You are logged in!</h2>
+          <ul className="flex items-center">
+            <Link to="/surveys/new">
+              <li className="mr-6 border border-white px-4 py-3 rounded-lg font-medium">
+                📝 Create Survey
+              </li>
+            </Link>
+
+            <Link to="/surveys">
+              <li className="border border-white px-6 py-3 rounded-lg font-medium">
+                📉 My Surveys
+              </li>
+            </Link>
           </ul>
         </div>
       ) : (
