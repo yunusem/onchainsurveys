@@ -12,6 +12,40 @@ function SurveyForm() {
   const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
   const token = localStorage.getItem('token');
 
+  function removeItems() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('active_public_key');
+    localStorage.removeItem('user_already_signed');
+  }
+
+  if (!isWalletConnected) {
+    history.push('/');
+  }
+
+  useEffect(() => {
+    const handleDisconnect = (event) => {
+      try {
+        const state = JSON.parse(event.detail);
+        if (!state.isConnected) {
+          removeItems();
+          history.push('/');
+        }
+      } catch (error) {
+        console.error("Error handling disconnect event: " + error.message);
+      }
+    };
+
+    const CasperWalletEventTypes = window.CasperWalletEventTypes;
+    window.addEventListener(CasperWalletEventTypes.Disconnected, handleDisconnect);
+    window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleDisconnect);
+
+    return () => {
+      window.removeEventListener(CasperWalletEventTypes.Disconnected, handleDisconnect);
+      window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleDisconnect);
+    };
+  }, [history]);
+
   useEffect(() => {
     const fetchSurvey = async () => {
       if (!id) return;
@@ -55,7 +89,7 @@ function SurveyForm() {
       });
 
       if (response.ok) {
-        history.push('/');
+        history.push('/surveys');
       } else {
         const error = await response.json();
         console.log(error);
