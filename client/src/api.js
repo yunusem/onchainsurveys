@@ -92,7 +92,6 @@ export async function loginWithWallet(publicAddress) {
     localStorage.setItem('token', data.token);
     localStorage.setItem('userId', data.userId);
     localStorage.setItem('user_already_signed', data.alreadySigned);
-    console.log("in api, data.alreadysigned",data.alreadySigned)
     return { success: true };
   } else {
     throw new Error(data.message);

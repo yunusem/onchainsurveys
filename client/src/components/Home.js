@@ -18,7 +18,6 @@ function Home() {
     e.preventDefault();
     try {
       const isConnected = await provider.requestConnection();
-      console.log("handle wallet login provider request result is : ", isConnected)
       if (isConnected) {
         const walletAddress = await provider.getActivePublicKey();
         const response = await loginWithWallet(walletAddress);

@@ -33,7 +33,9 @@ exports.loginWithWallet = async (req, res) => {
       user = new User({ publicAddress });
       await user.save();
     } else {
-      alreadySigned = true;
+      if(user.email) {
+        alreadySigned = true;
+      }
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {

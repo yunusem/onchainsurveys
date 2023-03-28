@@ -5,12 +5,12 @@ import CasperWalletContext from './CasperWalletContext';
 import { registerUser, loginWithWallet } from '../api';
 function Login() {
   const [email, setEmail] = useState('');
-  const [isWalletConnected, setIsWalletConnected] = useState(localStorage.getItem('active_public_key'));
+  const [isWalletConnected, setIsWalletConnected] = useState(Boolean(localStorage.getItem('active_public_key')));
+  const [isUserAlreadySigned, setIsUserAlreadySigned] = useState(localStorage.getItem('user_already_signed') === "true");
+  const [activePublicKey, setActivePublicKey] = useState(localStorage.getItem('active_public_key'));
   const history = useHistory();
   const provider = useContext(CasperWalletContext);
-  const activePublicKey = localStorage.getItem('active_public_key');
   const CasperWalletEventTypes = window.CasperWalletEventTypes;
-  const userAlreadySigned = localStorage.getItem('user_already_signed');
 
   if (!isWalletConnected) {
     history.push('/');
@@ -37,6 +37,8 @@ function Login() {
         const response = await loginWithWallet(state.activeKey);
         if (response.success) {
           localStorage.setItem('active_public_key', state.activeKey);
+          setActivePublicKey(state.activeKey);
+          setIsUserAlreadySigned(localStorage.getItem('user_already_signed') === "true");
         }
       }
     } catch (err) {
@@ -67,9 +69,9 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const currentDate = new Date().toLocaleString();
-    signMessage(userAlreadySigned ? `Please verify with your signature. Date: ${currentDate}` : email, activePublicKey);
+    
+    signMessage(isUserAlreadySigned ? `Please verify with your signature. Date: ${currentDate}` : email, activePublicKey);
   };
-
 
   window.addEventListener(CasperWalletEventTypes.Connected, handleEvent);
   window.addEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
@@ -83,8 +85,7 @@ function Login() {
       <h2 className="text-2xl font-semibold my-4">Wallet Connected!</h2>
       <form onSubmit={handleSubmit} className="w-72">
         <div className="flex flex-col">
-        {console.log(userAlreadySigned)}
-          { userAlreadySigned ? ( <br></br>) : (
+          { isUserAlreadySigned ? ( <br></br>) : (
             <input
               type="email"
               id="email"
