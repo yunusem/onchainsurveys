@@ -45,7 +45,7 @@ exports.loginWithWallet = async (req, res) => {
       return res.status(400).json({ message: 'Public address is required.' });
     }
 
-    const user = await User.findOne({ publicAddress });
+    let user = await User.findOne({ publicAddress });
 
     if (!user) {
       user = new User({ publicAddress });
