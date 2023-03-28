@@ -52,7 +52,6 @@ function SurveyList() {
             <p>Number of questions: {survey.questions.length}</p>
             <p>Created by: {survey.createdBy._id}</p>
             <p>Start date: {new Date(survey.startDate).toLocaleDateString()}</p>
-            
             <p>Reward: {survey.rewardPerResponse} CSPR</p>
             
             <button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>

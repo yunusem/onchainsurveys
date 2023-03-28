@@ -28,6 +28,10 @@ exports.createSurvey = async (req, res) => {
 
 exports.getSurvey = async (req, res) => {
   try {
+    const publicKey = req.headers['x-casper-public-key'];
+    if (!publicKey) {
+      return res.status(400).json({ message: 'x-casper-public-key header is missing' });
+    }
     const survey = await Survey.findById(req.params.id);
     if (!survey) {
       return res.status(404).json({ message: 'Survey not found' });

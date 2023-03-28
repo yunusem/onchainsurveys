@@ -7,6 +7,7 @@ import CasperWalletContext from './CasperWalletContext';
 
 function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [surveys, setSurveys] = useState([]);
   const history = useHistory();
   const provider = useContext(CasperWalletContext);
@@ -15,6 +16,7 @@ function Home() {
     const token = localStorage.getItem('token');
     const checkWalletConnection = async () => {
       const isConnected = await provider.isConnected();
+      setIsWalletConnected(isConnected);
       setIsAuthenticated(token || isConnected);
     };
 
@@ -71,14 +73,22 @@ function Home() {
       <br></br>
       {isAuthenticated ? (
         <div>
-          <h2>You are logged in with {`Wallet address: ${localStorage.getItem('wallet_address')}` || `User ID: ${localStorage.getItem('userId')}`}</h2>
+          <h2>You are logged in with {isWalletConnected ? (`Wallet address: ${localStorage.getItem('wallet_address')}`) : (`User ID: ${localStorage.getItem('userId')}`)}</h2>
           <ul>
+          {isWalletConnected ? (
+            <ul>
+              <li>
+                <Link to="/surveys/new">Create Survey</Link>
+              </li>
+              <li>
+                <Link to="/surveys">My Surveys</Link>
+              </li>
+            </ul>
+          ) : (
             <li>
-              <Link to="/surveys/new">Create Survey</Link>
+                <Link to="/login">Connect your wallet to take Surveys</Link>
             </li>
-            <li>
-              <Link to="/surveys">My Surveys</Link>
-            </li>
+          )}
           </ul>
           <Logout />
           <div>
@@ -86,14 +96,13 @@ function Home() {
           <br></br>
           <h2>Available Surveys</h2>
             <div className="overflow-y-auto h-64 bg-white text-black p-4 rounded-lg">
-
-              
               <ul>
                 {surveys.map((survey) => (
                   survey.createdBy && (
                   <li key={survey._id}>
                     <h3>{survey.title}</h3>
-                    <button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>
+                    <p>Reward: {survey.rewardPerResponse} CSPR</p>
+                    {isWalletConnected && (<button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>)}
                   </li>
                   )
                 ))}

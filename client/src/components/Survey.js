@@ -33,7 +33,6 @@ function Survey() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userId = localStorage.getItem('userId');
-    // Implement client-side validation here
     try {
       console.log(userId);
       await submitSurveyResponse(id, answers);
@@ -44,7 +43,10 @@ function Survey() {
   };
 
   if (!survey) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
+    <div>Loading...</div>
+    </div>);
   }
 
   return (

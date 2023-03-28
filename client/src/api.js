@@ -46,9 +46,15 @@ export async function registerUser(user) {
 
   return response.json();
 }
+
 export async function fetchSurvey(id) {
+  const headers = getHeaders();
+  if (localStorage.getItem('wallet_address')) {
+    headers['x-casper-public-key'] = localStorage.getItem('wallet_address');
+  }
+
   const response = await fetch(`${API_BASE_URL}/surveys/${id}`, {
-    headers: getHeaders(),
+    headers,
   });
 
   if (!response.ok) {
@@ -58,6 +64,7 @@ export async function fetchSurvey(id) {
 
   return response.json();
 }
+
 export async function fetchSurveys() {
   const response = await fetch(`${API_BASE_URL}/surveys`);
   return response.json();
