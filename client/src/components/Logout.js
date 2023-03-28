@@ -19,7 +19,7 @@ function Logout() {
         const state = JSON.parse(event.detail);
         if (!state.isConnected) {
           removeItems();
-          history.push('/login');
+          history.push('/');
         }
       } catch (error) {
         console.error("Error handling disconnect event: " + error.message);
@@ -41,11 +41,11 @@ function Logout() {
         const isDisconnected = await provider.disconnectFromSite();
         if (isDisconnected) {
           removeItems();
-          history.push('/login');
+          history.push('/');
         }
       } else {
         removeItems();
-        history.push('/login');
+        history.push('/');
       }
     } catch (error) {
       console.error("Error disconnecting wallet: " + error.message);

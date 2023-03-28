@@ -9,6 +9,8 @@ function SurveyForm() {
   const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' }] }]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchSurvey = async () => {
@@ -27,11 +29,8 @@ function SurveyForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      console.error('Please log in again.');
-      return;
+    if (!isWalletConnected) {
+      history.push('/');
     }
 
     if (!id) {
@@ -56,7 +55,7 @@ function SurveyForm() {
       });
 
       if (response.ok) {
-        history.push('/surveys');
+        history.push('/');
       } else {
         const error = await response.json();
         console.log(error);

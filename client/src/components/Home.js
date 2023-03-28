@@ -77,12 +77,11 @@ function Home() {
       }
     };
 
-    //if (window.CasperWalletEventTypes) {
+    
     const CasperWalletEventTypes = window.CasperWalletEventTypes;
     window.addEventListener(CasperWalletEventTypes.Connected, handleEvent);
     window.addEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
     window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEvent);
-    //}
 
     return () => {
       window.removeEventListener(CasperWalletEventTypes.Connected, handleEvent);

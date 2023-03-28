@@ -1,17 +1,23 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
-import CasperWalletContext from './CasperWalletContext';
 import { registerUser, loginWithWallet } from '../api';
+import CasperWalletEvents from './CasperWalletEvents';
+
 function Login() {
   const [email, setEmail] = useState('');
   const [isWalletConnected, setIsWalletConnected] = useState(Boolean(localStorage.getItem('active_public_key')));
   const [isUserAlreadySigned, setIsUserAlreadySigned] = useState(localStorage.getItem('user_already_signed') === "true");
   const [activePublicKey, setActivePublicKey] = useState(localStorage.getItem('active_public_key'));
   const history = useHistory();
-  const provider = useContext(CasperWalletContext);
-  const CasperWalletEventTypes = window.CasperWalletEventTypes;
 
+  function removeItems() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('active_public_key');
+    localStorage.removeItem('user_already_signed');
+  }
+ 
   if (!isWalletConnected) {
     history.push('/');
   }
@@ -21,8 +27,7 @@ function Login() {
       const state = JSON.parse(event.detail);
       setIsWalletConnected(state.isConnected);
       if (!isWalletConnected) {
-        localStorage.removeItem('active_public_key');
-        localStorage.removeItem('user_already_signed');
+        removeItems();
       }
     } catch (err) {
       console.error('Failed to handle event:', err);
@@ -46,6 +51,8 @@ function Login() {
     }
   };
 
+  const provider = CasperWalletEvents(handleEvent, handleEventKeyChanged);
+
   const signMessage = async (message, signingPublicKeyHex) => {
     provider
       .signMessage(message, signingPublicKeyHex)
@@ -55,7 +62,7 @@ function Login() {
         } else {
           const response = await registerUser({ publicAddress: signingPublicKeyHex, email: message });
           if (response.success) {
-            history.push('/', { signature: res.signature });
+            history.push('/', { signature: res.signatureHex });
           } else {
             console.log(response)
           }
@@ -72,11 +79,7 @@ function Login() {
     
     signMessage(isUserAlreadySigned ? `Please verify with your signature. Date: ${currentDate}` : email, activePublicKey);
   };
-
-  window.addEventListener(CasperWalletEventTypes.Connected, handleEvent);
-  window.addEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
-  window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEventKeyChanged);
-
+  
   return (
     <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
       <Link to="/">
