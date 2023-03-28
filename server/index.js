@@ -7,19 +7,8 @@ const User = require('./src/models/User');
 const cors = require('cors');
 
 const app = express();
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (origin === 'http://64.225.106.120' || origin === 'http://localhost:3000') {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
-};
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Middleware
 app.use(express.json());
