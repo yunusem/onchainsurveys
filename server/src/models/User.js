@@ -8,10 +8,9 @@ const UserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    rrequired: function () {
+    required: function () {
       return !this.publicAddress;
     },
-    unique: true,
   },
   publicAddress: {
     type: String,
@@ -19,6 +18,8 @@ const UserSchema = new mongoose.Schema({
     sparse: true,
   },
 });
+
+UserSchema.index({ email: 1 }, { unique: true, partialFilterExpression: { email: { $ne: null } } });
 
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('email') || this.publicAddress) {
