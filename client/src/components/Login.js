@@ -9,7 +9,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const history = useHistory();
   
-  const handleSubmit = async (e) => {
+  const handleNormalLogin = async (e) => {
     e.preventDefault();
     try {
       await loginUser(email, password);
@@ -21,13 +21,13 @@ function Login() {
   
   const provider = useContext(CasperWalletContext);
 
-  const handleLogin = async (e) => {
+  const handleWalletLogin = async (e) => {
     e.preventDefault();
     try {
       const isConnected = await provider.requestConnection();
+      console.log("handle wallet login provider request result is : ", isConnected)
       if (isConnected) {
         const walletAddress = await provider.getActivePublicKey();
-        
         const response = await loginWithWallet(walletAddress);
         if (response.success) {
           localStorage.setItem('wallet_address', walletAddress);
@@ -46,7 +46,7 @@ function Login() {
       </Link>
       
       <h2 className="text-2xl font-semibold my-4">Login</h2>
-      <form onSubmit={handleSubmit} className="w-72">
+      <form onSubmit={handleNormalLogin} className="w-72">
         <div className="flex flex-col">
           <label htmlFor="email" className="font-medium">
             E-mail Address
@@ -83,7 +83,7 @@ function Login() {
         </button>
       </form>
       <br></br>
-      <form onSubmit={handleLogin} className="w-72">
+      <form onSubmit={handleWalletLogin} className="w-72">
         <button
           type="submit"
           className="bg-red-500  py-3 rounded-xl font-semibold px-5 text-white w-72"

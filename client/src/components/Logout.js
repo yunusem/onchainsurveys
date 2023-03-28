@@ -14,6 +14,7 @@ function Logout() {
         if (!state.isConnected) {
           localStorage.removeItem('token');
           localStorage.removeItem('userId');
+          localStorage.removeItem('wallet_address');
           history.push('/login');
         }
       } catch (error) {
@@ -29,7 +30,7 @@ function Logout() {
     };
   }, [history]);
 
-  const handleLogout = async (e) => {
+  const handleLogout = async () => {
     try {
       const isConnected = await provider.isConnected();
       if (isConnected) {

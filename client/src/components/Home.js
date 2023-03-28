@@ -13,15 +13,21 @@ function Home() {
   const provider = useContext(CasperWalletContext);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const checkWalletConnection = async () => {
-      const isConnected = await provider.isConnected();
-      setIsWalletConnected(isConnected);
-      setIsAuthenticated(token || isConnected);
-    };
+    const token = localStorage.getItem("token");
+    const walletAddress = localStorage.getItem("wallet_address");
+    if (token) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
 
-    checkWalletConnection();
-  }, [provider]);
+    if (walletAddress) {
+      setIsWalletConnected(true);
+    } else {
+      setIsWalletConnected(false);
+    }
+
+  }, []);
 
   useEffect(() => {
     async function loadSurveys() {
@@ -44,8 +50,8 @@ function Home() {
   useEffect(() => {
     const handleEvent = async (event) => {
       try {
-        const isConnected = await provider.isConnected();
-        setIsAuthenticated(isConnected);
+        const state = JSON.parse(event.detail);
+        setIsWalletConnected(state.isConnected);
       } catch (err) {
         console.error('Failed to handle event:', err);
       }
@@ -61,7 +67,7 @@ function Home() {
       window.removeEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
       window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEvent);
     };
-  }, [provider]);
+  }, []);
   
 
   return (
