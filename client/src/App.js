@@ -17,12 +17,10 @@ function App() {
 
   if (!provider) {
     return (
-      <div className="App">
-        <p>Please install the Casper Wallet Extension.</p>
+      <div className="App bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
+        <h1>Please install the Casper Wallet Extension.</h1>
       </div>
     );
-  } else {
-    localStorage.setItem('walletprovider', provider);
   }
 
   return (

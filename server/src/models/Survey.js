@@ -51,6 +51,8 @@ const SurveySchema = new mongoose.Schema({
     required: true,
   },
   responses: [ResponseSchema],
+  creationFee: { type: Number, required: true },
+  rewardPerResponse: { type: Number, required: true },
 });
 
 module.exports = mongoose.model('Survey', SurveySchema);

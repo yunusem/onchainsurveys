@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001';
 
 function getHeaders() {
   const token = localStorage.getItem('token');
@@ -32,7 +32,6 @@ export async function loginUser(email, password) {
   return data;
 }
 
-
 export async function registerUser(user) {
   const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: 'POST',
@@ -59,16 +58,20 @@ export async function fetchSurvey(id) {
 
   return response.json();
 }
-
 export async function fetchSurveys() {
   const response = await fetch(`${API_BASE_URL}/surveys`);
   return response.json();
 }
-
-export async function createSurvey(survey) {
+export const createSurvey = async (survey) => {
+  const token = localStorage.getItem('token');
+  const walletAddress = localStorage.getItem('wallet_address');
   const response = await fetch(`${API_BASE_URL}/surveys`, {
     method: 'POST',
-    headers: getHeaders(),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      'x-casper-public-key': walletAddress,
+    },
     body: JSON.stringify(survey),
   });
 
@@ -85,6 +88,23 @@ export async function createSurvey(survey) {
   }
 
   return response.json();
+};
+
+export async function loginWithWallet(publicAddress) {
+  const response = await fetch(`${API_BASE_URL}/auth/login/wallet`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ publicAddress }),
+  });
+
+  const data = await response.json();
+  if (response.ok) {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userId', data.userId);
+    return { success: true };
+  } else {
+    throw new Error(data.message);
+  }
 }
 
 export async function submitSurveyResponse(id, answers) {

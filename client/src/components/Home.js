@@ -13,15 +13,12 @@ function Home() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-    if (provider) {
-      setIsAuthenticated(true);
-    }
+    const checkWalletConnection = async () => {
+      const isConnected = await provider.isConnected();
+      setIsAuthenticated(token || isConnected);
+    };
+
+    checkWalletConnection();
   }, [provider]);
 
   useEffect(() => {
@@ -42,6 +39,29 @@ function Home() {
     history.push(`/survey/${id}`);
   };
 
+  useEffect(() => {
+    const handleEvent = async (event) => {
+      try {
+        const isConnected = await provider.isConnected();
+        setIsAuthenticated(isConnected);
+      } catch (err) {
+        console.error('Failed to handle event:', err);
+      }
+    };
+  
+    const CasperWalletEventTypes = window.CasperWalletEventTypes;
+    window.addEventListener(CasperWalletEventTypes.Connected, handleEvent);
+    window.addEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
+    window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEvent);
+  
+    return () => {
+      window.removeEventListener(CasperWalletEventTypes.Connected, handleEvent);
+      window.removeEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
+      window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEvent);
+    };
+  }, [provider]);
+  
+
   return (
     <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
       <img src={Logo} alt="logo" width="72px" />
@@ -51,7 +71,7 @@ function Home() {
       <br></br>
       {isAuthenticated ? (
         <div>
-          <h2>You are logged in!</h2>
+          <h2>You are logged in with {`Wallet address: ${localStorage.getItem('wallet_address')}` || `User ID: ${localStorage.getItem('userId')}`}</h2>
           <ul>
             <li>
               <Link to="/surveys/new">Create Survey</Link>
@@ -62,18 +82,17 @@ function Home() {
           </ul>
           <Logout />
           <div>
+          <br></br>
+          <br></br>
+          <h2>Available Surveys</h2>
             <div className="overflow-y-auto h-64 bg-white text-black p-4 rounded-lg">
 
-              <h2>Available Surveys</h2>
+              
               <ul>
                 {surveys.map((survey) => (
                   survey.createdBy && (
                   <li key={survey._id}>
                     <h3>{survey.title}</h3>
-                    <p>Description: {survey.description}</p>
-                    <p>Number of questions: {survey.questions.length}</p>
-                    <p>Created by: {survey.createdBy.username}</p>
-                    <p>Start date: {new Date(survey.startDate).toLocaleDateString()}</p>
                     <button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>
                   </li>
                   )

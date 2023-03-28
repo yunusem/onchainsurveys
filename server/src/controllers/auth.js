@@ -36,3 +36,29 @@ exports.login = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+exports.loginWithWallet = async (req, res) => {
+  try {
+    const { publicAddress } = req.body;
+
+    if (!publicAddress) {
+      return res.status(400).json({ message: 'Public address is required.' });
+    }
+
+    const user = await User.findOne({ publicAddress });
+
+    if (!user) {
+      user = new User({ publicAddress });
+      await user.save();
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    res.status(200).json({ message: 'Authentication with wallet was successful', token, userId: user._id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+};

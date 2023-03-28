@@ -1,9 +1,12 @@
 const Survey = require('../models/Survey');
 
 exports.createSurvey = async (req, res) => {
-  console.log('User object:', req.user);
+  console.log('create survey controller , User object:', req.user);
   try {
     console.log('Request body JSON:', JSON.stringify(req.body));
+
+    // TODO: Improve Casper-related code to handle survey creation fees and survey rewards here
+    const { creationFee, rewardPerResponse } = req.body;
 
     const survey = new Survey({
       title: req.body.title,
@@ -12,6 +15,8 @@ exports.createSurvey = async (req, res) => {
       startDate: req.body.startDate,
       endDate: req.body.endDate,
       createdBy: req.user._id,
+      creationFee,
+      rewardPerResponse,
     });
     await survey.save();
     res.status(201).json(survey);
@@ -19,6 +24,7 @@ exports.createSurvey = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
 
 exports.getSurvey = async (req, res) => {
   try {

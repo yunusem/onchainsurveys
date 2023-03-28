@@ -49,10 +49,12 @@ function SurveyList() {
         {mySurveys.map((survey) => (
           <li key={survey._id}>
             <h3>{survey.title}</h3>
-            <p>Description: {survey.description}</p>
             <p>Number of questions: {survey.questions.length}</p>
-            <p>Created by: {survey.createdBy.username}</p>
+            <p>Created by: {survey.createdBy._id}</p>
             <p>Start date: {new Date(survey.startDate).toLocaleDateString()}</p>
+            
+            <p>Reward: {survey.rewardPerResponse} CSPR</p>
+            
             <button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>
           </li>
         ))}

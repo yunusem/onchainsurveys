@@ -4,21 +4,32 @@ const bcrypt = require('bcryptjs');
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: function () {
+      return !this.publicAddress;
+    },
   },
   email: {
     type: String,
-    required: true,
+    required: function () {
+      return !this.publicAddress;
+    },
     unique: true,
   },
   password: {
     type: String,
-    required: true,
+    required: function () {
+      return !this.publicAddress;
+    },
+  },
+  publicAddress: {
+    type: String,
+    unique: true,
+    sparse: true,
   },
 });
 
 UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+  if (!this.isModified('password') || this.publicAddress) {
     return next();
   }
   try {

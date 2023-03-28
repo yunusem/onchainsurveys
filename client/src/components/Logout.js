@@ -1,31 +1,55 @@
+import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import CasperWalletContext from './CasperWalletContext';
+import { useContext } from 'react';
 
 function Logout() {
   const history = useHistory();
+  const provider = useContext(CasperWalletContext);
 
-  
-  // const disconnectWallet = async () => {
-  //   try {
-  //     const isDisconnected = await provider.disconnectFromSite();
-  //     if (isDisconnected) {
-  //       setActivePublicKey(null);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error disconnecting wallet: " + error.message);
-  //   }
-  // };
+  useEffect(() => {
+    const handleDisconnect = (event) => {
+      try {
+        const state = JSON.parse(event.detail);
+        if (!state.isConnected) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          history.push('/login');
+        }
+      } catch (error) {
+        console.error("Error handling disconnect event: " + error.message);
+      }
+    };
 
-  // const handleLogout = (e) => {
-  //   e.preventDefault();
-  //   disconnectWallet();
-  // };
+    const CasperWalletEventTypes = window.CasperWalletEventTypes;
+    window.addEventListener(CasperWalletEventTypes.Disconnected, handleDisconnect);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    history.push('/login');
+    return () => {
+      window.removeEventListener(CasperWalletEventTypes.Disconnected, handleDisconnect);
+    };
+  }, [history]);
+
+  const handleLogout = async (e) => {
+    try {
+      const isConnected = await provider.isConnected();
+      if (isConnected) {
+        const isDisconnected = await provider.disconnectFromSite();
+        if (isDisconnected) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          localStorage.removeItem('wallet_address');
+          history.push('/login');
+        }
+      } else {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('wallet_address');
+        history.push('/login');
+      }
+    } catch (error) {
+      console.error("Error disconnecting wallet: " + error.message);
+    }
   };
-
 
   return (
     <div>

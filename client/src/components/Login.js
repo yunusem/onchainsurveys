@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { loginUser } from '../api';
+import { loginUser, loginWithWallet } from '../api';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import CasperWalletContext from './CasperWalletContext';
@@ -8,6 +8,7 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const history = useHistory();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -18,7 +19,6 @@ function Login() {
     }
   };
   
-
   const provider = useContext(CasperWalletContext);
 
   const handleLogin = async (e) => {
@@ -26,7 +26,13 @@ function Login() {
     try {
       const isConnected = await provider.requestConnection();
       if (isConnected) {
-        history.push('/');
+        const walletAddress = await provider.getActivePublicKey();
+        
+        const response = await loginWithWallet(walletAddress);
+        if (response.success) {
+          localStorage.setItem('wallet_address', walletAddress);
+          history.push('/');
+        }
       }
     } catch (error) {
       console.error('Login failed:', error);
