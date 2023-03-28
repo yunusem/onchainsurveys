@@ -8,7 +8,7 @@ function SurveyQuestion({ question, onChange }) {
   return (
     <div>
       <h3>{question.text}</h3>
-      {question.answers.map((answer, index) => (
+      {question.answers && question.answers.map((answer, index) => (
         <div key={`answer-${index}`}>
           <input
             type="radio"

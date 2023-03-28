@@ -7,14 +7,18 @@ function Logout() {
   const history = useHistory();
   const provider = useContext(CasperWalletContext);
 
+  function removeItems() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('active_public_key');
+    localStorage.removeItem('user_already_signed');
+  }
   useEffect(() => {
     const handleDisconnect = (event) => {
       try {
         const state = JSON.parse(event.detail);
         if (!state.isConnected) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          localStorage.removeItem('wallet_address');
+          removeItems();
           history.push('/login');
         }
       } catch (error) {
@@ -36,15 +40,11 @@ function Logout() {
       if (isConnected) {
         const isDisconnected = await provider.disconnectFromSite();
         if (isDisconnected) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          localStorage.removeItem('wallet_address');
+          removeItems();
           history.push('/login');
         }
       } else {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('wallet_address');
+        removeItems();
         history.push('/login');
       }
     } catch (error) {

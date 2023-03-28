@@ -1,100 +1,113 @@
 import React, { useState, useContext } from 'react';
-import { loginUser, loginWithWallet } from '../api';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import CasperWalletContext from './CasperWalletContext';
-
+import { registerUser, loginWithWallet } from '../api';
 function Login() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [isWalletConnected, setIsWalletConnected] = useState(localStorage.getItem('active_public_key'));
   const history = useHistory();
-  
-  const handleNormalLogin = async (e) => {
-    e.preventDefault();
+  const provider = useContext(CasperWalletContext);
+  const activePublicKey = localStorage.getItem('active_public_key');
+  const CasperWalletEventTypes = window.CasperWalletEventTypes;
+  const userAlreadySigned = localStorage.getItem('user_already_signed');
+
+  if (!isWalletConnected) {
+    history.push('/');
+  }
+
+  const handleEvent = async (event) => {
     try {
-      await loginUser(email, password);
-      history.push('/');
-    } catch (error) {
-      console.error('Login failed:', error);
+      const state = JSON.parse(event.detail);
+      setIsWalletConnected(state.isConnected);
+      if (!isWalletConnected) {
+        localStorage.removeItem('active_public_key');
+        localStorage.removeItem('user_already_signed');
+      }
+    } catch (err) {
+      console.error('Failed to handle event:', err);
     }
   };
-  
-  const provider = useContext(CasperWalletContext);
 
-  const handleWalletLogin = async (e) => {
-    e.preventDefault();
+  const handleEventKeyChanged = async (event) => {
     try {
-      const isConnected = await provider.requestConnection();
-      console.log("handle wallet login provider request result is : ", isConnected)
-      if (isConnected) {
-        const walletAddress = await provider.getActivePublicKey();
-        const response = await loginWithWallet(walletAddress);
+      const state = JSON.parse(event.detail);
+      setIsWalletConnected(state.isConnected);
+      if (state.activeKey) {
+        const response = await loginWithWallet(state.activeKey);
         if (response.success) {
-          localStorage.setItem('wallet_address', walletAddress);
-          history.push('/');
+          localStorage.setItem('active_public_key', state.activeKey);
         }
       }
-    } catch (error) {
-      console.error('Login failed:', error);
+    } catch (err) {
+      console.error('Failed to handle event:', err);
     }
   };
+
+  const signMessage = async (message, signingPublicKeyHex) => {
+    provider
+      .signMessage(message, signingPublicKeyHex)
+      .then(async (res) => {
+        if (res.cancelled) {
+          alert('Sign cancelled');
+        } else {
+          const response = await registerUser({ publicAddress: signingPublicKeyHex, email: message });
+          if (response.success) {
+            history.push('/', { signature: res.signature });
+          } else {
+            console.log(response)
+          }
+        }
+      })
+      .catch((err) => {
+        alert('Error: ' + err);
+      });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const currentDate = new Date().toLocaleString();
+    signMessage(userAlreadySigned ? `Please verify with your signature. Date: ${currentDate}` : email, activePublicKey);
+  };
+
+
+  window.addEventListener(CasperWalletEventTypes.Connected, handleEvent);
+  window.addEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
+  window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEventKeyChanged);
 
   return (
     <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
       <Link to="/">
         <img src={Logo} alt="logo" width="72px" />
       </Link>
-      
-      <h2 className="text-2xl font-semibold my-4">Login</h2>
-      <form onSubmit={handleNormalLogin} className="w-72">
+      <h2 className="text-2xl font-semibold my-4">Wallet Connected!</h2>
+      <form onSubmit={handleSubmit} className="w-72">
         <div className="flex flex-col">
-          <label htmlFor="email" className="font-medium">
-            E-mail Address
-          </label>
-          <input
-            type="email"
-            id="email"
-            placeholder="E-mail address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="p-2 h-11 rounded-lg mt-1 text-black font-medium outline-none"
-          />
+        {console.log(userAlreadySigned)}
+          { userAlreadySigned ? ( <br></br>) : (
+            <input
+              type="email"
+              id="email"
+              placeholder="E-mail address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="p-2 h-11 rounded-lg mt-1 text-black font-medium outline-none"
+            />
+          )
+          }
         </div>
-        <div className="flex flex-col mt-3">
-          <label htmlFor="password" className="font-medium">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="p-2 h-11 rounded-lg rounded-lg mt-1 text-black font-medium outline-none"
-          />
-        </div>
-
         <br />
         <button
           type="submit"
-          className="bg-red-500  py-3 rounded-xl font-semibold px-5 text-white w-72"
-        >
-          Login
+          className="bg-red-500  py-3 rounded-xl font-semibold px-5 text-white w-72">
+          Sign
         </button>
       </form>
       <br></br>
-      <form onSubmit={handleWalletLogin} className="w-72">
-        <button
-          type="submit"
-          className="bg-red-500  py-3 rounded-xl font-semibold px-5 text-white w-72"
-        >
-          Connect Wallet
-        </button>
-      </form>
-      <p className="mt-2 font-medium text-sm">
-        Do you haven't account?
+      <p className="w-144 mt-2 font-medium text-sm">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
         <Link to="/register">
-          <span className="text-red-500 font-semibold"> Register</span>
+          <span className="text-red-500 font-semibold"> link link</span>
         </Link>
       </p>
     </div>

@@ -1,19 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
-import { fetchSurveys } from '../api';
+import { fetchSurveys, loginWithWallet } from '../api';
 import Logout from './Logout';
+import CasperWalletContext from './CasperWalletContext';
 
 function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [surveys, setSurveys] = useState([]);
   const history = useHistory();
+  const provider = useContext(CasperWalletContext);
+  const location = useLocation();
+  const signature = location.state && location.state.signature;
+
+  const handleWalletLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const isConnected = await provider.requestConnection();
+      console.log("handle wallet login provider request result is : ", isConnected)
+      if (isConnected) {
+        const walletAddress = await provider.getActivePublicKey();
+        const response = await loginWithWallet(walletAddress);
+        if (response.success) {
+          localStorage.setItem('active_public_key', walletAddress);
+          history.push('/login');
+        }
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const walletAddress = localStorage.getItem("wallet_address");
-    if (token) {
+    const walletAddress = localStorage.getItem("active_public_key");
+    if (token && signature) {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
@@ -25,7 +48,7 @@ function Home() {
       setIsWalletConnected(false);
     }
 
-  }, []);
+  }, [signature]);
 
   useEffect(() => {
     async function loadSurveys() {
@@ -54,19 +77,21 @@ function Home() {
         console.error('Failed to handle event:', err);
       }
     };
-  
+
+    //if (window.CasperWalletEventTypes) {
     const CasperWalletEventTypes = window.CasperWalletEventTypes;
     window.addEventListener(CasperWalletEventTypes.Connected, handleEvent);
     window.addEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
     window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEvent);
-  
+    //}
+
     return () => {
       window.removeEventListener(CasperWalletEventTypes.Connected, handleEvent);
       window.removeEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
       window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEvent);
     };
   }, []);
-  
+
 
   return (
     <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
@@ -77,37 +102,37 @@ function Home() {
       <br></br>
       {isAuthenticated ? (
         <div>
-          <h2>You are logged in with {isWalletConnected ? (`Wallet address: ${localStorage.getItem('wallet_address')}`) : (`User ID: ${localStorage.getItem('userId')}`)}</h2>
+          <h2>You are logged in with {isWalletConnected ? (`Wallet address: ${localStorage.getItem('active_public_key')}`) : (`User ID: ${localStorage.getItem('userId')}`)}</h2>
           <ul>
-          {isWalletConnected ? (
-            <ul>
+            {isWalletConnected ? (
+              <ul>
+                <li>
+                  <Link to="/surveys/new">Create Survey</Link>
+                </li>
+                <li>
+                  <Link to="/surveys">My Surveys</Link>
+                </li>
+              </ul>
+            ) : (
               <li>
-                <Link to="/surveys/new">Create Survey</Link>
-              </li>
-              <li>
-                <Link to="/surveys">My Surveys</Link>
-              </li>
-            </ul>
-          ) : (
-            <li>
                 <Link to="/login">Connect your wallet to take Surveys</Link>
-            </li>
-          )}
+              </li>
+            )}
           </ul>
           <Logout />
           <div>
-          <br></br>
-          <br></br>
-          <h2>Available Surveys</h2>
+            <br></br>
+            <br></br>
+            <h2>Available Surveys</h2>
             <div className="overflow-y-auto h-64 bg-white text-black p-4 rounded-lg">
               <ul>
                 {surveys.map((survey) => (
                   survey.createdBy && (
-                  <li key={survey._id}>
-                    <h3>{survey.title}</h3>
-                    <p>Reward: {survey.rewardPerResponse} CSPR</p>
-                    {isWalletConnected && (<button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>)}
-                  </li>
+                    <li key={survey._id}>
+                      <h3>{survey.title}</h3>
+                      <p>Reward: {survey.rewardPerResponse} CSPR</p>
+                      {isWalletConnected && (<button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>)}
+                    </li>
                   )
                 ))}
               </ul>
@@ -116,23 +141,23 @@ function Home() {
         </div>
       ) : (
         <div>
-          <h2 className="mb-4 font-semibold">You aren't logged in.</h2>
+          {/* <h2 className="mb-4 font-semibold">You aren't logged in.</h2> */}
           <ul className="flex items-center">
             <li>
-              <Link to="/login">
-                <button className="mr-4 bg-transparent border border-white  py-3 rounded-xl font-semibold px-10 text-white">
-                  Login
-                </button>
-              </Link>
-            </li>
-            <li>
-              <Link to="/register">
-                <button className="bg-white py-3 rounded-xl font-semibold px-8 text-black">
-                  Register
-                </button>
-              </Link>
+              <button
+                className="bg-red-500 py-3 rounded-xl font-semibold px-5 text-white w-72"
+                onClick={handleWalletLogin}
+              >
+                Connect Wallet
+              </button>
             </li>
           </ul>
+          <p className="mt-2 font-medium text-sm">
+            Do you have Casper wallet?
+            <a href="https://www.casperwallet.io/download">
+              <span className="text-red-500 font-semibold">  Download</span>
+            </a>
+          </p>
         </div>
       )}
     </div>

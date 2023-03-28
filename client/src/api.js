@@ -13,29 +13,11 @@ function getHeaders() {
   return headers;
 }
 
-export async function loginUser(email, password) {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
-    method: 'POST',
-    headers: getHeaders(),
-    body: JSON.stringify({ email, password }),
-  });
-
-  const data = await response.json();
-
-  if (response.ok) {
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('userId', data.userId);
-  } else {
-    throw new Error(data.message);
-  }
-
-  return data;
-}
-
 export async function registerUser(user) {
+  const headers = getHeaders();
   const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: 'POST',
-    headers: getHeaders(),
+    headers: headers,
     body: JSON.stringify(user),
   });
 
@@ -46,6 +28,7 @@ export async function registerUser(user) {
 
   return response.json();
 }
+
 
 export async function fetchSurvey(id) {
   const headers = getHeaders();
@@ -108,6 +91,8 @@ export async function loginWithWallet(publicAddress) {
   if (response.ok) {
     localStorage.setItem('token', data.token);
     localStorage.setItem('userId', data.userId);
+    localStorage.setItem('user_already_signed', data.alreadySigned);
+    console.log("in api, data.alreadysigned",data.alreadySigned)
     return { success: true };
   } else {
     throw new Error(data.message);
