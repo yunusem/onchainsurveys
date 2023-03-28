@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import { fetchSurveys } from '../api';
 import Logout from './Logout';
-import CasperWalletContext from './CasperWalletContext';
 
 function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [surveys, setSurveys] = useState([]);
   const history = useHistory();
-  const provider = useContext(CasperWalletContext);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
