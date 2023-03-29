@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import { registerUser, loginWithWallet, checkUserActive } from '../api';
@@ -21,9 +21,11 @@ function Login() {
     localStorage.removeItem('x-casper-provided-signature');
   }
 
-  if (!isWalletConnected) {
-    history.push('/');
-  }
+  useEffect(() => {
+    if (!isWalletConnected) {
+      history.push('/');
+    }
+  }, [isWalletConnected, history]);
 
   const handleEvent = async (event) => {
     try {
@@ -100,7 +102,7 @@ function Login() {
   };
 
   return (
-    <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
+    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
       <Link to="/">
         <img src={Logo} alt="logo" width="72px" />
       </Link>

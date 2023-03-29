@@ -17,9 +17,11 @@ function SurveyList() {
     localStorage.removeItem('x-casper-provided-signature');
   }
 
-  if (!isWalletConnected) {
-    history.push('/');
-  }
+  useEffect(() => {
+    if (!isWalletConnected) {
+      history.push('/');
+    }
+  }, [isWalletConnected, history]);
 
   useEffect(() => {
     const handleDisconnect = (event) => {
@@ -75,7 +77,7 @@ function SurveyList() {
   });
   
   return (
-    <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex-col justify-center">
+    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex-col justify-center">
       {mySurveys.length === 0 && (
         <div className="text-center">
           <p className="mt-2 font-medium text-sm">

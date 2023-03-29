@@ -110,7 +110,7 @@ function Home() {
   };
 
   return (
-    <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col justify-center">
+    <div className="bg-gray-800 text-center h-screen w-screen text-white flex items-center flex flex-col justify-center">
       <img src={Logo} alt="logo" width="72px" />
       <h1 className="text-2xl font-semibold mt-4">
         Welcome to Onchain Surveys

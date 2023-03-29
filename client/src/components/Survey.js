@@ -30,9 +30,11 @@ function Survey() {
     localStorage.removeItem('x-casper-provided-signature');
   }
 
-  if (!isWalletConnected) {
-    history.push('/');
-  }
+  useEffect(() => {
+    if (!isWalletConnected) {
+      history.push('/');
+    }
+  }, [isWalletConnected, history]);
 
   useEffect(() => {
     const handleDisconnect = (event) => {
@@ -97,13 +99,13 @@ function Survey() {
 
   if (!survey) {
     return (
-      <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
+      <div className="bg-gray-800 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
         <div>Loading...</div>
       </div>);
   }
 
   return (
-    <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex-col justify-center">
+    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex-col justify-center">
       <div className="py-12 px-8 bg-gray-800 shadow-lg rounded-xl w-3/4">
         <h2 className="text-2xl font-semibold mb-6">{survey.title}</h2>
         <p className="mb-6">{survey.description}</p>
@@ -111,7 +113,7 @@ function Survey() {
           {survey.questions.map((question, index) => (
             <div
               key={question._id}
-              className={`bg-gray-700 p-6 rounded-xl mb-6 transition-opacity duration-300 ${index === currentPage ? 'opacity-100' : 'opacity-0 hidden'
+              className={`bg-gray-800 p-6 rounded-xl mb-6 transition-opacity duration-300 ${index === currentPage ? 'opacity-100' : 'opacity-0 hidden'
                 }`}
             >
               <SurveyQuestion

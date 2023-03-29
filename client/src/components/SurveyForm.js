@@ -20,9 +20,11 @@ function SurveyForm() {
     localStorage.removeItem('x-casper-provided-signature');
   }
 
-  if (!isWalletConnected) {
-    history.push('/');
-  }
+  useEffect(() => {
+    if (!isWalletConnected) {
+      history.push('/');
+    }
+  }, [isWalletConnected, history]);
 
   useEffect(() => {
     const handleDisconnect = (event) => {
@@ -121,7 +123,7 @@ function SurveyForm() {
   };
 
   return (
-    <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex-col justify-center">
+    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex-col justify-center">
     <div className="py-12 px-8 justify-center bg-gray-800 shadow-lg rounded-xl w-3/4">
       <h2 className="text-2xl font-semibold my-4">{id ? 'Edit Survey' : 'Create Survey'}</h2>
       <form onSubmit={handleSubmit} className="w-full">
