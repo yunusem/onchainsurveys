@@ -32,8 +32,8 @@ export async function registerUser(user) {
 
 export async function fetchSurvey(id) {
   const headers = getHeaders();
-  if (localStorage.getItem('wallet_address')) {
-    headers['x-casper-public-key'] = localStorage.getItem('wallet_address');
+  if (localStorage.getItem('active_public_key')) {
+    headers['x-casper-public-key'] = localStorage.getItem('active_public_key');
   }
 
   const response = await fetch(`${API_BASE_URL}/surveys/${id}`, {
@@ -54,7 +54,7 @@ export async function fetchSurveys() {
 }
 export const createSurvey = async (survey) => {
   const token = localStorage.getItem('token');
-  const walletAddress = localStorage.getItem('wallet_address');
+  const walletAddress = localStorage.getItem('active_public_key');
   const response = await fetch(`${API_BASE_URL}/surveys`, {
     method: 'POST',
     headers: {

@@ -16,6 +16,7 @@ function Login() {
     localStorage.removeItem('userId');
     localStorage.removeItem('active_public_key');
     localStorage.removeItem('user_already_signed');
+    localStorage.removeItem('x-casper-provided-signature');
   }
  
   if (!isWalletConnected) {
@@ -104,14 +105,19 @@ function Login() {
         <button
           type="submit"
           className="bg-red-500  py-3 rounded-xl font-semibold px-5 text-white w-72">
-          Sign
+          { isUserAlreadySigned ? "Verify" : "Verify Email" }
         </button>
       </form>
       <br></br>
-      <p className="w-144 mt-2 font-medium text-sm">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        <Link to="/register">
-          <span className="text-red-500 font-semibold"> link link</span>
+      <br></br>
+      <p className="w-96 px-12 py-12 font-medium text-sm">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+        <Link to="/">
+          <span className="text-red-500 font-semibold"> link </span>
+        </Link>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        <Link to="/">
+          <span className="text-red-500 font-semibold"> link </span>
         </Link>
       </p>
     </div>

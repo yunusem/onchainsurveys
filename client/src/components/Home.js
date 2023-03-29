@@ -7,12 +7,20 @@ import CasperWalletContext from './CasperWalletContext';
 
 function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [surveys, setSurveys] = useState([]);
   const history = useHistory();
   const provider = useContext(CasperWalletContext);
   const location = useLocation();
   const signature = location.state && location.state.signature;
+  localStorage.setItem('x-casper-provided-signature', signature);
+
+  function removeItems() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('active_public_key');
+    localStorage.removeItem('user_already_signed');
+    localStorage.removeItem('x-casper-provided-signature');
+  }
 
   const handleWalletLogin = async (e) => {
     e.preventDefault();
@@ -35,18 +43,13 @@ function Home() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const walletAddress = localStorage.getItem("active_public_key");
-    if (token && signature) {
+    const signature = localStorage.getItem('x-casper-provided-signature');
+
+    if (token && signature && walletAddress) {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
     }
-
-    if (walletAddress) {
-      setIsWalletConnected(true);
-    } else {
-      setIsWalletConnected(false);
-    }
-
   }, [signature]);
 
   useEffect(() => {
@@ -71,20 +74,19 @@ function Home() {
     const handleEvent = async (event) => {
       try {
         const state = JSON.parse(event.detail);
-        setIsWalletConnected(state.isConnected);
+        if(!state.isConnected) {
+          removeItems();
+        }
       } catch (err) {
         console.error('Failed to handle event:', err);
       }
     };
 
-    
     const CasperWalletEventTypes = window.CasperWalletEventTypes;
-    window.addEventListener(CasperWalletEventTypes.Connected, handleEvent);
     window.addEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
     window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEvent);
 
     return () => {
-      window.removeEventListener(CasperWalletEventTypes.Connected, handleEvent);
       window.removeEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
       window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEvent);
     };
@@ -100,41 +102,40 @@ function Home() {
       <br></br>
       {isAuthenticated ? (
         <div>
-          <h2>You are logged in with {isWalletConnected ? (`Wallet address: ${localStorage.getItem('active_public_key')}`) : (`User ID: ${localStorage.getItem('userId')}`)}</h2>
+          <h2>You are logged in with {`Wallet address: ${localStorage.getItem('active_public_key')}`}</h2>
           <ul>
-            {isWalletConnected ? (
-              <ul>
-                <li>
-                  <Link to="/surveys/new">Create Survey</Link>
-                </li>
-                <li>
-                  <Link to="/surveys">My Surveys</Link>
-                </li>
-              </ul>
-            ) : (
-              <li>
-                <Link to="/login">Connect your wallet to take Surveys</Link>
-              </li>
-            )}
+            <li>
+              <Link to="/surveys/new">Create Survey</Link>
+            </li>
+            <li>
+              <Link to="/surveys">My Surveys</Link>
+            </li>
           </ul>
           <Logout />
-          <div>
-            <br></br>
-            <br></br>
-            <h2>Available Surveys</h2>
-            <div className="overflow-y-auto h-64 bg-white text-black p-4 rounded-lg">
-              <ul>
-                {surveys.map((survey) => (
-                  survey.createdBy && (
-                    <li key={survey._id}>
-                      <h3>{survey.title}</h3>
-                      <p>Reward: {survey.rewardPerResponse} CSPR</p>
-                      {isWalletConnected && (<button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>)}
-                    </li>
-                  )
-                ))}
-              </ul>
-            </div>
+          <br></br>
+          <br></br>
+          <div className="flex flex-col w-screen items-center justify-items-center">
+
+            <h2 className="p-8">Available Surveys</h2>
+            <ul>
+              {surveys.map((survey) => (
+                survey.createdBy && (
+                  <div className="overflow-y-auto items-center h-24 space-y-2 ">
+                    <div key={survey._id} className="justify-self-auto bg-white text-black px-6 py-2 rounded grid grid-cols-4 gap-4">
+                      <div className="col-span-2 justify-items-start">{survey.title}</div>
+                      <div>Reward: {survey.rewardPerResponse} CSPR</div>
+                      <div className="justify-items-end ">
+                        <button className="bg-red-500 rounded font-semibold px-5 text-white w-48" onClick={() => handleTakeSurvey(survey._id)}>
+                          Take Survey
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              ))}
+
+            </ul>
+
           </div>
         </div>
       ) : (
@@ -151,7 +152,7 @@ function Home() {
             </li>
           </ul>
           <p className="mt-2 font-medium text-sm">
-            Do you have Casper wallet?
+            Do you have Casper Wallet?
             <a href="https://www.casperwallet.io/download">
               <span className="text-red-500 font-semibold">  Download</span>
             </a>

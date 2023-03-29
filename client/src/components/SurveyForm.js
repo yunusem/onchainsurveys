@@ -17,6 +17,7 @@ function SurveyForm() {
     localStorage.removeItem('userId');
     localStorage.removeItem('active_public_key');
     localStorage.removeItem('user_already_signed');
+    localStorage.removeItem('x-casper-provided-signature');
   }
 
   if (!isWalletConnected) {

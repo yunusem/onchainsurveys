@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { fetchSurveys } from '../api';
 
 function SurveyList() {
@@ -14,6 +14,7 @@ function SurveyList() {
     localStorage.removeItem('userId');
     localStorage.removeItem('active_public_key');
     localStorage.removeItem('user_already_signed');
+    localStorage.removeItem('x-casper-provided-signature');
   }
 
   if (!isWalletConnected) {
@@ -68,19 +69,24 @@ function SurveyList() {
 
   const mySurveys = surveys.filter(survey => {
     if (!survey.createdBy) {
-      console.log('createdBy is null');
       return false;
     }
-    console.log('createdBy._id:', survey.createdBy._id);
-    console.log('userId:', userId);
     return survey.createdBy._id === userId;
   });
-
+  
   return (
-    <div>
-      <h2>My Surveys</h2>
+    <div className="bg-gray-700">
+   {(mySurveys.length === 0) && (
+          <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col justify-center ">
+            <p className="mt-2 font-medium text-sm">
+            You have not created a survey yet.
+            <Link to="/surveys/new">
+              <span className="text-red-500 font-semibold">  Create One ?</span>
+            </Link>
+          </p>
+          </div>) }
       <ul>
-        {mySurveys.map((survey) => (
+        {mySurveys && (mySurveys.map((survey) => (
           <li key={survey._id}>
             <h3>{survey.title}</h3>
             <p>Number of questions: {survey.questions.length}</p>
@@ -89,7 +95,7 @@ function SurveyList() {
             <p>Reward: {survey.rewardPerResponse} CSPR</p>
             <button onClick={() => handleTakeSurvey(survey._id)}>Take Survey</button>
           </li>
-        ))}
+        )))}
       </ul>
     </div>
   );
