@@ -17,6 +17,14 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     sparse: true,
   },
+  active: {
+    type: Boolean,
+    default: false,
+  },
+  attempts: {
+    type: Number,
+    default: 0,
+  },
 });
 
 UserSchema.index({ email: 1 }, { unique: true, partialFilterExpression: { email: { $ne: null } } });

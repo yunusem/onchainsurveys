@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
-import { registerUser, loginWithWallet } from '../api';
+import { registerUser, loginWithWallet, checkUserActive } from '../api';
 import CasperWalletEvents from './CasperWalletEvents';
 import { CLPublicKey, verifyMessageSignature } from 'casper-js-sdk';
 
@@ -69,10 +69,18 @@ function Login() {
           if (result) {
             const response = await registerUser({ publicAddress: signingPublicKeyHex, email: message });
             if (response.success) {
+              const userId = localStorage.getItem('userId');
+              const activationResponse = await checkUserActive(userId);
+              if (activationResponse.success) {
+                history.push('/', { signature: res.signature });
+              } else {
+                const message = activationResponse.message;
+                console.error(message);
+                alert(message);
+              }
               setIsVerifying(false);
-              history.push('/', { signature: res.signature });
             } else {
-              console.log(response)
+              console.error(response);
             }
           } else {
             alert('Error: Could not verify the signature');
@@ -81,7 +89,6 @@ function Login() {
       })
       .catch((err) => {
         console.log(err);
-        alert('Error: ' + err);
       });
   };
 
@@ -122,14 +129,12 @@ function Login() {
       <br></br>
       <br></br>
       <p className="w-96 px-12 py-12 font-medium text-sm">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        <Link to="/">
-          <span className="text-red-500 font-semibold"> link </span>
-        </Link>
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        <Link to="/">
-          <span className="text-red-500 font-semibold"> link </span>
-        </Link>
+      
+            Activity problem ? Checkout
+            <a href="https://www.casperwallet.io/download">
+              <span className="text-red-500 font-semibold"> CSPR.live</span>
+            </a>
+          
       </p>
     </div>
   );

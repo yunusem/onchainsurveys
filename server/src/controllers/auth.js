@@ -10,9 +10,11 @@ exports.register = async (req, res) => {
       res.status(404).json({ message: 'User not found' });
       return;
     }
-    user.email = email;
-    await user.save();
-
+    if(!user.email) {
+      user.email = email;
+      await user.save();
+    }
+    
     res.status(200).json({ success: true, message: 'User updated successfully' });
   } catch (err) {
     res.status(400).json({ message: err.message });

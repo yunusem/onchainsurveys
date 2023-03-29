@@ -8,9 +8,13 @@ import SurveyForm from './components/SurveyForm';
 import ThankYou from './components/ThankYou';
 import CasperWalletPresence from './components/CasperWalletPresence';
 import CasperWalletContext from './components/CasperWalletContext';
+import PrivateRoute from './components/PrivateRoute';
+import { useUserActivation } from './hooks/useUserActivation';
+
 
 function App() {
   const provider = CasperWalletPresence();
+  const [userIsActivated] = useUserActivation();
 
   if (!provider) {
     return (
@@ -27,11 +31,10 @@ function App() {
           <Switch>
             <Route path="/" exact component={Home} />
             <Route path="/login" component={Login} />
-            <Route path="/survey/:id" component={Survey} />
-            <Route path="/thankyou" component={ThankYou} />
-            <Route path="/surveys" exact component={SurveyList} />
-            <Route path="/surveys/new" component={SurveyForm} />
-            <Route path="/surveys/:id/edit" component={SurveyForm} />
+            <PrivateRoute path="/survey/:id" component={Survey} userIsActivated={userIsActivated} />
+            <PrivateRoute path="/surveys" exact component={SurveyList} userIsActivated={userIsActivated} />
+            <PrivateRoute path="/surveys/new" component={SurveyForm} userIsActivated={userIsActivated} />
+            <PrivateRoute path="/surveys/:id/edit" component={SurveyForm} userIsActivated={userIsActivated} />
             <Route path="/thankyou" component={ThankYou} />
           </Switch>
         </div>

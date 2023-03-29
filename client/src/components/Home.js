@@ -3,10 +3,12 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import { fetchSurveys, loginWithWallet } from '../api';
 import CasperWalletContext from './CasperWalletContext';
+import { useUserActivation } from '../hooks/useUserActivation';
 
 function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [surveys, setSurveys] = useState([]);
+  const [userIsActivated] = useUserActivation();
   const history = useHistory();
   const provider = useContext(CasperWalletContext);
   const location = useLocation();
@@ -43,12 +45,12 @@ function Home() {
     const walletAddress = localStorage.getItem("active_public_key");
     const signature = localStorage.getItem('x-casper-provided-signature');
 
-    if (token && signature && walletAddress) {
+    if (token && signature && walletAddress && userIsActivated) {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
     }
-  }, [signature]);
+  }, [signature, userIsActivated]);
 
   useEffect(() => {
     async function loadSurveys() {

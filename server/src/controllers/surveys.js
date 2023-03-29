@@ -1,7 +1,6 @@
 const Survey = require('../models/Survey');
 
 exports.createSurvey = async (req, res) => {
-  console.log('create survey controller , User object:', req.user);
   try {
     console.log('Request body JSON:', JSON.stringify(req.body));
 
