@@ -74,7 +74,7 @@ function Home() {
     const handleEvent = async (event) => {
       try {
         const state = JSON.parse(event.detail);
-        if(!state.isConnected) {
+        if (!state.isConnected) {
           removeItems();
         }
       } catch (err) {
@@ -94,73 +94,78 @@ function Home() {
 
 
   return (
-    <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
+    <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col justify-center">
       <img src={Logo} alt="logo" width="72px" />
       <h1 className="text-2xl font-semibold mt-4">
         Welcome to Onchain Surveys
       </h1>
-      <br></br>
       {isAuthenticated ? (
         <div>
-          <h2>You are logged in with {`Wallet address: ${localStorage.getItem('active_public_key')}`}</h2>
-          <ul>
-            <li>
-              <Link to="/surveys/new">Create Survey</Link>
-            </li>
-            <li>
-              <Link to="/surveys">My Surveys</Link>
-            </li>
-          </ul>
+          <h2 className="mt-6">You are logged in with {`Wallet address: ${localStorage.getItem('active_public_key')}`}</h2>
+          <div className="flex items-center mt-6">
+            <Link
+              to="/surveys/new"
+              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+            >
+              Create Survey
+            </Link>
+            <Link
+              to="/surveys"
+              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+            >
+              My Surveys
+            </Link>
+          </div>
           <Logout />
-          <br></br>
-          <br></br>
-          <div className="flex flex-col w-screen items-center justify-items-center">
-
+          <div className="flex flex-col w-full items-center justify-items-center mt-12">
             <h2 className="p-8">Available Surveys</h2>
-            <ul>
-              {surveys.map((survey) => (
+            <ul className="w-full flex flex-col items-center">
+              {surveys.map((survey) =>
                 survey.createdBy && (
-                  <div className="overflow-y-auto items-center h-24 space-y-2 ">
-                    <div key={survey._id} className="justify-self-auto bg-white text-black px-6 py-2 rounded grid grid-cols-4 gap-4">
-                      <div className="col-span-2 justify-items-start">{survey.title}</div>
+                  <li
+                    key={survey._id}
+                    className="bg-gray-800 p-6 rounded-xl mb-6 w-3/4"
+                  >
+                    <div className="grid grid-cols-4 gap-4">
+                      <div className="col-span-2 justify-items-start">
+                        {survey.title}
+                      </div>
                       <div>Reward: {survey.rewardPerResponse} CSPR</div>
-                      <div className="justify-items-end ">
-                        <button className="bg-red-500 rounded font-semibold px-5 text-white w-48" onClick={() => handleTakeSurvey(survey._id)}>
+                      <div className="justify-items-end">
+                        <button
+                          className="bg-red-500 rounded font-semibold px-4 text-white"
+                          onClick={() => handleTakeSurvey(survey._id)}
+                        >
                           Take Survey
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </li>
                 )
-              ))}
-
+              )}
             </ul>
-
           </div>
         </div>
       ) : (
-        <div>
-          {/* <h2 className="mb-4 font-semibold">You aren't logged in.</h2> */}
-          <ul className="flex items-center">
-            <li>
-              <button
-                className="bg-red-500 py-3 rounded-xl font-semibold px-5 text-white w-72"
-                onClick={handleWalletLogin}
-              >
-                Connect Wallet
-              </button>
-            </li>
-          </ul>
+        <div className="mt-6">
+          <button
+            className="bg-red-500 py-3 rounded-xl font-semibold px-5 text-white w-72"
+            onClick={handleWalletLogin}
+          >
+            Connect Wallet
+          </button>
           <p className="mt-2 font-medium text-sm">
             Do you have Casper Wallet?
             <a href="https://www.casperwallet.io/download">
-              <span className="text-red-500 font-semibold">  Download</span>
+              <span className="text-red-500 font-semibold"> Download</span>
             </a>
           </p>
         </div>
       )}
     </div>
   );
+  
+
 }
 
 export default Home;

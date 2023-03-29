@@ -6,9 +6,21 @@ import SurveyQuestion from './SurveyQuestion';
 function Survey() {
   const [survey, setSurvey] = useState(null);
   const [answers, setAnswers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
   const { id } = useParams();
   const history = useHistory();
   const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
+  const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
+
+
+  useEffect(() => {
+    if (answers.every((answer) => answer !== null)) {
+      setAllQuestionsAnswered(true);
+    } else {
+      setAllQuestionsAnswered(false);
+    }
+  }, [answers]);
+
 
   function removeItems() {
     localStorage.removeItem('token');
@@ -58,7 +70,7 @@ function Survey() {
     }
     loadSurvey();
   }, [id]);
-  
+
   const handleChange = (index, answer) => {
     setAnswers((prevAnswers) => {
       const newAnswers = [...prevAnswers];
@@ -69,39 +81,81 @@ function Survey() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const userId = localStorage.getItem('userId');
-    try {
-      console.log(userId);
-      await submitSurveyResponse(id, answers);
-      history.push('/thankyou');
-    } catch (error) {
-      console.error('Failed to submit survey response:', error);
-    }
+
+    
+      const userId = localStorage.getItem('userId');
+      try {
+        console.log(userId);
+        await submitSurveyResponse(id, answers);
+        history.push('/thankyou');
+      } catch (error) {
+        console.error('Failed to submit survey response:', error);
+      }
+    
   };
+
 
   if (!survey) {
     return (
       <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
-    <div>Loading...</div>
-    </div>);
+        <div>Loading...</div>
+      </div>);
   }
 
   return (
-    <div>
-      <h2>{survey.title}</h2>
-      <p>{survey.description}</p>
-      <form onSubmit={handleSubmit}>
-        {survey.questions.map((question, index) => (
-          <SurveyQuestion
-            key={question._id}
-            question={question}
-            onChange={(answer) => handleChange(index, answer)}
-          />
-        ))}
-        <button type="submit">Submit</button>
-      </form>
+    <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex-col justify-center">
+      <div className="py-12 px-8 bg-gray-800 shadow-lg rounded-xl w-3/4">
+        <h2 className="text-2xl font-semibold mb-6">{survey.title}</h2>
+        <p className="mb-6">{survey.description}</p>
+        <form onSubmit={handleSubmit} className="w-full">
+          {survey.questions.map((question, index) => (
+            <div
+              key={question._id}
+              className={`bg-gray-700 p-6 rounded-xl mb-6 transition-opacity duration-300 ${index === currentPage ? 'opacity-100' : 'opacity-0 hidden'
+                }`}
+            >
+              <SurveyQuestion
+                key={question._id}
+                question={{ ...question, selectedAnswer: answers[index] }}
+                onChange={(answer) => handleChange(index, answer)}
+              />
+            </div>
+          ))}
+          <div className="flex justify-between">
+            <button
+              type="button"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 0}
+              className={`bg-red-500 py-2 px-4 rounded font-semibold text-white ${currentPage !== 0 ? 'opacity-100' : 'opacity-0 hidden'}`}
+            >
+              Previous
+            </button>
+            {currentPage < survey.questions.length - 1 ? (
+              <button
+                type="button"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                className="bg-red-500 py-2 px-4 rounded font-semibold text-white"
+              >
+                Next
+              </button>
+            ) : null}
+          </div>
+        </form>
+      </div>
+      {allQuestionsAnswered && (
+        <div className="mt-4">
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="bg-red-500 py-2 px-4 rounded font-semibold text-white"
+          >
+            Submit
+          </button>
+        </div>
+      )}
     </div>
   );
+
 }
 
 export default Survey;

@@ -6,9 +6,9 @@ function SurveyQuestion({ question, onChange }) {
   };
 
   return (
-    <div>
+    <div className="flex flex-col space-y-4">
       <h3>{question.text}</h3>
-      {question.answers && question.answers.map((answer, index) => (
+      {question.answers.map((answer, index) => (
         <div key={`answer-${index}`}>
           <input
             type="radio"
