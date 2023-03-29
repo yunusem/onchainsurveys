@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import { fetchSurveys, loginWithWallet } from '../api';
-import Logout from './Logout';
 import CasperWalletContext from './CasperWalletContext';
 
 function Home() {
@@ -39,7 +38,6 @@ function Home() {
     }
   };
 
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     const walletAddress = localStorage.getItem("active_public_key");
@@ -71,27 +69,43 @@ function Home() {
   };
 
   useEffect(() => {
-    const handleEvent = async (event) => {
+    const handleDisconnect = (event) => {
       try {
         const state = JSON.parse(event.detail);
         if (!state.isConnected) {
           removeItems();
         }
-      } catch (err) {
-        console.error('Failed to handle event:', err);
+      } catch (error) {
+        console.error("Error handling disconnect event: " + error.message);
       }
     };
 
     const CasperWalletEventTypes = window.CasperWalletEventTypes;
-    window.addEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
-    window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEvent);
+    window.addEventListener(CasperWalletEventTypes.Disconnected, handleDisconnect);
+    window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleDisconnect);
 
     return () => {
-      window.removeEventListener(CasperWalletEventTypes.Disconnected, handleEvent);
-      window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleEvent);
+      window.removeEventListener(CasperWalletEventTypes.Disconnected, handleDisconnect);
+      window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleDisconnect);
     };
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      const isConnected = await provider.isConnected();
+      if (isConnected) {
+        const isDisconnected = await provider.disconnectFromSite();
+        if (isDisconnected) {
+          removeItems();
+          setIsAuthenticated(false);
+        }
+      } else {
+        removeItems();
+      }
+    } catch (error) {
+      console.error("Error disconnecting wallet: " + error.message);
+    }
+  };
 
   return (
     <div className="bg-gray-700 text-center h-screen w-screen text-white flex items-center flex flex-col justify-center">
@@ -100,9 +114,8 @@ function Home() {
         Welcome to Onchain Surveys
       </h1>
       {isAuthenticated ? (
-        <div>
-          <h2 className="mt-6">You are logged in with {`Wallet address: ${localStorage.getItem('active_public_key')}`}</h2>
-          <div className="flex items-center mt-6">
+        <div className="justify-items-center">
+          <div className="items-center mt-6">
             <Link
               to="/surveys/new"
               className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
@@ -115,9 +128,16 @@ function Home() {
             >
               My Surveys
             </Link>
+
+            <button
+            className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
           </div>
-          <Logout />
-          <div className="flex flex-col w-full items-center justify-items-center mt-12">
+          
+          <div className="flex flex-col w-full items-center justify-items-center ">
             <h2 className="p-8">Available Surveys</h2>
             <ul className="w-full flex flex-col items-center">
               {surveys.map((survey) =>
@@ -164,8 +184,6 @@ function Home() {
       )}
     </div>
   );
-  
-
 }
 
 export default Home;

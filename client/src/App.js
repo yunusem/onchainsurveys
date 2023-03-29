@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './components/Home';
 import Login from './components/Login';
-import Logout from './components/Logout';
 import Survey from './components/Survey';
 import SurveyList from './components/SurveyList';
 import SurveyForm from './components/SurveyForm';
@@ -28,7 +27,6 @@ function App() {
           <Switch>
             <Route path="/" exact component={Home} />
             <Route path="/login" component={Login} />
-            <Route path="/logout" component={Logout} />
             <Route path="/survey/:id" component={Survey} />
             <Route path="/thankyou" component={ThankYou} />
             <Route path="/surveys" exact component={SurveyList} />
