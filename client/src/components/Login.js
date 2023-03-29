@@ -3,9 +3,11 @@ import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import { registerUser, loginWithWallet } from '../api';
 import CasperWalletEvents from './CasperWalletEvents';
+import { CLPublicKey, verifyMessageSignature } from 'casper-js-sdk';
 
 function Login() {
   const [email, setEmail] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
   const [isWalletConnected, setIsWalletConnected] = useState(Boolean(localStorage.getItem('active_public_key')));
   const [isUserAlreadySigned, setIsUserAlreadySigned] = useState(localStorage.getItem('user_already_signed') === "true");
   const [activePublicKey, setActivePublicKey] = useState(localStorage.getItem('active_public_key'));
@@ -18,7 +20,7 @@ function Login() {
     localStorage.removeItem('user_already_signed');
     localStorage.removeItem('x-casper-provided-signature');
   }
- 
+
   if (!isWalletConnected) {
     history.push('/');
   }
@@ -61,15 +63,24 @@ function Login() {
         if (res.cancelled) {
           alert('Sign cancelled');
         } else {
-          const response = await registerUser({ publicAddress: signingPublicKeyHex, email: message });
-          if (response.success) {
-            history.push('/', { signature: res.signatureHex });
+          setIsVerifying(true);
+          const publicKey = CLPublicKey.fromHex(signingPublicKeyHex, true);
+          const result = verifyMessageSignature(publicKey, message, res.signature);
+          if (result) {
+            const response = await registerUser({ publicAddress: signingPublicKeyHex, email: message });
+            if (response.success) {
+              setIsVerifying(false);
+              history.push('/', { signature: res.signature });
+            } else {
+              console.log(response)
+            }
           } else {
-            console.log(response)
+            alert('Error: Could not verify the signature');
           }
         }
       })
       .catch((err) => {
+        console.log(err);
         alert('Error: ' + err);
       });
   };
@@ -77,10 +88,10 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const currentDate = new Date().toLocaleString();
-    
+
     signMessage(isUserAlreadySigned ? `Please verify with your signature. Date: ${currentDate}` : email, activePublicKey);
   };
-  
+
   return (
     <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
       <Link to="/">
@@ -89,7 +100,7 @@ function Login() {
       <h2 className="text-2xl font-semibold my-4">Wallet Connected!</h2>
       <form onSubmit={handleSubmit} className="w-72">
         <div className="flex flex-col">
-          { isUserAlreadySigned ? ( <br></br>) : (
+          {isUserAlreadySigned ? (<br></br>) : (
             <input
               type="email"
               id="email"
@@ -105,13 +116,13 @@ function Login() {
         <button
           type="submit"
           className="bg-red-500  py-3 rounded-xl font-semibold px-5 text-white w-72">
-          { isUserAlreadySigned ? "Verify" : "Verify Email" }
+          {isVerifying ? ("Verifying ...") : (isUserAlreadySigned ? "Verify" : "Verify Email")}
         </button>
       </form>
       <br></br>
       <br></br>
       <p className="w-96 px-12 py-12 font-medium text-sm">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         <Link to="/">
           <span className="text-red-500 font-semibold"> link </span>
         </Link>
