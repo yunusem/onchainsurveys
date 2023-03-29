@@ -22,20 +22,6 @@ function Survey() {
   }
 
   useEffect(() => {
-    async function loadSurvey() {
-      try {
-        const response = await fetchSurvey(id);
-        setSurvey(response);
-        setAnswers(new Array(response.questions.length).fill(null));
-      } catch (error) {
-        console.error('Failed to fetch survey:', error);
-      }
-    }
-    loadSurvey();
-  }, [id]);
-
-
-  useEffect(() => {
     const handleDisconnect = (event) => {
       try {
         const state = JSON.parse(event.detail);
@@ -58,6 +44,20 @@ function Survey() {
     };
   }, [history]);
 
+
+  useEffect(() => {
+    async function loadSurvey() {
+      try {
+        const response = await fetchSurvey(id);
+        setSurvey(response);
+        setAnswers(new Array(response.questions.length).fill(null));
+      } catch (error) {
+        console.error('Failed to fetch survey:', error);
+      }
+    }
+    loadSurvey();
+  }, [id]);
+  
   const handleChange = (index, answer) => {
     setAnswers((prevAnswers) => {
       const newAnswers = [...prevAnswers];

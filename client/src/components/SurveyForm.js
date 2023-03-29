@@ -6,7 +6,7 @@ function SurveyForm() {
   const { id } = useParams();
   const history = useHistory();
   const [title, setTitle] = useState('');
-  const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' }] }]);
+  const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' },{ text: '' }] }]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
@@ -110,7 +110,7 @@ function SurveyForm() {
   };
 
   const addQuestion = () => {
-    setQuestions([...questions, { text: '', answers: [''] }]);
+    setQuestions([...questions, { text: '', answers: ['',''] }]);
   };
 
   const addAnswer = (questionIndex) => {
@@ -120,10 +120,11 @@ function SurveyForm() {
   };
 
   return (
-    <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex flex-col justify-center">
+    <div className="bg-gray-700 h-screen w-screen text-white flex items-center flex-col justify-center">
+    <div className="py-12 px-8 justify-center bg-gray-800 shadow-lg rounded-xl w-3/4">
       <h2 className="text-2xl font-semibold my-4">{id ? 'Edit Survey' : 'Create Survey'}</h2>
-      <form onSubmit={handleSubmit} className="w-96">
-        <div className="flex flex-col">
+      <form onSubmit={handleSubmit} className="w-full">
+        <div className="flex flex-col ">
           <label htmlFor="title" className="font-medium">
             Title
           </label>
@@ -132,7 +133,7 @@ function SurveyForm() {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="p-2 h-11 rounded-lg mt-1 text-black font-medium outline-none"
+            className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
           />
         </div>
         {questions.map((question, questionIndex) => (
@@ -146,29 +147,31 @@ function SurveyForm() {
                 id={`question-${questionIndex}`}
                 value={question.text}
                 onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                className="p-2 h-11 rounded-lg mt-1 text-black font-medium outline-none"
+                className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
               />
             </div>
             {question.answers.map((answer, answerIndex) => (
               <div key={answerIndex} className="mt-3">
                 <div className="flex flex-col">
-                  <label htmlFor={`question-${questionIndex}-answer-${answerIndex}`} className="font-medium">
+                  {/* <label htmlFor={`question-${questionIndex}-answer-${answerIndex}`} className="font-medium">
                     Answer {answerIndex + 1}
-                  </label>
+                  </label> */}
                   <input
                     type="text"
                     id={`question-${questionIndex}-answer-${answerIndex}`}
                     value={answer.text}
+                    placeholder={`Answer ${answerIndex + 1}`}
                     onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
-                    className="p-2 h-11 rounded-lg mt-1 text-black font-medium outline-none"
+                    className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
                   />
                 </div>
               </div>
+              
             ))}
             <button
               type="button"
               onClick={() => addAnswer(questionIndex)}
-              className="bg-red-500 py-2 px-4 rounded-xl font-semibold text-white mt-3">
+              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mt-3">
               Add Answer
             </button>
           </div>
@@ -176,11 +179,11 @@ function SurveyForm() {
         <button
           type="button"
           onClick={addQuestion}
-          className="bg-red-500 py-2 px-4 rounded-xl font-semibold text-white mt-3"
+          className="bg-red-500 py-2 px-4 rounded font-semibold text-white mt-3"
         >
           Add Question
         </button>
-        <div className="flex flex-col mt-3">
+        <div className="w-48 flex flex-col mt-3">
           <label htmlFor="startDate" className="font-medium">
             Start Date
           </label>
@@ -189,10 +192,10 @@ function SurveyForm() {
             id="startDate"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="p-2 h-11 rounded-lg mt-1 text-black font-medium outline-none"
+            className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
           />
         </div>
-        <div className="flex flex-col mt-3">
+        <div className="w-48 flex flex-col mt-3">
           <label htmlFor="endDate" className="font-medium">
             End Date
           </label>
@@ -201,16 +204,17 @@ function SurveyForm() {
             id="endDate"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="p-2 h-11 rounded-lg mt-1 text-black font-medium outline-none"
+            className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
           />
         </div>
         <button
           type="submit"
-          className="bg-red-500 py-3 px-5 rounded-xl font-semibold text-white w-full mt-3"
+          className="bg-red-500 py-3 px-5 rounded font-semibold text-white w-full mt-3"
         >
           {id ? 'Update' : 'Create'}
         </button>
       </form>
+    </div>
     </div>
   );
 }
