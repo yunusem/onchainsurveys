@@ -3,7 +3,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import { fetchSurveys, loginWithWallet } from '../api';
 import CasperWalletContext from './CasperWalletContext';
-import { useUserActivation } from '../hooks/useUserActivation';
+import { useUserActivation } from './UserActivationContext';
 
 function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -146,7 +146,7 @@ function Home() {
                 survey.createdBy && (
                   <li
                     key={survey._id}
-                    className="bg-gray-800 p-6 rounded-xl mb-6 w-3/4"
+                    className="bg-gray-900 p-6 rounded-xl mb-6 w-3/4"
                   >
                     <div className="grid grid-cols-4 gap-4">
                       <div className="col-span-2 justify-items-start">
@@ -176,6 +176,8 @@ function Home() {
           >
             Connect Wallet
           </button>
+          <br></br>
+          <br></br>
           <p className="mt-2 font-medium text-sm">
             Do you have Casper Wallet?
             <a href="https://www.casperwallet.io/download">

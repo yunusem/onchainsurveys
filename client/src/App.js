@@ -9,12 +9,10 @@ import ThankYou from './components/ThankYou';
 import CasperWalletPresence from './components/CasperWalletPresence';
 import CasperWalletContext from './components/CasperWalletContext';
 import PrivateRoute from './components/PrivateRoute';
-import { useUserActivation } from './hooks/useUserActivation';
-
+import { UserActivationProvider } from './components/UserActivationContext';
 
 function App() {
   const provider = CasperWalletPresence();
-  const [userIsActivated] = useUserActivation();
 
   if (!provider) {
     return (
@@ -25,21 +23,23 @@ function App() {
   }
 
   return (
-    <CasperWalletContext.Provider value={provider}>
-      <Router>
-        <div className="App">
-          <Switch>
-            <Route path="/" exact component={Home} />
-            <Route path="/login" component={Login} />
-            <PrivateRoute path="/survey/:id" component={Survey} userIsActivated={userIsActivated} />
-            <PrivateRoute path="/surveys" exact component={SurveyList} userIsActivated={userIsActivated} />
-            <PrivateRoute path="/surveys/new" component={SurveyForm} userIsActivated={userIsActivated} />
-            <PrivateRoute path="/surveys/:id/edit" component={SurveyForm} userIsActivated={userIsActivated} />
-            <Route path="/thankyou" component={ThankYou} />
-          </Switch>
-        </div>
-      </Router>
-    </CasperWalletContext.Provider>
+    <UserActivationProvider>
+      <CasperWalletContext.Provider value={provider}>
+        <Router>
+          <div className="App">
+            <Switch>
+              <Route path="/" exact component={Home} />
+              <Route path="/login" component={Login} />
+              <PrivateRoute path="/survey/:id" component={Survey} />
+              <PrivateRoute path="/surveys" exact component={SurveyList} />
+              <PrivateRoute path="/surveys/new" component={SurveyForm} />
+              <PrivateRoute path="/surveys/:id/edit" component={SurveyForm} />
+              <Route path="/thankyou" component={ThankYou} />
+            </Switch>
+          </div>
+        </Router>
+      </CasperWalletContext.Provider>
+    </UserActivationProvider>
   );
 }
 

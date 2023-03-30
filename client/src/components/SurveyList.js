@@ -94,7 +94,7 @@ function SurveyList() {
           mySurveys.map((survey) => (
             <li
               key={survey._id}
-              className="bg-gray-800 p-6 rounded-xl mb-6 w-3/4"
+              className="bg-gray-900 p-6 rounded-xl mb-6 w-3/4"
             >
               <h3 className="text-xl font-semibold">{survey.title}</h3>
               <p>Number of questions: {survey.questions.length}</p>

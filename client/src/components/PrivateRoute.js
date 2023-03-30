@@ -1,7 +1,10 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import { useUserActivation } from './UserActivationContext';
 
-const PrivateRoute = ({ component: Component, userIsActivated, ...rest }) => {
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  const [userIsActivated] = useUserActivation();
+
   return (
     <Route
       {...rest}

@@ -3,6 +3,7 @@ import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import { registerUser, loginWithWallet, checkUserActive } from '../api';
 import CasperWalletEvents from './CasperWalletEvents';
+import { useUserActivation } from '../components/UserActivationContext';
 import { CLPublicKey, verifyMessageSignature } from 'casper-js-sdk';
 
 function Login() {
@@ -11,6 +12,7 @@ function Login() {
   const [isWalletConnected, setIsWalletConnected] = useState(Boolean(localStorage.getItem('active_public_key')));
   const [isUserAlreadySigned, setIsUserAlreadySigned] = useState(localStorage.getItem('user_already_signed') === "true");
   const [activePublicKey, setActivePublicKey] = useState(localStorage.getItem('active_public_key'));
+  const [, setUserIsActivated] = useUserActivation();
   const history = useHistory();
 
   function removeItems() {
@@ -72,7 +74,7 @@ function Login() {
             const response = await registerUser({ publicAddress: signingPublicKeyHex, email: message });
             if (response.success) {
               const userId = localStorage.getItem('userId');
-              const activationResponse = await checkUserActive(userId);
+              const activationResponse = await checkUserActive(userId, setUserIsActivated);
               if (activationResponse.success) {
                 history.push('/', { signature: res.signature });
               } else {

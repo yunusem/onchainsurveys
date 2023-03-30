@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
     required: function () {
       return !this.publicAddress;
     },
+    unique: true,
   },
   publicAddress: {
     type: String,

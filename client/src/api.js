@@ -1,4 +1,3 @@
-import { updateUserIsActivated } from './hooks/useUserActivation';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001';
 
 function getHeaders() {
@@ -30,7 +29,7 @@ export async function registerUser(user) {
   return response.json();
 }
 
-export async function checkUserActive(userId) {
+export async function checkUserActive(userId, setUserIsActivated) {
   const headers = getHeaders();
   const response = await fetch(`${API_BASE_URL}/users/${userId}/activate`, {
     method: 'POST',
@@ -38,18 +37,21 @@ export async function checkUserActive(userId) {
   });
 
   const data = await response.json();
+  
   if (response.ok) {
-    console.log("user active check in api:", data.message);
-    if (response.success) {
-      updateUserIsActivated(true);
+    if (data.success) {
+      setUserIsActivated(true);
+      localStorage.setItem('user-is-activated', JSON.stringify(true));
     } else {
-      updateUserIsActivated(false);
+      setUserIsActivated(false);
+      localStorage.setItem('user-is-activated', JSON.stringify(false));
     }
   } else {
     console.error(data.message);
   }
-  return { success: response.success, message: data.message };
+  return { success: data.success, message: data.message };
 }
+
 
 export async function fetchSurvey(id) {
   const headers = getHeaders();

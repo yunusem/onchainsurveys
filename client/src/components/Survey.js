@@ -106,7 +106,7 @@ function Survey() {
 
   return (
     <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex-col justify-center">
-      <div className="py-12 px-8 bg-gray-800 shadow-lg rounded-xl w-3/4">
+      <div className="py-12 px-8 bg-gray-900 shadow-lg rounded-xl w-3/4">
         <h2 className="text-2xl font-semibold mb-6">{survey.title}</h2>
         <p className="mb-6">{survey.description}</p>
         <form onSubmit={handleSubmit} className="w-full">
