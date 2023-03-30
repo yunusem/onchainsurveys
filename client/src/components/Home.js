@@ -57,7 +57,6 @@ function Home() {
       try {
         const response = await fetchSurveys();
         setSurveys(response);
-        console.log(response)
       } catch (error) {
         console.error('Failed to fetch surveys:', error);
       }
@@ -177,14 +176,6 @@ function Home() {
           >
             Connect Wallet
           </button>
-          <br></br>
-          <br></br>
-          <p className="mt-2 font-medium text-sm">
-            Do you have Casper Wallet?
-            <a href="https://www.casperwallet.io/download">
-              <span className="text-red-500 font-semibold"> Download</span>
-            </a>
-          </p>
         </div>
       )}
     </div>

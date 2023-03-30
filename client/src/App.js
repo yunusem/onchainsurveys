@@ -17,7 +17,12 @@ function App() {
   if (!provider) {
     return (
       <div className="App bg-gray-800 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
-        <h1>Please install the Casper Wallet Extension.</h1>
+        <h1 className="text-xl font-semibold mt-4">
+            Do you have Casper Wallet?
+            <a href="https://www.casperwallet.io/download">
+              <span className="text-red-500 font-semibold"> Download</span>
+            </a>
+          </h1>
       </div>
     );
   }
