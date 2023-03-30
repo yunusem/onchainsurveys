@@ -78,13 +78,11 @@ function Login() {
               if (activationResponse.success) {
                 history.push('/', { signature: res.signature });
               } else {
-                const message = activationResponse.message;
-                console.error(message);
-                alert(message);
+                alert(activationResponse.message);
               }
               setIsVerifying(false);
             } else {
-              console.error(response);
+              alert(response.message);
             }
           } else {
             alert('Error: Could not verify the signature');

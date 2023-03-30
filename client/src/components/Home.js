@@ -116,7 +116,7 @@ function Home() {
         Welcome to Onchain Surveys
       </h1>
       {isAuthenticated ? (
-        <div className="w-screen justify-items-center">
+        <div className="w-screen justify-items-center mt-6">
           <div className="items-center">
             <Link
               to="/surveys/new"

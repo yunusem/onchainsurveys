@@ -13,11 +13,15 @@ exports.register = async (req, res) => {
     if(!user.email) {
       user.email = email;
       await user.save();
-    }
-    
+    } 
+
     res.status(200).json({ success: true, message: 'User updated successfully' });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    if (err.code === 11000) {
+      res.status(409).json({ message: 'Email address already registered by someone else' });
+    } else {
+      res.status(400).json({ message: err.message });
+    }
   }
 };
 

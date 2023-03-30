@@ -23,7 +23,7 @@ export async function registerUser(user) {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message);
+    return { success: error.success, message: error.message };
   }
 
   return response.json();
