@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './components/Home';
 import Login from './components/Login';
 import Survey from './components/Survey';
+import SurveyAll from './components/SurveyAll';
 import SurveyHistory from './components/SurveyHistory';
 import SurveyList from './components/SurveyList';
 import SurveyForm from './components/SurveyForm';
@@ -38,6 +39,7 @@ function App() {
               <Route path="/login" component={Login} />
               <PrivateRoute path="/survey/:id" component={Survey} />
               <PrivateRoute path="/surveys" exact component={SurveyList} />
+              <PrivateRoute path="/surveysall" exact component={SurveyAll} />
               <PrivateRoute path="/surveystaken" exact component={SurveyHistory} />
               <PrivateRoute path="/surveys/new" component={SurveyForm} />
               <PrivateRoute path="/surveys/:id/edit" component={SurveyForm} />

@@ -125,6 +125,12 @@ function Home() {
       {isAuthenticated ? (
         <div className="w-screen justify-items-center mt-6">
           <div className="items-center">
+          <Link
+              to="/surveysall"
+              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+            >
+              All Surveys
+            </Link>
             <Link
               to="/surveys/new"
               className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
@@ -137,7 +143,7 @@ function Home() {
             >
               My Surveys
             </Link>
-
+           
             <Link
               to="/surveystaken"
               className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
