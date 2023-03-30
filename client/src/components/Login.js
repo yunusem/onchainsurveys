@@ -20,7 +20,8 @@ function Login() {
     localStorage.removeItem('userId');
     localStorage.removeItem('active_public_key');
     localStorage.removeItem('user_already_signed');
-    localStorage.removeItem('x-casper-provided-signature');
+    localStorage.removeItem('x_casper_provided_signature');
+    localStorage.removeItem('user_is_activated');
   }
 
   useEffect(() => {
@@ -76,8 +77,10 @@ function Login() {
               const userId = localStorage.getItem('userId');
               const activationResponse = await checkUserActive(userId, setUserIsActivated);
               if (activationResponse.success) {
-                history.push('/', { signature: res.signature });
+                localStorage.setItem('x_casper_provided_signature', JSON.stringify(res.signature));
+                history.push('/');
               } else {
+                localStorage.removeItem('x_casper_provided_signature');
                 alert(activationResponse.message);
               }
               setIsVerifying(false);
@@ -85,6 +88,7 @@ function Login() {
               alert(response.message);
             }
           } else {
+            localStorage.removeItem('x_casper_provided_signature');
             alert('Error: Could not verify the signature');
           }
         }
@@ -98,7 +102,7 @@ function Login() {
     e.preventDefault();
     const currentDate = new Date().toLocaleString();
 
-    signMessage(isUserAlreadySigned ? `Please verify with your signature. Date: ${currentDate}` : email, activePublicKey);
+    signMessage(isUserAlreadySigned ? `Please verify with your signature. \nDate: ${currentDate}` : email, activePublicKey);
   };
 
   return (

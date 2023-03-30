@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Logo from "../assets/casper-logo.svg";
 import { fetchSurveys, loginWithWallet } from '../api';
 import CasperWalletContext from './CasperWalletContext';
@@ -11,16 +11,17 @@ function Home() {
   const [userIsActivated] = useUserActivation();
   const history = useHistory();
   const provider = useContext(CasperWalletContext);
-  const location = useLocation();
-  const signature = location.state && location.state.signature;
-  localStorage.setItem('x-casper-provided-signature', signature);
+
+  const signature = localStorage.getItem('x_casper_provided_signature');
+  const userId = localStorage.getItem('userId');
 
   function removeItems() {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('active_public_key');
     localStorage.removeItem('user_already_signed');
-    localStorage.removeItem('x-casper-provided-signature');
+    localStorage.removeItem('x_casper_provided_signature');
+    localStorage.removeItem('user_is_activated');
   }
 
   const handleWalletLogin = async (e) => {
@@ -43,8 +44,7 @@ function Home() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const walletAddress = localStorage.getItem("active_public_key");
-    const signature = localStorage.getItem('x-casper-provided-signature');
-
+    const signature = localStorage.getItem('x_casper_provided_signature');
     if (token && signature && walletAddress && userIsActivated) {
       setIsAuthenticated(true);
     } else {
@@ -109,6 +109,13 @@ function Home() {
     }
   };
 
+  const availabeSurveys = surveys.filter(survey => {
+    if (!survey.createdBy) {
+      return false;
+    }
+    return survey.createdBy._id !== userId;
+  });
+
   return (
     <div className="bg-gray-800 text-center h-screen w-full text-white flex items-center flex flex-col justify-center">
       <img src={Logo} alt="logo" width="72px" />
@@ -132,38 +139,38 @@ function Home() {
             </Link>
 
             <button
-            className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
+              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
           </div>
-          
+
           <div className="flex flex-col w-full items-center justify-items-center ">
             <h2 className="p-8">Available Surveys</h2>
             <ul className="w-full flex flex-col items-center overflow-auto h-80">
-              {surveys.map((survey) =>
-                 (
-                  <li
-                    key={survey._id}
-                    className="bg-gray-900 p-6 rounded-xl mb-6 w-3/4"
-                  >
-                    <div className="grid grid-cols-4 gap-4">
-                      <div className="col-span-2 justify-items-start">
-                        {survey.title}
-                      </div>
-                      <div>Reward: {survey.rewardPerResponse} CSPR</div>
-                      <div className="justify-items-end">
-                        <button
-                          className="bg-red-500 rounded font-semibold px-4 text-white"
-                          onClick={() => handleTakeSurvey(survey._id)}
-                        >
-                          Take Survey
-                        </button>
-                      </div>
+              {availabeSurveys && availabeSurveys.map((survey) =>
+              (
+                <li
+                  key={survey._id}
+                  className="bg-gray-900 p-6 rounded-xl mb-6 w-3/4"
+                >
+                  <div className="grid grid-cols-4 gap-4">
+                    <div className="col-span-2 justify-items-start">
+                      {survey.title}
                     </div>
-                  </li>
-                )
+                    <div>Reward: {survey.rewardPerResponse} CSPR</div>
+                    <div className="justify-items-end">
+                      <button
+                        className="bg-red-500 rounded font-semibold px-4 text-white"
+                        onClick={() => handleTakeSurvey(survey._id)}
+                      >
+                        Take Survey
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              )
               )}
             </ul>
           </div>

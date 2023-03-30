@@ -12,7 +12,7 @@ export function useUserActivation() {
 
 export function UserActivationProvider({ children }) {
   const [userIsActivated, setUserIsActivated] = useState(() => {
-    const storedValue = localStorage.getItem('user-is-activated');
+    const storedValue = localStorage.getItem('user_is_activated');
     return storedValue ? JSON.parse(storedValue) : false;
   });
 

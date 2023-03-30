@@ -21,13 +21,13 @@ function Survey() {
     }
   }, [answers]);
 
-
   function removeItems() {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('active_public_key');
     localStorage.removeItem('user_already_signed');
-    localStorage.removeItem('x-casper-provided-signature');
+    localStorage.removeItem('x_casper_provided_signature');
+    localStorage.removeItem('user_is_activated');
   }
 
   useEffect(() => {
@@ -83,8 +83,6 @@ function Survey() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    
       const userId = localStorage.getItem('userId');
       try {
         console.log(userId);

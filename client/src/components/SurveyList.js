@@ -14,7 +14,8 @@ function SurveyList() {
     localStorage.removeItem('userId');
     localStorage.removeItem('active_public_key');
     localStorage.removeItem('user_already_signed');
-    localStorage.removeItem('x-casper-provided-signature');
+    localStorage.removeItem('x_casper_provided_signature');
+    localStorage.removeItem('user_is_activated');
   }
 
   useEffect(() => {
@@ -89,22 +90,27 @@ function SurveyList() {
           </p>
         </div>
       )}
-      <ul className="w-full flex flex-col items-center">
+      <ul className="w-full flex flex-col items-center h-3/4 overflow-auto mt-2">
         {mySurveys &&
           mySurveys.map((survey) => (
             <li
               key={survey._id}
               className="bg-gray-900 p-6 rounded-xl mb-6 w-3/4"
             >
-              <h3 className="text-xl font-semibold">{survey.title}</h3>
+              <h3 className="text-xl font-semibold py-4">{survey.title}</h3>
               <p>Number of questions: {survey.questions.length}</p>
-              <p>Created by: {survey.createdBy._id}</p>
+              
               <p>
                 Start date: {new Date(survey.startDate).toLocaleDateString()}
               </p>
+              <p>
+                End date: {new Date(survey.endDate).toLocaleDateString()}
+              </p>
               <p>Reward: {survey.rewardPerResponse} CSPR</p>
+
+              <p>Number of participants: {survey.responses.length}</p>
               <button
-                className="bg-red-500 py-2 px-4 rounded font-semibold text-white"
+                className="bg-red-500 py-2 px-4 rounded font-semibold text-white mt-4"
                 onClick={() => handleShowStats(survey._id)}
               >
                 Stats

@@ -41,10 +41,10 @@ export async function checkUserActive(userId, setUserIsActivated) {
   if (response.ok) {
     if (data.success) {
       setUserIsActivated(true);
-      localStorage.setItem('user-is-activated', JSON.stringify(true));
+      localStorage.setItem('user_is_activated', JSON.stringify(true));
     } else {
       setUserIsActivated(false);
-      localStorage.setItem('user-is-activated', JSON.stringify(false));
+      localStorage.setItem('user_is_activated', JSON.stringify(false));
     }
   } else {
     console.error(data.message);
