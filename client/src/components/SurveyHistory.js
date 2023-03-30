@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { fetchSurveys } from '../api';
 
-function SurveyList() {
+function SurveyHistory() {
   const [surveys, setSurveys] = useState([]);
   const [expandedSurveyId, setExpandedSurveyId] = useState(null);
   const history = useHistory();
@@ -82,6 +82,11 @@ function SurveyList() {
     );
     const totalResponses = questionResponses.length;
   
+    // Find the user's response for this question
+    const userResponse = survey.responses.find(
+      (response) => response.user === userId
+    ).answers[questionIndex];
+  
     return survey.questions[questionIndex].answers.map((answer) => {
       const answerCount = questionResponses.filter(
         (response) => response === answer.text
@@ -90,10 +95,12 @@ function SurveyList() {
         ? ((answerCount / totalResponses) * 100).toFixed(2)
         : 0;
   
+      const bgColor = userResponse === answer.text ? 'bg-blue-600' : 'bg-green-700';
+  
       return (
         <div
           key={answer.text}
-          className="bg-green-700 px-4 py-2 mb-2 rounded text-sm flex justify-between items-center"
+          className={`${bgColor} px-4 py-2 mb-2 rounded text-sm flex justify-between items-center`}
         >
           <div>{answer.text}</div>
           <div>{answerPercentage}%</div>
@@ -102,6 +109,7 @@ function SurveyList() {
     });
   };
   
+  
   const daysRemaining = (endDate) => {
     const now = new Date();
     const end = new Date(endDate);
@@ -109,29 +117,26 @@ function SurveyList() {
     return diff > 0 ? diff : 0;
   };
 
-  const mySurveys = surveys.filter(survey => {
-    if (!survey.createdBy) {
-      return false;
-    }
-    return survey.createdBy._id === userId;
-  });
+  const participatedSurveys = () => {
+    return surveys.filter((survey) =>
+      survey.responses.some((response) => response.user === userId)
+    );
+  };
+
+  const myParticipatedSurveys = participatedSurveys();
 
   return (
     <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex-col justify-center">
-      {mySurveys.length === 0 && (
+      {myParticipatedSurveys.length === 0 && (
         <div className="text-center">
           <p className="mt-2 font-medium text-sm">
-            You have not created a survey yet.
-            <Link to="/surveys/new" className="text-red-500 font-semibold">
-              {" "}
-              Create One?
-            </Link>
+            You have not participated in any surveys yet.
           </p>
         </div>
       )}
       <ul className="w-full flex flex-col items-center h-3/4 overflow-auto mt-2">
-        {mySurveys &&
-          mySurveys.map((survey) => (
+        {myParticipatedSurveys &&
+          myParticipatedSurveys.map((survey) => (
             <li
               key={survey._id}
               className={`bg-gray-900 p-6 rounded-xl mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? 'h-auto' : 'h-36'
@@ -168,4 +173,4 @@ function SurveyList() {
   );
 }
 
-export default SurveyList;
+export default SurveyHistory;

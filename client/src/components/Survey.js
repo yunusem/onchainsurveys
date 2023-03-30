@@ -83,9 +83,7 @@ function Survey() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-      const userId = localStorage.getItem('userId');
       try {
-        console.log(userId);
         await submitSurveyResponse(id, answers);
         history.push('/thankyou');
       } catch (error) {
