@@ -57,6 +57,7 @@ function Home() {
       try {
         const response = await fetchSurveys();
         setSurveys(response);
+        console.log(response)
       } catch (error) {
         console.error('Failed to fetch surveys:', error);
       }
@@ -110,14 +111,14 @@ function Home() {
   };
 
   return (
-    <div className="bg-gray-800 text-center h-screen w-screen text-white flex items-center flex flex-col justify-center">
+    <div className="bg-gray-800 text-center h-screen w-full text-white flex items-center flex flex-col justify-center">
       <img src={Logo} alt="logo" width="72px" />
       <h1 className="text-2xl font-semibold mt-4">
         Welcome to Onchain Surveys
       </h1>
       {isAuthenticated ? (
-        <div className="justify-items-center">
-          <div className="items-center mt-6">
+        <div className="w-screen justify-items-center">
+          <div className="items-center">
             <Link
               to="/surveys/new"
               className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
@@ -141,9 +142,9 @@ function Home() {
           
           <div className="flex flex-col w-full items-center justify-items-center ">
             <h2 className="p-8">Available Surveys</h2>
-            <ul className="w-full flex flex-col items-center">
+            <ul className="w-full flex flex-col items-center overflow-auto h-80">
               {surveys.map((survey) =>
-                survey.createdBy && (
+                 (
                   <li
                     key={survey._id}
                     className="bg-gray-900 p-6 rounded-xl mb-6 w-3/4"

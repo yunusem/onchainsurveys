@@ -156,9 +156,6 @@ function SurveyForm() {
             {question.answers.map((answer, answerIndex) => (
               <div key={answerIndex} className="mt-3">
                 <div className="flex flex-col">
-                  {/* <label htmlFor={`question-${questionIndex}-answer-${answerIndex}`} className="font-medium">
-                    Answer {answerIndex + 1}
-                  </label> */}
                   <input
                     type="text"
                     id={`question-${questionIndex}-answer-${answerIndex}`}
