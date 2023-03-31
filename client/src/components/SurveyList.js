@@ -122,7 +122,7 @@ function SurveyList() {
         <div className="text-center">
           <p className="mt-2 font-medium text-sm">
             You have not created a survey yet.
-            <Link to="/surveys/new" className="text-red-500 font-semibold">
+            <Link to="/surveys/new" className="text-emerald-500 font-semibold">
               {" "}
               Create One?
             </Link>

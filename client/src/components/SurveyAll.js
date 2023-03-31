@@ -114,7 +114,7 @@ function SurveyAll() {
         <div className="text-center">
           <p className="mt-2 font-medium text-sm">
             There are no surveys created yet.
-            <Link to="/surveys/new" className="text-red-500 font-semibold">
+            <Link to="/surveys/new" className="text-emerald-500 font-semibold">
               {" "}
               Create One?
             </Link>

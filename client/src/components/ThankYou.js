@@ -15,7 +15,7 @@ function ThankYou() {
         <p className="mb-6">Your input is valuable to us.</p>
         <button
           onClick={handleClick}
-          className="bg-red-500 py-2 px-4 rounded font-semibold text-white"
+          className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white"
         >
           Go to Home Page
         </button>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import Logo from "../assets/casper-logo.svg";
+import Logo from "../assets/onchain-surveys-logo.svg";
 import { fetchSurveys, loginWithWallet } from '../api';
 import CasperWalletContext from './CasperWalletContext';
 import { useUserActivation } from './UserActivationContext';
@@ -135,43 +135,42 @@ function Home() {
   };
 
   return (
-    <div className="bg-gray-800 text-center h-screen w-full text-white flex items-center flex flex-col justify-center">
-      <img src={Logo} alt="logo" width="72px" />
-      <h1 className="text-2xl font-semibold mt-4">
-        Welcome to Onchain Surveys
-      </h1>
+    <div className="bg-gray-800 text-center h-screen w-full text-white flex items-center flex-col justify-center">
+      <Link to="/">
+        <img src={Logo} alt="logo" width="512px" />
+      </Link>
       {isAuthenticated ? (
         <div className="w-screen place-items-center mt-6">
           <div className="flex justify-center">
 
             <Link
               to="/surveysall"
-              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mx-4"
             >
               All Surveys
             </Link>
             <Link
               to="/surveys/new"
-              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mx-4"
             >
               Create
             </Link>
             <Link
               to="/surveys"
-              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mx-4"
               role="menuitem"
             >
               My Surveys
             </Link>
             <Link
               to="/surveystaken"
-              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mx-4"
               role="menuitem"
             >
               History
             </Link>
             <button
-              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mx-4"
               onClick={handleLogout}
               role="menuitem"
             >
@@ -196,7 +195,7 @@ function Home() {
                   </div>
                   <div className="flex justify-end items-stretch">
                     <button
-                      className="bg-red-500 rounded font-semibold p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="bg-emerald-500 rounded font-semibold p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       onClick={() => handleTakeSurvey(survey._id)}
                     >
                       Take Survey
@@ -209,9 +208,12 @@ function Home() {
           </div>
         </div>
       ) : (
-        <div className="mt-6">
+        <div className="w-3/4">
+          <h1 className="text-4xl font-semibold mt-4 p-6 break-normal">
+          Create<span className="text-emerald-500">/Vote</span> on Casper-based surveys using coins and get rewarded automatically
+          </h1>
           <button
-            className="bg-red-500 py-3 rounded font-semibold px-5 text-white w-72"
+            className="bg-emerald-500 py-3 rounded font-semibold px-5 text-white w-72"
             onClick={handleWalletLogin}
           >
             Connect Wallet

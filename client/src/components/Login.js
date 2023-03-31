@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import Logo from "../assets/casper-logo.svg";
+import Logo from "../assets/onchain-surveys-logo.svg";
 import { registerUser, loginWithWallet, checkUserActive } from '../api';
 import CasperWalletEvents from './CasperWalletEvents';
 import { useUserActivation } from '../components/UserActivationContext';
@@ -106,11 +106,13 @@ function Login() {
   };
 
   return (
-    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
+    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex flex-col justify-center">
       <Link to="/">
-        <img src={Logo} alt="logo" width="72px" />
+        <img src={Logo} alt="logo" width="512px" />
       </Link>
-      <h2 className="text-2xl font-semibold my-4">Wallet Connected!</h2>
+      <h2 className="text-4xl font-semibold my-4">
+      Wallet <span className="text-emerald-500">Connected!</span>
+      </h2>
       <form onSubmit={handleSubmit} className="w-72">
         <div className="flex flex-col">
           {isUserAlreadySigned ? (<br></br>) : (
@@ -128,7 +130,7 @@ function Login() {
         <br />
         <button
           type="submit"
-          className="bg-red-500  py-3 rounded font-semibold px-5 text-white w-72">
+          className="bg-emerald-500  py-3 rounded font-semibold px-5 text-white w-72">
           {isVerifying ? ("Verifying ...") : (isUserAlreadySigned ? "Verify" : "Verify Email")}
         </button>
       </form>
@@ -138,7 +140,7 @@ function Login() {
       
             Activity problem ? Checkout
             <a href="https://www.casperwallet.io/download">
-              <span className="text-red-500 font-semibold"> CSPR.live</span>
+              <span className="text-emerald-500 font-semibold"> CSPR.live</span>
             </a>
           
       </p>

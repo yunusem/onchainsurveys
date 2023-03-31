@@ -172,7 +172,7 @@ function SurveyForm() {
             <button
               type="button"
               onClick={() => addAnswer(questionIndex)}
-              className="bg-red-500 py-2 px-4 rounded font-semibold text-white mt-3">
+              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mt-3">
               Add Answer
             </button>
           </div>
@@ -180,7 +180,7 @@ function SurveyForm() {
         <button
           type="button"
           onClick={addQuestion}
-          className="bg-red-500 py-2 px-4 rounded font-semibold text-white mt-3"
+          className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mt-3"
         >
           Add Question
         </button>
@@ -210,7 +210,7 @@ function SurveyForm() {
         </div>
         <button
           type="submit"
-          className="bg-red-500 py-3 px-5 rounded font-semibold text-white w-full mt-3"
+          className="bg-emerald-500 py-3 px-5 rounded font-semibold text-white w-full mt-3"
         >
           {id ? 'Update' : 'Create'}
         </button>
