@@ -8,6 +8,8 @@ This project is divided into two parts: a client-side React application and a se
 
 ## Getting Started
 
+**NOTE: YOU MUST HAVE AN ACTIVE ACCOUNT IN CASPER BLOCK CHAIN TO USE THIS APPLICATION!**
+
 To get started, follow these steps:
 
 1. Clone the repository.

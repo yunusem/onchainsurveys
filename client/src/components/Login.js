@@ -7,6 +7,7 @@ import { useUserActivation } from '../components/UserActivationContext';
 import { CLPublicKey, verifyMessageSignature } from 'casper-js-sdk';
 
 function Login() {
+  // Define state variables and hooks
   const [email, setEmail] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [isWalletConnected, setIsWalletConnected] = useState(Boolean(localStorage.getItem('active_public_key')));
@@ -15,7 +16,9 @@ function Login() {
   const [, setUserIsActivated] = useUserActivation();
   const history = useHistory();
 
+  // Define a function to remove all items from localStorage
   function removeItems() {
+    // Remove all necessary items from localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('active_public_key');
