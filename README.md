@@ -85,6 +85,7 @@ This will start the server-side Node.js application at http://localhost:3001
 Simply run:
 
 ```
+npm install --only=dev
 npm test
 ```
 

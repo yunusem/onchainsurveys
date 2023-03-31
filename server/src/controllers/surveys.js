@@ -20,6 +20,7 @@ exports.createSurvey = async (req, res) => {
     await survey.save();
     res.status(201).json(survey);
   } catch (err) {
+    console.error('Error in createSurvey:', err);
     res.status(400).json({ message: err.message });
   }
 };
@@ -37,6 +38,7 @@ exports.getSurvey = async (req, res) => {
     }
     res.json(survey);
   } catch (err) {
+    console.error('Error in getSurvey:', err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -46,6 +48,7 @@ exports.getSurveys = async (req, res) => {
     const surveys = await Survey.find().populate('createdBy');
     res.json(surveys);
   } catch (err) {
+    console.error('Error in getSurveys:', err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -56,7 +59,7 @@ exports.updateSurvey = async (req, res) => {
     if (!survey) {
       return res.status(404).json({ message: 'Survey not found' });
     }
-    if (req.user._id !== survey.createdBy.toString()) {
+    if (req.user._id != survey.createdBy.toString()) {
       return res.status(401).json({ message: 'Not authorized' });
     }
     survey.title = req.body.title;
@@ -64,7 +67,9 @@ exports.updateSurvey = async (req, res) => {
     survey.questions = req.body.questions;
     await survey.save();
     res.json(survey);
+    res.status(200).json(survey);
   } catch (err) {
+    console.error('Error in updateSurvey:', err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -75,12 +80,13 @@ exports.deleteSurvey = async (req, res) => {
     if (!survey) {
       return res.status(404).json({ message: 'Survey not found' });
     }
-    if (req.user._id !== survey.createdBy.toString()) {
+    if (req.user._id != survey.createdBy.toString()) {
       return res.status(401).json({ message: 'Not authorized' });
     }
-    await survey.remove();
-    res.json({ message: 'Survey deleted successfully' });
+    await survey.deleteOne({ _id: req.params.id });
+    res.status(200).json({ message: 'Survey deleted successfully' });
   } catch (err) {
+    console.error('Error in deleteSurvey:', err);
     res.status(500).json({ message: err.message });
   }
 };
