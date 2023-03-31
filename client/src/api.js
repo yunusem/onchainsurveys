@@ -13,6 +13,8 @@ function getHeaders() {
   return headers;
 }
 
+// This function sends a POST request to register a new user
+// It returns an object with success and message properties
 export async function registerUser(user) {
   const headers = getHeaders();
   const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -29,6 +31,10 @@ export async function registerUser(user) {
   return response.json();
 }
 
+// This function sends a POST request to check if a user is active
+// It takes a userId and a callback function as parameters to set the user activation status
+// It also stores the user activation status in local storage
+// It returns an object with success and message properties
 export async function checkUserActive(userId, setUserIsActivated) {
   const headers = getHeaders();
   const response = await fetch(`${API_BASE_URL}/users/${userId}/activate`, {
@@ -52,7 +58,10 @@ export async function checkUserActive(userId, setUserIsActivated) {
   return { success: data.success, message: data.message };
 }
 
-
+// This function sends a GET request to fetch a survey by id
+// It includes the active public key in the request headers if it exists in local storage
+// It throws an error if the response is not ok
+// It returns a promise that resolves to a JSON response
 export async function fetchSurvey(id) {
   const headers = getHeaders();
   if (localStorage.getItem('active_public_key')) {
@@ -71,10 +80,17 @@ export async function fetchSurvey(id) {
   return response.json();
 }
 
+// This function sends a GET request to fetch all surveys
+// It returns a promise that resolves to a JSON response
 export async function fetchSurveys() {
   const response = await fetch(`${API_BASE_URL}/surveys`);
   return response.json();
 }
+
+// This function sends a POST request to create a new survey
+// It includes the user's token and wallet address in the request headers
+// It throws an error if the response is not ok
+// It returns a promise that resolves to a JSON response
 export const createSurvey = async (survey) => {
   const token = localStorage.getItem('token');
   const walletAddress = localStorage.getItem('active_public_key');
@@ -103,6 +119,11 @@ export const createSurvey = async (survey) => {
   return response.json();
 };
 
+// This function sends a POST request to log in with a wallet
+// It takes a publicAddress parameter to identify the user
+// It stores the user's token, userId, and whether they have already signed in local storage
+// It throws an error if the response is not ok
+// It returns an object with a success property
 export async function loginWithWallet(publicAddress) {
   const response = await fetch(`${API_BASE_URL}/auth/login/wallet`, {
     method: 'POST',
@@ -121,6 +142,10 @@ export async function loginWithWallet(publicAddress) {
   }
 }
 
+// This function sends a POST request to submit a response to a survey
+// It takes an id parameter to identify the survey and an answers parameter containing the user's responses
+// It throws an error if the response is not ok
+// It returns a promise that resolves to a JSON response
 export async function submitSurveyResponse(id, answers) {
   const response = await fetch(`${API_BASE_URL}/surveys/${id}/response`, {
     method: 'POST',

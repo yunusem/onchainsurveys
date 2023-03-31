@@ -6,16 +6,20 @@ import CasperWalletContext from './CasperWalletContext';
 import { useUserActivation } from './UserActivationContext';
 
 function Home() {
+  // Define state variables and hooks
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [surveys, setSurveys] = useState([]);
   const [userIsActivated] = useUserActivation();
   const history = useHistory();
   const provider = useContext(CasperWalletContext);
 
+  // Retrieve user signature and ID from localStorage
   const signature = localStorage.getItem('x_casper_provided_signature');
   const userId = localStorage.getItem('userId');
 
+  // Define a function to remove all items from localStorage
   function removeItems() {
+    // Remove all necessary items from localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('active_public_key');
@@ -24,7 +28,9 @@ function Home() {
     localStorage.removeItem('user_is_activated');
   }
 
+  // Define a function to handle wallet login
   const handleWalletLogin = async (e) => {
+    // Attempt to connect to the wallet
     e.preventDefault();
     try {
       const isConnected = await provider.requestConnection();
@@ -41,10 +47,12 @@ function Home() {
     }
   };
 
+  // Define an effect hook to check if the user is authenticated
   useEffect(() => {
     const token = localStorage.getItem("token");
     const walletAddress = localStorage.getItem("active_public_key");
     const signature = localStorage.getItem('x_casper_provided_signature');
+    // Check if the user is authenticated
     if (token && signature && walletAddress && userIsActivated) {
       setIsAuthenticated(true);
     } else {
@@ -52,6 +60,7 @@ function Home() {
     }
   }, [signature, userIsActivated]);
 
+  // Define an effect hook to load surveys if the user is authenticated
   useEffect(() => {
     async function loadSurveys() {
       try {
@@ -61,15 +70,19 @@ function Home() {
         console.error('Failed to fetch surveys:', error);
       }
     }
+    // Load surveys if the user is authenticated
     if (isAuthenticated) {
       loadSurveys();
     }
   }, [isAuthenticated]);
 
+  // Define a function to handle taking a survey
   const handleTakeSurvey = (id) => {
+    // Navigate to the survey page
     history.push(`/survey/${id}`);
   };
 
+  // Define an effect hook to handle wallet disconnection
   useEffect(() => {
     const handleDisconnect = (event) => {
       try {
@@ -82,20 +95,23 @@ function Home() {
       }
     };
 
+    // Add event listeners to handle wallet disconnection
     const CasperWalletEventTypes = window.CasperWalletEventTypes;
     window.addEventListener(CasperWalletEventTypes.Disconnected, handleDisconnect);
     window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleDisconnect);
-
     return () => {
+      // Remove event listeners
       window.removeEventListener(CasperWalletEventTypes.Disconnected, handleDisconnect);
       window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleDisconnect);
     };
   }, []);
 
+  // Define a function to handle logging out
   const handleLogout = async () => {
     try {
       const isConnected = await provider.isConnected();
       if (isConnected) {
+        // Attempt to disconnect from the wallet
         const isDisconnected = await provider.disconnectFromSite();
         if (isDisconnected) {
           removeItems();
@@ -109,6 +125,7 @@ function Home() {
     }
   };
 
+  // Filter out the surveys to fit the available requirement
   const availabeSurveys = surveys.filter(survey => {
     if (!survey.createdBy) {
       return false;
@@ -116,12 +133,14 @@ function Home() {
     return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date();
   });
 
+  // Define a function to calculate remaining time
   const remainingTime = (endDate) => {
     const remainingMs = new Date(endDate) - new Date();
     const remainingDays = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
     const remainingHours = Math.floor((remainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
 
+    // Calculate remaining time and return a string
     let timeString = '';
     if (remainingDays > 0) {
       timeString += `${remainingDays} day${remainingDays > 1 ? 's' : ''}, `;
@@ -134,6 +153,7 @@ function Home() {
     return timeString;
   };
 
+  // Render the Home component
   return (
     <div className="bg-gray-800 text-center h-screen w-full text-white flex items-center flex-col justify-center">
       <Link to="/">
