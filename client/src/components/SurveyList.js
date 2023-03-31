@@ -134,7 +134,7 @@ function SurveyList() {
           mySurveys.map((survey) => (
             <li
               key={survey._id}
-              className={`bg-gray-900 p-6 rounded-xl mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? 'h-auto' : 'h-36'
+              className={`bg-gray-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? 'h-auto' : 'h-36'
                 }`}
               onClick={() => toggleSurvey(survey._id)}
             >
@@ -151,7 +151,7 @@ function SurveyList() {
                 <div className="mt-4">
                   <div className="overflow-y-auto max-h-96">
                     {survey.questions.map((question, index) => (
-                      <div key={question.text} className="bg-gray-800 p-4 rounded-xl mt-4">
+                      <div key={question.text} className="bg-gray-800 p-4 rounded mt-4">
                         <p className="font-semibold">{question.text}</p>
                         <div className="mt-2">
                           {renderAnswerStats(survey, index)}

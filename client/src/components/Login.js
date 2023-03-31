@@ -120,7 +120,7 @@ function Login() {
               placeholder="E-mail address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-2 h-11 rounded-lg mt-1 text-black font-medium outline-none"
+              className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
             />
           )
           }
@@ -128,7 +128,7 @@ function Login() {
         <br />
         <button
           type="submit"
-          className="bg-red-500  py-3 rounded-xl font-semibold px-5 text-white w-72">
+          className="bg-red-500  py-3 rounded font-semibold px-5 text-white w-72">
           {isVerifying ? ("Verifying ...") : (isUserAlreadySigned ? "Verify" : "Verify Email")}
         </button>
       </form>

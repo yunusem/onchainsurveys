@@ -113,8 +113,26 @@ function Home() {
     if (!survey.createdBy) {
       return false;
     }
-    return survey.createdBy._id !== userId;
+    return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date();
   });
+
+  const remainingTime = (endDate) => {
+    const remainingMs = new Date(endDate) - new Date();
+    const remainingDays = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
+    const remainingHours = Math.floor((remainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    let timeString = '';
+    if (remainingDays > 0) {
+      timeString += `${remainingDays} day${remainingDays > 1 ? 's' : ''}, `;
+    }
+    if (remainingHours > 0) {
+      timeString += `${remainingHours} hour${remainingHours > 1 ? 's' : ''}, `;
+    }
+    timeString += `${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''}`;
+
+    return timeString;
+  };
 
   return (
     <div className="bg-gray-800 text-center h-screen w-full text-white flex items-center flex flex-col justify-center">
@@ -123,9 +141,10 @@ function Home() {
         Welcome to Onchain Surveys
       </h1>
       {isAuthenticated ? (
-        <div className="w-screen justify-items-center mt-6">
-          <div className="items-center">
-          <Link
+        <div className="w-screen place-items-center mt-6">
+          <div className="flex justify-center">
+
+            <Link
               to="/surveysall"
               className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
             >
@@ -135,63 +154,64 @@ function Home() {
               to="/surveys/new"
               className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
             >
-              Create Survey
+              Create
             </Link>
             <Link
               to="/surveys"
               className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+              role="menuitem"
             >
               My Surveys
             </Link>
-           
             <Link
               to="/surveystaken"
               className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
+              role="menuitem"
             >
               History
             </Link>
-
             <button
               className="bg-red-500 py-2 px-4 rounded font-semibold text-white mx-4"
               onClick={handleLogout}
+              role="menuitem"
             >
               Logout
             </button>
           </div>
-
-          <div className="flex flex-col w-full items-center justify-items-center ">
+          <div className="flex flex-col w-full items-center justify-items-center">
             <h2 className="p-8">Available Surveys</h2>
             <ul className="w-full flex flex-col items-center overflow-auto h-80">
-              {availabeSurveys && availabeSurveys.map((survey) =>
-              (
+              {availabeSurveys && availabeSurveys.map((survey) => (
                 <li
                   key={survey._id}
-                  className="bg-gray-900 p-6 rounded-xl mb-6 w-3/4"
+                  className="bg-gray-900 p-1 rounded mb-2 w-3/4 flex items-stretch group"
                 >
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid grid-cols-5 gap-4 flex-grow items-center">
                     <div className="col-span-2 justify-items-start">
                       {survey.title}
                     </div>
+                    <div>Questions: {survey.questions.length}</div>
                     <div>Reward: {survey.rewardPerResponse} CSPR</div>
-                    <div className="justify-items-end">
-                      <button
-                        className="bg-red-500 rounded font-semibold px-4 text-white"
-                        onClick={() => handleTakeSurvey(survey._id)}
-                      >
-                        Take Survey
-                      </button>
-                    </div>
+                    <div>{remainingTime(survey.endDate)} left</div>
+                  </div>
+                  <div className="flex justify-end items-stretch">
+                    <button
+                      className="bg-red-500 rounded font-semibold p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      onClick={() => handleTakeSurvey(survey._id)}
+                    >
+                      Take Survey
+                    </button>
                   </div>
                 </li>
-              )
-              )}
+              ))}
             </ul>
+
           </div>
         </div>
       ) : (
         <div className="mt-6">
           <button
-            className="bg-red-500 py-3 rounded-xl font-semibold px-5 text-white w-72"
+            className="bg-red-500 py-3 rounded font-semibold px-5 text-white w-72"
             onClick={handleWalletLogin}
           >
             Connect Wallet
