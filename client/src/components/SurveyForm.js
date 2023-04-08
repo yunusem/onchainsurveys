@@ -141,7 +141,7 @@ function SurveyForm() {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
+            className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium  outline-none"
           />
         </div>
         {questions.map((question, questionIndex) => (
@@ -155,7 +155,7 @@ function SurveyForm() {
                 id={`question-${questionIndex}`}
                 value={question.text}
                 onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
+                className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
               />
             </div>
             {question.answers.map((answer, answerIndex) => (
@@ -167,7 +167,7 @@ function SurveyForm() {
                     value={answer.text}
                     placeholder={`Answer ${answerIndex + 1}`}
                     onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
-                    className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
+                    className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
                   />
                 </div>
               </div>
@@ -198,7 +198,7 @@ function SurveyForm() {
             id="startDate"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
+            className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
           />
         </div>
         <div className="w-1/4 flex flex-col mt-3 ">
@@ -210,7 +210,7 @@ function SurveyForm() {
             id="endDate"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
+            className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
           />
         </div>
         </div>

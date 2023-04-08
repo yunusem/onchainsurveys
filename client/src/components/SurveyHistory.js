@@ -94,7 +94,7 @@ function SurveyHistory() {
       return (
         <div
           key={answer.text}
-          className="bg-green-700 px-4 py-2 mb-2 rounded text-sm flex justify-between items-center"
+          className="bg-gray-700 px-4 py-2 mb-2 rounded text-sm flex justify-between items-center"
         >
           <div>{answer.text}</div>
           <div>{answerPercentage}%</div>
@@ -119,25 +119,27 @@ function SurveyHistory() {
   return (
     <div className="grid gap-0 grid-rows-13 grid-flow-col bg-gray-800 h-screen w-full">
       <NavigationBar />
-      <div className='col-span-12 '>
-        <h2 className="text-white justify-center">
-          Filter:{"  "}
-          <button
-            className={`${!isSurveyFiltered ? "text-emerald-500" : "text-white"
-              }`}
-            onClick={() => setIsSurveyFiltered(false)}
-          >
-            All
-          </button>{", "}
-          <button
-            className={`${isSurveyFiltered ? "text-emerald-500" : "text-white"
-              }`}
-            onClick={() => setIsSurveyFiltered(true)}
-          >
-            My History
-          </button>
-        </h2>
-        <div className="text-white  justify-center  flex overflow-auto h-screen">
+      <div className='col-span-12'>
+        <div>
+          <h2 className="text-white justify-center">
+            Filter:{"  "}
+            <button
+              className={`${!isSurveyFiltered ? "text-emerald-500" : "text-white"
+                }`}
+              onClick={() => setIsSurveyFiltered(false)}
+            >
+              All
+            </button>{", "}
+            <button
+              className={`${isSurveyFiltered ? "text-emerald-500" : "text-white"
+                }`}
+              onClick={() => setIsSurveyFiltered(true)}
+            >
+              My History
+            </button>
+          </h2>
+        </div >
+        <div className=" text-white  justify-center  flex ">
           {surveys.length === 0 && (
             <div className=" text-center">
               <p className="mt-2 font-medium text-sm">
@@ -150,7 +152,7 @@ function SurveyHistory() {
             </div>
           )}
 
-          <ul className="w-full flex flex-col items-center h-screen overflow-auto mt-2 ">
+          <ul className="w-full flex flex-col items-center overflow-auto mt-2 max-h-full">
             {surveys &&
               surveys
                 .filter((survey) => !isSurveyFiltered || participatedSurveys().includes(survey))
