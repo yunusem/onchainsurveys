@@ -3,7 +3,7 @@ import { useHistory, Link } from 'react-router-dom';
 import { fetchSurveys } from '../api';
 import NavigationBar from './NavigationBar';
 
-function SurveyList() {
+function SurveyUser() {
   const [surveys, setSurveys] = useState([]);
   const [expandedSurveyId, setExpandedSurveyId] = useState(null);
   const history = useHistory();
@@ -177,4 +177,4 @@ function SurveyList() {
   );
 }
 
-export default SurveyList;
+export default SurveyUser;
