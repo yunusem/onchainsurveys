@@ -135,7 +135,7 @@ function SurveyUser() {
               </div>
             </div>
           ):(
-          <ul className="w-full flex flex-col items-center h-screen overflow-auto mt-2 ">
+            <ul className="w-full flex flex-col items-center overflow-auto mt-2 max-h-full">
             {mySurveys &&
               mySurveys.map((survey) => (
                 <li
