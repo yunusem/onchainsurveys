@@ -11,7 +11,6 @@ function NavigationBar() {
     const token = localStorage.getItem('token');
     const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
     const provider = useContext(CasperWalletContext);
-    console.log(history.location.pathname)
     const currentPath = history.location.pathname
 
     const isActive = (path) => {

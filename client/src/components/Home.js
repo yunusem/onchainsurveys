@@ -111,7 +111,10 @@ function Home() {
     if (!survey.createdBy) {
       return false;
     }
-    return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date();
+     if (survey.responses.length > 0) {
+      return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date() && survey.responses.some((response) => response.user !== userId);
+     }
+      return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date();
   });
 
   // Define a function to calculate remaining time

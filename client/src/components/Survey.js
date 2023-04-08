@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
 import { fetchSurvey, submitSurveyResponse } from '../api';
 import SurveyQuestion from './SurveyQuestion';
+import Logo from "../assets/onchain-surveys-logo.svg";
 
 function Survey() {
   const [survey, setSurvey] = useState(null);
@@ -83,25 +84,30 @@ function Survey() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-      try {
-        await submitSurveyResponse(id, answers);
-        history.push('/thankyou');
-      } catch (error) {
-        console.error('Failed to submit survey response:', error);
-      }
-    
+    try {
+      await submitSurveyResponse(id, answers);
+      history.push('/thankyou');
+    } catch (error) {
+      console.error('Failed to submit survey response:', error);
+    }
+
   };
 
 
   if (!survey) {
     return (
-      <div className="bg-gray-800 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
+      <div className="bg-gray-800 text-center h-screen w-screen text-white flex items-center flex-col  justify-center ">
         <div>Loading...</div>
       </div>);
   }
 
   return (
     <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex-col justify-center">
+      <div name="logo" className="absolute left-0 top-0 w-64 h-24 flex justify-center items-center p-8">
+        <Link to="/">
+          <img src={Logo} alt="logo" width="512px" />
+        </Link>
+      </div>
       <div className="py-12 px-8 bg-gray-900 shadow-lg rounded w-3/4">
         <h2 className="text-2xl font-semibold mb-6">{survey.title}</h2>
         <p className="mb-6">{survey.description}</p>
