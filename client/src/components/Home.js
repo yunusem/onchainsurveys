@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import Logo from "../assets/onchain-surveys-logo.svg";
+import { useHistory } from 'react-router-dom';
 import { fetchSurveys, loginWithWallet } from '../api';
 import CasperWalletContext from './CasperWalletContext';
 import { useUserActivation } from './UserActivationContext';
+import NavigationBar from './NavigationBar';
 
 function Home() {
   // Define state variables and hooks
@@ -106,25 +106,6 @@ function Home() {
     };
   }, []);
 
-  // Define a function to handle logging out
-  const handleLogout = async () => {
-    try {
-      const isConnected = await provider.isConnected();
-      if (isConnected) {
-        // Attempt to disconnect from the wallet
-        const isDisconnected = await provider.disconnectFromSite();
-        if (isDisconnected) {
-          removeItems();
-          setIsAuthenticated(false);
-        }
-      } else {
-        removeItems();
-      }
-    } catch (error) {
-      console.error("Error disconnecting wallet: " + error.message);
-    }
-  };
-
   // Filter out the surveys to fit the available requirement
   const availabeSurveys = surveys.filter(survey => {
     if (!survey.createdBy) {
@@ -155,82 +136,46 @@ function Home() {
 
   // Render the Home component
   return (
-    <div className="bg-gray-800 text-center h-screen w-full text-white flex items-center flex-col justify-center">
-      <Link to="/">
-        <img src={Logo} alt="logo" width="512px" />
-      </Link>
+    <div className="bg-gray-800 text-center h-screen w-full text-white flex items-center justify-center">
       {isAuthenticated ? (
-        <div className="w-screen place-items-center mt-6">
-          <div className="flex justify-center">
-
-            <Link
-              to="/surveysall"
-              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mx-4"
-            >
-              All Surveys
-            </Link>
-            <Link
-              to="/surveys/new"
-              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mx-4"
-            >
-              Create
-            </Link>
-            <Link
-              to="/surveys"
-              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mx-4"
-              role="menuitem"
-            >
-              My Surveys
-            </Link>
-            <Link
-              to="/surveystaken"
-              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mx-4"
-              role="menuitem"
-            >
-              History
-            </Link>
-            <button
-              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mx-4"
-              onClick={handleLogout}
-              role="menuitem"
-            >
-              Logout
-            </button>
-          </div>
-          <div className="flex flex-col w-full items-center justify-items-center">
-            <h2 className="p-8">Available Surveys</h2>
-            <ul className="w-full flex flex-col items-center overflow-auto h-80">
-              {availabeSurveys && availabeSurveys.map((survey) => (
-                <li
-                  key={survey._id}
-                  className="bg-gray-900 p-1 rounded mb-2 w-3/4 flex items-stretch group"
-                >
-                  <div className="grid grid-cols-5 gap-4 flex-grow items-center">
-                    <div className="col-span-2 justify-items-start">
-                      {survey.title}
+        <div className="w-screen items-center">
+          <div className="grid gap-0 grid-rows-13 grid-flow-col bg-gray-800 h-screen w-full">
+            <NavigationBar />
+            <div className="flex flex-col w-full items-center justify-items-center">
+              <h2 className="p-8">Available Surveys</h2>
+              <ul className="w-full flex flex-col items-center overflow-auto h-80">
+                {availabeSurveys && availabeSurveys.map((survey) => (
+                  <li
+                    key={survey._id}
+                    className="bg-gray-900 p-1 rounded mb-2 w-3/4 flex items-stretch group"
+                  >
+                    <div className="grid grid-cols-5 gap-4 flex-grow items-center">
+                      <div className="col-span-2 justify-items-start">
+                        {survey.title}
+                      </div>
+                      <div>Questions: {survey.questions.length}</div>
+                      <div>Reward: {survey.rewardPerResponse} CSPR</div>
+                      <div>{remainingTime(survey.endDate)} left</div>
                     </div>
-                    <div>Questions: {survey.questions.length}</div>
-                    <div>Reward: {survey.rewardPerResponse} CSPR</div>
-                    <div>{remainingTime(survey.endDate)} left</div>
-                  </div>
-                  <div className="flex justify-end items-stretch">
-                    <button
-                      className="bg-emerald-500 rounded font-semibold p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      onClick={() => handleTakeSurvey(survey._id)}
-                    >
-                      Take Survey
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                    <div className="flex justify-end items-stretch">
+                      <button
+                        className="bg-emerald-500 rounded font-semibold p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        onClick={() => handleTakeSurvey(survey._id)}
+                      >
+                        Take Survey
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
 
+            </div>
           </div>
         </div>
       ) : (
-        <div className="w-3/4">
+        <div className="w-3/4 bg-gray-800 items-center justify-center">
           <h1 className="text-4xl font-semibold mt-4 p-6 break-normal">
-          Create<span className="text-emerald-500">/Vote</span> on Casper-based surveys using coins and get rewarded automatically
+            Create<span className="text-emerald-500">/Vote</span> on Casper-based surveys using coins and get rewarded automatically
           </h1>
           <button
             className="bg-emerald-500 py-3 rounded font-semibold px-5 text-white w-72"

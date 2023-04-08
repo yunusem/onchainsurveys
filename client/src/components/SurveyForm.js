@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { createSurvey } from '../api';
+import NavigationBar from './NavigationBar';
 
 function SurveyForm() {
   const { id } = useParams();
@@ -124,8 +125,11 @@ function SurveyForm() {
   };
 
   return (
-    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex-col justify-center">
-    <div className="py-12 px-8 justify-center bg-gray-900 shadow-lg rounded w-3/4 overflow-auto h-screen">
+    <div className="grid grid-rows-13 grid-flow-col bg-gray-800 h-screen w-screen">
+   
+    <NavigationBar/>
+    <div className='col-span-12 items-center flex justify-center'>
+    <div className="py-12 px-8   text-white  justify-center bg-gray-900 shadow-lg rounded w-3/4 overflow-auto h-screen">
       <h2 className="text-2xl font-semibold my-4">{id ? 'Edit Survey' : 'Create Survey'}</h2>
       <form onSubmit={handleSubmit} className="w-full">
         <div className="flex flex-col ">
@@ -172,7 +176,7 @@ function SurveyForm() {
             <button
               type="button"
               onClick={() => addAnswer(questionIndex)}
-              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mt-3">
+              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mt-3 w-1/4">
               Add Answer
             </button>
           </div>
@@ -180,11 +184,12 @@ function SurveyForm() {
         <button
           type="button"
           onClick={addQuestion}
-          className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mt-3"
+          className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mt-3 w-1/4"
         >
           Add Question
         </button>
-        <div className="w-48 flex flex-col mt-3">
+        <div className="w-full flex mt-3 ">
+        <div className="w-1/4 flex flex-col mt-3">
           <label htmlFor="startDate" className="font-medium">
             Start Date
           </label>
@@ -196,7 +201,7 @@ function SurveyForm() {
             className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
           />
         </div>
-        <div className="w-48 flex flex-col mt-3">
+        <div className="w-1/4 flex flex-col mt-3 ">
           <label htmlFor="endDate" className="font-medium">
             End Date
           </label>
@@ -208,6 +213,7 @@ function SurveyForm() {
             className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
           />
         </div>
+        </div>
         <button
           type="submit"
           className="bg-emerald-500 py-3 px-5 rounded font-semibold text-white w-full mt-3"
@@ -215,8 +221,10 @@ function SurveyForm() {
           {id ? 'Update' : 'Create'}
         </button>
       </form>
+      </div>
     </div>
     </div>
+    
   );
 }
 export default SurveyForm;

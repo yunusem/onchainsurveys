@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { fetchSurveys } from '../api';
-
+import NavigationBar from './NavigationBar';
 function SurveyAll() {
   const [surveys, setSurveys] = useState([]);
   const [expandedSurveyId, setExpandedSurveyId] = useState(null);
@@ -80,7 +80,7 @@ function SurveyAll() {
       (response) => response.answers[questionIndex]
     );
     const totalResponses = questionResponses.length;
-  
+
     return survey.questions[questionIndex].answers.map((answer) => {
       const answerCount = questionResponses.filter(
         (response) => response === answer.text
@@ -88,7 +88,7 @@ function SurveyAll() {
       const answerPercentage = totalResponses
         ? ((answerCount / totalResponses) * 100).toFixed(2)
         : 0;
-  
+
       return (
         <div
           key={answer.text}
@@ -100,7 +100,7 @@ function SurveyAll() {
       );
     });
   };
-  
+
   const daysRemaining = (endDate) => {
     const now = new Date();
     const end = new Date(endDate);
@@ -109,53 +109,58 @@ function SurveyAll() {
   };
 
   return (
-    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex-col justify-center">
-      {surveys.length === 0 && (
-        <div className="text-center">
-          <p className="mt-2 font-medium text-sm">
-            There are no surveys created yet.
-            <Link to="/surveys/new" className="text-emerald-500 font-semibold">
-              {" "}
-              Create One?
-            </Link>
-          </p>
-        </div>
-      )}
-      <ul className="w-full flex flex-col items-center h-3/4 overflow-auto mt-2">
-        {surveys &&
-            surveys.map((survey) => (
-            <li
-              key={survey._id}
-              className={`bg-gray-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? 'h-auto' : 'h-36'
-                }`}
-              onClick={() => toggleSurvey(survey._id)}
-            >
-              <div className="flex justify-between">
-                <h3 className="text-xl font-semibold">{survey.title}</h3>
-                <p>Reward: {survey.rewardPerResponse} CSPR</p>
-              </div>
-              <div className="flex justify-between">
-                <p>Questions: {survey.questions.length}</p>
-                <p>Participants: {survey.responses.length}</p>
-              </div>
-              <p>Days remaining: {daysRemaining(survey.endDate)}</p>
-              {expandedSurveyId === survey._id && (
-                <div className="mt-4">
-                  <div className="overflow-y-auto max-h-96">
-                    {survey.questions.map((question, index) => (
-                      <div key={question.text} className="bg-gray-800 p-4 rounded mt-4">
-                        <p className="font-semibold">{question.text}</p>
-                        <div className="mt-2">
-                          {renderAnswerStats(survey, index)}
-                        </div>
-                      </div>
-                    ))}
+    <div className="grid gap-0 grid-rows-13 grid-flow-col bg-gray-800 h-screen w-full">
+      <NavigationBar />
+      <div className='col-span-12'>
+        <div className="text-white  justify-center  flex overflow-auto h-screen">
+          {surveys.length === 0 && (
+            <div className=" text-center">
+              <p className="mt-2 font-medium text-sm">
+                There are no surveys created yet.
+                <Link to="/surveys/new" className="text-emerald-500 font-semibold">
+                  {" "}
+                  Create One?
+                </Link>
+              </p>
+            </div>
+          )}
+          <ul className="w-full flex flex-col items-center h-screen overflow-auto mt-2 ">
+            {surveys &&
+              surveys.map((survey) => (
+                <li
+                  key={survey._id}
+                  className={`bg-gray-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? 'h-auto' : 'h-36'
+                    }`}
+                  onClick={() => toggleSurvey(survey._id)}
+                >
+                  <div className="flex justify-between">
+                    <h3 className="text-xl font-semibold">{survey.title}</h3>
+                    <p>Reward: {survey.rewardPerResponse} CSPR</p>
                   </div>
-                </div>
-              )}
-            </li>
-          ))}
-      </ul>
+                  <div className="flex justify-between">
+                    <p>Questions: {survey.questions.length}</p>
+                    <p>Participants: {survey.responses.length}</p>
+                  </div>
+                  <p>Days remaining: {daysRemaining(survey.endDate)}</p>
+                  {expandedSurveyId === survey._id && (
+                    <div className="mt-4">
+                      <div className="overflow-y-auto max-h-96">
+                        {survey.questions.map((question, index) => (
+                          <div key={question.text} className="bg-gray-800 p-4 rounded mt-4">
+                            <p className="font-semibold">{question.text}</p>
+                            <div className="mt-2">
+                              {renderAnswerStats(survey, index)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </li>
+              ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
