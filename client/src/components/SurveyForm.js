@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { createSurvey } from '../api';
 import NavigationBar from './NavigationBar';
+import { differenceInDays } from 'date-fns';
 
 function SurveyForm() {
   const { id } = useParams();
   const history = useHistory();
   const [title, setTitle] = useState('');
-  const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' },{ text: '' }] }]);
+  const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
@@ -27,6 +28,7 @@ function SurveyForm() {
       history.push('/');
     }
   }, [isWalletConnected, history]);
+
 
   useEffect(() => {
     const handleDisconnect = (event) => {
@@ -50,7 +52,11 @@ function SurveyForm() {
       window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleDisconnect);
     };
   }, [history]);
-
+  function daysUntilEndDate() {
+    const endDateObj = new Date(endDate);
+    const today = new Date();
+    return differenceInDays(endDateObj, today);
+  }
   useEffect(() => {
     const fetchSurvey = async () => {
       if (!id) return;
@@ -115,8 +121,12 @@ function SurveyForm() {
   };
 
   const addQuestion = () => {
-    setQuestions([...questions, { text: '', answers: ['',''] }]);
+    setQuestions([...questions, { text: '', answers: ['', ''] }]);
+    setTimeout(() => {
+      window.scrollTo({ top: document.body.offsetHeight, behavior: 'smooth' });
+    }, 0);
   };
+
 
   const addAnswer = (questionIndex) => {
     const updatedQuestions = [...questions];
@@ -126,105 +136,104 @@ function SurveyForm() {
 
   return (
     <div className="grid grid-rows-13 grid-flow-col bg-gray-800 h-screen w-screen">
-   
-    <NavigationBar/>
-    <div className='col-span-12 items-center flex justify-center'>
-    <div className="py-12 px-8   text-white  justify-center bg-gray-900 shadow-lg rounded w-3/4 overflow-auto h-screen">
-      <h2 className="text-2xl font-semibold my-4">{id ? 'Edit Survey' : 'Create Survey'}</h2>
-      <form onSubmit={handleSubmit} className="w-full">
-        <div className="flex flex-col ">
-          <label htmlFor="title" className="font-medium">
-            Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium  outline-none"
-          />
-        </div>
-        {questions.map((question, questionIndex) => (
-          <div key={questionIndex} className="mt-3">
-            <div className="flex flex-col">
-              <label htmlFor={`question-${questionIndex}`} className="font-medium">
-                Question {questionIndex + 1}
-              </label>
-              <input
-                type="text"
-                id={`question-${questionIndex}`}
-                value={question.text}
-                onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
-              />
-            </div>
-            {question.answers.map((answer, answerIndex) => (
-              <div key={answerIndex} className="mt-3">
-                <div className="flex flex-col">
+      <NavigationBar />
+      <div className='col-span-12 items-center flex justify-center'>
+        <div className='flex w-full items-center justify-center h-screen flex-col'>
+          <div className=' w-3/4 flex h-32 flex-col text-white'>
+            <div className='w-2/4 '>
+            <h1 className=" text-4xl font-bold  text-white   text-left">
+              {id ? 'Edit Survey' : 'Create Survey'}
+            </h1>
+            <p className='text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-emerald-500'>Casper</span> </a> Blockchain Technology.</p>            </div>
+          </div>
+          <div className=" w-3/4">
+            <div className='w-4/6'>
+            <div className= "text-white justify-center bg-gray-800  rounded w-full overflow-y-auto ">
+              <form onSubmit={handleSubmit} className="w-full">
+                <div className="flex flex-col ">
+                  <label htmlFor="title" className="font-medium">
+                    Title
+                  </label>
                   <input
                     type="text"
-                    id={`question-${questionIndex}-answer-${answerIndex}`}
-                    value={answer.text}
-                    placeholder={`Answer ${answerIndex + 1}`}
-                    onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
-                    className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
+                    id="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none focus:outline-emerald-500"
                   />
                 </div>
-              </div>
-              
-            ))}
-            <button
-              type="button"
-              onClick={() => addAnswer(questionIndex)}
-              className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mt-3 w-1/4">
-              Add Answer
-            </button>
+                {questions.map((question, questionIndex) => (
+                  <div key={questionIndex} className="mt-3">
+                    <div className="flex flex-col">
+                      <label htmlFor={`question-${questionIndex}`} className="font-medium">
+                        Question {questionIndex + 1}
+                      </label>
+                      <input
+                        type="text"
+                        id={`question-${questionIndex}`}
+                        value={question.text}
+                        onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
+                        className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                      />
+                    </div>
+                    {question.answers.map((answer, answerIndex) => (
+                      <div key={answerIndex} className="mt-3">
+                        <div className="flex flex-col">
+                          <input
+                            type="text"
+                            id={`question-${questionIndex}-answer-${answerIndex}`}
+                            value={answer.text}
+                            placeholder={`Answer ${answerIndex + 1}`}
+                            onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
+                            className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                    ))}
+                    <div className="flex items-center mt-3">
+                      <button
+                        type="button"
+                        onClick={() => addAnswer(questionIndex)}
+                        className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mr-2">
+                        Add Answer
+                      </button>
+                      <div className="flex items-center">or</div>
+                      <button className="flex items-center ml-2 text-emerald-500" onClick={addQuestion}>
+                        Add "Question"
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <div className="w-full flex mt-3 ">
+                  <div>
+                    <input
+                      type="date"
+                      id="endDate"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
+                    />
+                    <span className="ml-3">{daysUntilEndDate()} days left</span>
+                  </div>
+
+                </div>
+                <div className="flex items-center justify-end">
+                  <button
+                    type="submit"
+                    className="bg-emerald-500 py-3 px-5 rounded font-semibold text-white"
+                  >
+                    {id ? 'Update' : 'Create'}
+                  </button>
+                </div>
+              </form>
+            </div>
+            </div>
           </div>
-        ))}
-        <button
-          type="button"
-          onClick={addQuestion}
-          className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mt-3 w-1/4"
-        >
-          Add Question
-        </button>
-        <div className="w-full flex mt-3 ">
-        <div className="w-1/4 flex flex-col mt-3">
-          <label htmlFor="startDate" className="font-medium">
-            Start Date
-          </label>
-          <input
-            type="date"
-            id="startDate"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
-          />
         </div>
-        <div className="w-1/4 flex flex-col mt-3 ">
-          <label htmlFor="endDate" className="font-medium">
-            End Date
-          </label>
-          <input
-            type="date"
-            id="endDate"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
-          />
-        </div>
-        </div>
-        <button
-          type="submit"
-          className="bg-emerald-500 py-3 px-5 rounded font-semibold text-white w-full mt-3"
-        >
-          {id ? 'Update' : 'Create'}
-        </button>
-      </form>
       </div>
     </div>
-    </div>
-    
   );
 }
 export default SurveyForm;
+
