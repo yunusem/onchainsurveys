@@ -22,7 +22,7 @@ function SurveyForm() {
       if (!title) {
         return;
       }
-  
+
       const isTitleValid = title.trim() !== '';
       const areAllQuestionsValid = questions.every((question, index) => {
         if (!question.text) {
@@ -31,15 +31,15 @@ function SurveyForm() {
         const isQuestionTextValid = question.text.trim() !== '';
         const areAllAnswersValid = question.answers.length >= 2 && question.answers.every(answer => answer.text && answer.text.trim() !== '');
         const isQuestionValid = isQuestionTextValid && areAllAnswersValid;
-  
+
         if (index === activeQuestionIndex) {
           const hasAtLeastTwoNonEmptyAnswers = question.answers.filter(answer => answer.text && answer.text.trim() !== '').length >= 2;
           setIsCurrentQuestionValidForNewAnswer(hasAtLeastTwoNonEmptyAnswers);
         }
-  
+
         return isQuestionValid;
       });
-      setIsFormValid(isTitleValid && areAllQuestionsValid );
+      setIsFormValid(isTitleValid && areAllQuestionsValid);
     };
 
     updateFormValidity();
@@ -160,6 +160,16 @@ function SurveyForm() {
     setActiveQuestionIndex(questions.length);
   };
 
+  const removeQuestion = (questionIndex) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions.splice(questionIndex, 1);
+    setQuestions(updatedQuestions);
+
+    if (activeQuestionIndex === questionIndex) {
+      setActiveQuestionIndex(questionIndex > 0 ? questionIndex - 1 : 0);
+    }
+  };
+
   const removeAnswer = (questionIndex, answerIndex) => {
     const updatedQuestions = [...questions];
     updatedQuestions[questionIndex].answers.splice(answerIndex, 1);
@@ -182,22 +192,31 @@ function SurveyForm() {
       setActiveQuestionIndex(activeQuestionIndex + 1);
     }
   };
+
+  // minimum balance
+  // minimum stake
+  // account age
+  // validator status
+
+  // reward
+  // number of participants
+
   return (
     <div className="grid grid-flow-col bg-gray-800 h-auto w-screen">
       <NavigationBar />
-      <div className='col-span-12 items-center flex justify-center'>
-        <div className='flex w-full items-center justify-center h-screen flex-col'>
-          <div className=' w-3/4 flex h-32 flex-col text-white'>
+      <div className='col-span-12'>
+        <div className='flex flex-col w-full items-center justify-center'>
+          <div className='mt-7 w-3/4 flex h-32 flex-col text-white'>
             <div className='w-2/4 '>
-              <h1 className=" text-4xl font-bold  text-white   text-left">
+              <h1 className=" text-3xl font-bold  text-white   text-left">
                 {id ? 'Edit Survey' : 'Create Survey'}
               </h1>
-              <p className='text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-emerald-500'>Casper</span> </a> Blockchain Technology.</p>            </div>
+              <p className='text-gray-300 text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-emerald-500'>Casper</span> </a> Blockchain Technology.</p>            </div>
           </div>
-          <div className="w-3/4">
-            <div className= "w-4/6">
+          <div className="w-3/4 ">
+            <div className="w-4/6">
               <div className="flex justify-center mt-3  h-full">
-                <div className="text-white justify-center  w-full p-1 ">
+                <div className="text-white justify-center  w-full p-1">
 
                   <form onSubmit={handleSubmit} className="w-full">
                     <div className="flex justify-between items-center">
@@ -220,7 +239,7 @@ function SurveyForm() {
                     <hr className='border-gray-400 mt-8 h-3 w-full '></hr>
                     {questions.map((question, questionIndex) => (
                       questionIndex === activeQuestionIndex && (
-                        <div key={questionIndex} className="mt-3">
+                        <div key={questionIndex} className="mt-3 relative">
                           <div className="flex flex-col">
                             <div className=' flex justify-between items-center'>
                               <div>
@@ -232,7 +251,7 @@ function SurveyForm() {
                                 {activeQuestionIndex > 0 && (
                                   <button
                                     onClick={goToPreviousQuestion}
-                                    className="w-6 h-6 rounded bg-gray-600 items-center"
+                                    className="w-6 h-6 rounded bg-emerald-500 text-white items-center"
                                   >
                                     {"<"}
                                   </button>
@@ -241,7 +260,7 @@ function SurveyForm() {
                                 {questions.length > 0 && activeQuestionIndex !== questions.length - 1 && (
                                   <button
                                     onClick={goToNextQuestion}
-                                    className="w-6 h-6 rounded bg-gray-600 items-center"
+                                    className="w-6 h-6 rounded bg-emerald-500 text-white items-center"
                                   >
                                     {">"}
                                   </button>
@@ -250,13 +269,24 @@ function SurveyForm() {
                               </div>
 
                             </div>
+                            <div className="flex items-center">
                             <input
                               type="text"
                               id={`question-${questionIndex}`}
                               value={question.text}
                               onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                              className="p-2 h-8 rounded mt-1 text-white bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                              className="p-2 h-8 bg-gray-700 rounded mt-1 text-whit font-medium outline-none focus:outline-emerald-500 flex-grow"
                             />
+                            {questionIndex > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => removeQuestion(questionIndex)}
+                                className="absolute right-0 top-7 ml-2 bg-gray-700 px-2 text-gray-300 rounded text-xl"
+                              >
+                                x
+                              </button>
+                            )}
+                            </div>
                           </div>
 
                           {question.answers.map((answer, answerIndex) => (
@@ -268,13 +298,14 @@ function SurveyForm() {
                                   value={answer.text}
                                   placeholder={`Answer ${answerIndex + 1}`}
                                   onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
-                                  className="p-2 h-8 rounded mt-1 text-white bg-gray-600 font-medium outline-none focus:outline-emerald-500 flex-grow"
+                                  className="p-2 h-8 bg-gray-600 rounded mt-1 text-whit font-medium outline-none focus:outline-emerald-500 flex-grow"
+
                                 />
                                 {answerIndex >= 2 && (
                                   <button
                                     type="button"
                                     onClick={() => removeAnswer(questionIndex, answerIndex)}
-                                    className="ml-2 text-white rounded p-1"
+                                    className="absolute right-0 top-1 ml-2 bg-gray-600 px-2 text-gray-300 rounded text-xl"
                                   >
                                     x
                                   </button>
@@ -314,7 +345,7 @@ function SurveyForm() {
                           id="endDate"
                           value={endDate}
                           onChange={(e) => setEndDate(e.target.value)}
-                          className="p-2 h-8 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
+                          className="p-2 h-8 rounded mt-1 text-gray-300 bg-gray-700 font-medium outline-none"
                         />
                       </div>
 
