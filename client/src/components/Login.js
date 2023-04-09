@@ -97,7 +97,7 @@ function Login() {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -109,7 +109,7 @@ function Login() {
   };
 
   return (
-    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex flex-col justify-center">
+    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex-col justify-center">
       <Link to="/">
         <img src={Logo} alt="logo" width="512px" />
       </Link>

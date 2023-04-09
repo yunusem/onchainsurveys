@@ -18,7 +18,7 @@ function App() {
 
   if (!provider) {
     return (
-      <div className="App bg-gray-800 text-center h-screen w-screen text-white flex items-center flex flex-col  justify-center ">
+      <div className="App bg-gray-800 text-center h-screen w-screen text-white flex items-center flex-col  justify-center ">
         <img src={Logo} alt="logo" width="512px" />
         <h1 className="text-2xl font-semibold mt-4">
             Do you have Casper Wallet?

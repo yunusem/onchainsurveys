@@ -2,17 +2,54 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { createSurvey } from '../api';
 import NavigationBar from './NavigationBar';
-import { differenceInDays } from 'date-fns';
 
 function SurveyForm() {
   const { id } = useParams();
   const history = useHistory();
   const [title, setTitle] = useState('');
   const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
-  const [startDate, setStartDate] = useState('');
+  const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
   const [endDate, setEndDate] = useState('');
   const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
   const token = localStorage.getItem('token');
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [isCurrentQuestionValidForNewAnswer, setIsCurrentQuestionValidForNewAnswer] = useState(false);
+  const [isEndDateFilled, setIsEndDateFilled] = useState(false);
+
+  useEffect(() => {
+    const updateFormValidity = () => {
+      if (!title) {
+        return;
+      }
+  
+      const isTitleValid = title.trim() !== '';
+      const areAllQuestionsValid = questions.every((question, index) => {
+        if (!question.text) {
+          return null;
+        }
+        const isQuestionTextValid = question.text.trim() !== '';
+        const areAllAnswersValid = question.answers.length >= 2 && question.answers.every(answer => answer.text && answer.text.trim() !== '');
+        const isQuestionValid = isQuestionTextValid && areAllAnswersValid;
+  
+        if (index === activeQuestionIndex) {
+          const hasAtLeastTwoNonEmptyAnswers = question.answers.filter(answer => answer.text && answer.text.trim() !== '').length >= 2;
+          setIsCurrentQuestionValidForNewAnswer(hasAtLeastTwoNonEmptyAnswers);
+        }
+  
+        return isQuestionValid;
+      });
+      setIsFormValid(isTitleValid && areAllQuestionsValid );
+    };
+
+    updateFormValidity();
+  }, [title, questions, activeQuestionIndex]);
+
+  useEffect(() => {
+    setIsEndDateFilled(Boolean(endDate));
+  }, [isEndDateFilled, endDate]);
+
+
 
   function removeItems() {
     localStorage.removeItem('token');
@@ -52,11 +89,7 @@ function SurveyForm() {
       window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleDisconnect);
     };
   }, [history]);
-  function daysUntilEndDate() {
-    const endDateObj = new Date(endDate);
-    const today = new Date();
-    return differenceInDays(endDateObj, today);
-  }
+
   useEffect(() => {
     const fetchSurvey = async () => {
       if (!id) return;
@@ -70,6 +103,7 @@ function SurveyForm() {
 
     fetchSurvey();
   }, [id]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -103,14 +137,14 @@ function SurveyForm() {
         history.push('/surveys');
       } else {
         const error = await response.json();
-        console.log(error);
+        console.error(error);
       }
     }
   };
 
-  const handleQuestionChange = (index, newText) => {
+  const handleQuestionChange = (questionIndex, newText) => {
     const updatedQuestions = [...questions];
-    updatedQuestions[index].text = newText;
+    updatedQuestions[questionIndex].text = newText;
     setQuestions(updatedQuestions);
   };
 
@@ -120,114 +154,183 @@ function SurveyForm() {
     setQuestions(updatedQuestions);
   };
 
+
   const addQuestion = () => {
     setQuestions([...questions, { text: '', answers: ['', ''] }]);
-    setTimeout(() => {
-      window.scrollTo({ top: document.body.offsetHeight, behavior: 'smooth' });
-    }, 0);
+    setActiveQuestionIndex(questions.length);
   };
 
-
-  const addAnswer = (questionIndex) => {
+  const removeAnswer = (questionIndex, answerIndex) => {
     const updatedQuestions = [...questions];
-    updatedQuestions[questionIndex].answers.push({ text: '' });
+    updatedQuestions[questionIndex].answers.splice(answerIndex, 1);
     setQuestions(updatedQuestions);
   };
 
+  const addAnswer = () => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[activeQuestionIndex].answers.push({ text: '' });
+    setQuestions(updatedQuestions);
+  };
+
+  const goToPreviousQuestion = () => {
+    if (activeQuestionIndex > 0) {
+      setActiveQuestionIndex(activeQuestionIndex - 1);
+    }
+  };
+  const goToNextQuestion = () => {
+    if (activeQuestionIndex < questions.length - 1) {
+      setActiveQuestionIndex(activeQuestionIndex + 1);
+    }
+  };
   return (
-    <div className="grid grid-rows-13 grid-flow-col bg-gray-800 h-screen w-screen">
+    <div className="grid grid-flow-col bg-gray-800 h-auto w-screen">
       <NavigationBar />
       <div className='col-span-12 items-center flex justify-center'>
         <div className='flex w-full items-center justify-center h-screen flex-col'>
           <div className=' w-3/4 flex h-32 flex-col text-white'>
             <div className='w-2/4 '>
-            <h1 className=" text-4xl font-bold  text-white   text-left">
-              {id ? 'Edit Survey' : 'Create Survey'}
-            </h1>
-            <p className='text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-emerald-500'>Casper</span> </a> Blockchain Technology.</p>            </div>
+              <h1 className=" text-4xl font-bold  text-white   text-left">
+                {id ? 'Edit Survey' : 'Create Survey'}
+              </h1>
+              <p className='text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-emerald-500'>Casper</span> </a> Blockchain Technology.</p>            </div>
           </div>
-          <div className=" w-3/4">
-            <div className='w-4/6'>
-            <div className= "text-white justify-center bg-gray-800  rounded w-full overflow-y-auto ">
-              <form onSubmit={handleSubmit} className="w-full">
-                <div className="flex flex-col ">
-                  <label htmlFor="title" className="font-medium">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none focus:outline-emerald-500"
-                  />
-                </div>
-                {questions.map((question, questionIndex) => (
-                  <div key={questionIndex} className="mt-3">
-                    <div className="flex flex-col">
-                      <label htmlFor={`question-${questionIndex}`} className="font-medium">
-                        Question {questionIndex + 1}
-                      </label>
-                      <input
-                        type="text"
-                        id={`question-${questionIndex}`}
-                        value={question.text}
-                        onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                        className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none focus:outline-emerald-500"
-                      />
-                    </div>
-                    {question.answers.map((answer, answerIndex) => (
-                      <div key={answerIndex} className="mt-3">
-                        <div className="flex flex-col">
-                          <input
-                            type="text"
-                            id={`question-${questionIndex}-answer-${answerIndex}`}
-                            value={answer.text}
-                            placeholder={`Answer ${answerIndex + 1}`}
-                            onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
-                            className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none focus:outline-emerald-500"
-                          />
-                        </div>
+          <div className="w-3/4">
+            <div className= "w-4/6">
+              <div className="flex justify-center mt-3  h-full">
+                <div className="text-white justify-center  w-full p-1 ">
+
+                  <form onSubmit={handleSubmit} className="w-full">
+                    <div className="flex justify-between items-center">
+                      <div >
+                        <label htmlFor="title" className="font-medium bg-gray ">
+                          Title
+                        </label>
                       </div>
 
-                    ))}
-                    <div className="flex items-center mt-3">
+                    </div>
+                    <div className='flex'>
+                      <input
+                        type="text"
+                        id="title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="p-2 h-8 rounded mt-1 w-full text-white bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                      />
+                    </div>
+                    <hr className='border-gray-400 mt-8 h-3 w-full '></hr>
+                    {questions.map((question, questionIndex) => (
+                      questionIndex === activeQuestionIndex && (
+                        <div key={questionIndex} className="mt-3">
+                          <div className="flex flex-col">
+                            <div className=' flex justify-between items-center'>
+                              <div>
+                                <label htmlFor={`question-${questionIndex}`} className="font-medium">
+                                  Question {questionIndex + 1}
+                                </label>
+                              </div>
+                              <div className="flex space-x-2">
+                                {activeQuestionIndex > 0 && (
+                                  <button
+                                    onClick={goToPreviousQuestion}
+                                    className="w-6 h-6 rounded bg-gray-600 items-center"
+                                  >
+                                    {"<"}
+                                  </button>
+                                )}
+
+                                {questions.length > 0 && activeQuestionIndex !== questions.length - 1 && (
+                                  <button
+                                    onClick={goToNextQuestion}
+                                    className="w-6 h-6 rounded bg-gray-600 items-center"
+                                  >
+                                    {">"}
+                                  </button>
+                                )}
+
+                              </div>
+
+                            </div>
+                            <input
+                              type="text"
+                              id={`question-${questionIndex}`}
+                              value={question.text}
+                              onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
+                              className="p-2 h-8 rounded mt-1 text-white bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                            />
+                          </div>
+
+                          {question.answers.map((answer, answerIndex) => (
+                            <div key={answerIndex} className="mt-3 relative">
+                              <div className="flex items-center">
+                                <input
+                                  type="text"
+                                  id={`question-${questionIndex}-answer-${answerIndex}`}
+                                  value={answer.text}
+                                  placeholder={`Answer ${answerIndex + 1}`}
+                                  onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
+                                  className="p-2 h-8 rounded mt-1 text-white bg-gray-600 font-medium outline-none focus:outline-emerald-500 flex-grow"
+                                />
+                                {answerIndex >= 2 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => removeAnswer(questionIndex, answerIndex)}
+                                    className="ml-2 text-white rounded p-1"
+                                  >
+                                    x
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+
+                          <div className="flex  mt-3 h-12">
+                            <button
+                              type="button"
+                              onClick={() => addAnswer(questionIndex)}
+                              className={`bg-emerald-500 rounded font-semibold text-white mr-2 h-8 w-40 ${!isCurrentQuestionValidForNewAnswer && 'opacity-50 cursor-not-allowed'}`}
+                              disabled={!isCurrentQuestionValidForNewAnswer}
+                            >
+                              Add Answer
+                            </button>
+
+                            <div className='grid justify-items-end content-end w-full h-8'>
+                              <div className='grid h-8 w-36 justify-items-end'>
+                                <button
+                                  className={`text-emerald-500 text-end ${!isFormValid && 'opacity-50 cursor-not-allowed'}`}
+                                  onClick={addQuestion}
+                                  disabled={!isFormValid}
+                                >
+                                  Add  Question ?
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )))}
+                    <div className="w-full flex ">
+                      <div className='flex items-center justify-end w-full mb-4'>
+                        <input
+                          type="date"
+                          id="endDate"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className="p-2 h-8 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
+                        />
+                      </div>
+
+                    </div>
+                    <div className="flex items-center justify-end">
                       <button
-                        type="button"
-                        onClick={() => addAnswer(questionIndex)}
-                        className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white mr-2">
-                        Add Answer
-                      </button>
-                      <div className="flex items-center">or</div>
-                      <button className="flex items-center ml-2 text-emerald-500" onClick={addQuestion}>
-                        Add "Question"
+                        type="submit"
+                        className={`bg-emerald-500 h-8 px-3 rounded font-semibold text-white ${(!isFormValid || !isEndDateFilled) && 'opacity-50 cursor-not-allowed'}`}
+                        disabled={!isFormValid || !isEndDateFilled}
+                      >
+                        {id ? 'Update' : 'Create'}
                       </button>
                     </div>
-                  </div>
-                ))}
-                <div className="w-full flex mt-3 ">
-                  <div>
-                    <input
-                      type="date"
-                      id="endDate"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="p-2 h-11 rounded mt-1 text-white bg-gray-700 font-medium outline-none"
-                    />
-                    <span className="ml-3">{daysUntilEndDate()} days left</span>
-                  </div>
-
+                  </form>
                 </div>
-                <div className="flex items-center justify-end">
-                  <button
-                    type="submit"
-                    className="bg-emerald-500 py-3 px-5 rounded font-semibold text-white"
-                  >
-                    {id ? 'Update' : 'Create'}
-                  </button>
-                </div>
-              </form>
-            </div>
+              </div>
             </div>
           </div>
         </div>
@@ -235,5 +338,5 @@ function SurveyForm() {
     </div>
   );
 }
-export default SurveyForm;
 
+export default SurveyForm;
