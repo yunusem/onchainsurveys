@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { createSurvey } from '../api';
 import NavigationBar from './NavigationBar';
+import CoinLogo from "../assets/caspercoin-logo.svg";
 
 function SurveyForm() {
   const { id } = useParams();
@@ -15,7 +16,16 @@ function SurveyForm() {
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isCurrentQuestionValidForNewAnswer, setIsCurrentQuestionValidForNewAnswer] = useState(false);
-  const [isEndDateFilled, setIsEndDateFilled] = useState(false);
+  const [areAllInputsFilled, setAreAllInputsFilled] = useState(false);
+  const [reward, setReward] = useState('');
+  const [numOfParticipants, setParticipants] = useState('');
+  const [pminbalance, setPminBalance] = useState(10);
+  const [pminstake, setPminStake] = useState(1);
+  const [paccage, setPaccAge] = useState(1);
+  const [pvalidator, setPValidator] = useState(1);
+
+
+
 
   useEffect(() => {
     const updateFormValidity = () => {
@@ -46,8 +56,8 @@ function SurveyForm() {
   }, [title, questions, activeQuestionIndex]);
 
   useEffect(() => {
-    setIsEndDateFilled(Boolean(endDate));
-  }, [isEndDateFilled, endDate]);
+    setAreAllInputsFilled(Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage) && Boolean(pvalidator));
+  }, [areAllInputsFilled, endDate, pminbalance, pminstake, paccage,pvalidator]);
 
 
 
@@ -236,12 +246,12 @@ function SurveyForm() {
                         className="p-2 h-8 rounded mt-1 w-full text-white bg-gray-700 font-medium outline-none focus:outline-emerald-500"
                       />
                     </div>
-                    <hr className='border-gray-400 mt-8 h-3 w-full '></hr>
+                    <hr className='border-gray-400 mt-6 h-3 w-full '></hr>
                     {questions.map((question, questionIndex) => (
                       questionIndex === activeQuestionIndex && (
-                        <div key={questionIndex} className="mt-3 relative">
-                          <div className="flex flex-col">
-                            <div className=' flex justify-between items-center'>
+                        <div key={questionIndex} className=" relative ">
+                          <div className="flex flex-col ">
+                            <div className=' flex justify-between items-center '>
                               <div>
                                 <label htmlFor={`question-${questionIndex}`} className="font-medium">
                                   Question {questionIndex + 1}
@@ -256,7 +266,6 @@ function SurveyForm() {
                                     {"<"}
                                   </button>
                                 )}
-
                                 {questions.length > 0 && activeQuestionIndex !== questions.length - 1 && (
                                   <button
                                     onClick={goToNextQuestion}
@@ -265,30 +274,27 @@ function SurveyForm() {
                                     {">"}
                                   </button>
                                 )}
-
                               </div>
-
                             </div>
                             <div className="flex items-center">
-                            <input
-                              type="text"
-                              id={`question-${questionIndex}`}
-                              value={question.text}
-                              onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                              className="p-2 h-8 bg-gray-700 rounded mt-1 text-whit font-medium outline-none focus:outline-emerald-500 flex-grow"
-                            />
-                            {questionIndex > 0 && (
-                              <button
-                                type="button"
-                                onClick={() => removeQuestion(questionIndex)}
-                                className="absolute right-0 top-7 ml-2 bg-gray-700 px-2 text-gray-300 rounded text-xl"
-                              >
-                                x
-                              </button>
-                            )}
+                              <input
+                                type="text"
+                                id={`question-${questionIndex}`}
+                                value={question.text}
+                                onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
+                                className="p-2 h-8 bg-gray-700 rounded mt-1 text-whit font-medium outline-none focus:outline-emerald-500 flex-grow"
+                              />
+                              {questionIndex > 0 && (
+                                <button
+                                  type="button"
+                                  onClick={() => removeQuestion(questionIndex)}
+                                  className="absolute right-0 top-7 ml-2 bg-gray-700 px-2 text-gray-300 rounded text-xl"
+                                >
+                                  x
+                                </button>
+                              )}
                             </div>
                           </div>
-
                           {question.answers.map((answer, answerIndex) => (
                             <div key={answerIndex} className="mt-3 relative">
                               <div className="flex items-center">
@@ -299,7 +305,6 @@ function SurveyForm() {
                                   placeholder={`Answer ${answerIndex + 1}`}
                                   onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
                                   className="p-2 h-8 bg-gray-600 rounded mt-1 text-whit font-medium outline-none focus:outline-emerald-500 flex-grow"
-
                                 />
                                 {answerIndex >= 2 && (
                                   <button
@@ -313,7 +318,6 @@ function SurveyForm() {
                               </div>
                             </div>
                           ))}
-
                           <div className="flex  mt-3 h-12">
                             <button
                               type="button"
@@ -336,29 +340,111 @@ function SurveyForm() {
                               </div>
                             </div>
                           </div>
+                          <hr className='border-gray-400  h-3 w-full '></hr>
                         </div>
                       )))}
-                    <div className="w-full flex ">
-                      <div className='flex items-center justify-end w-full mb-4'>
-                        <input
-                          type="date"
-                          id="endDate"
-                          value={endDate}
-                          onChange={(e) => setEndDate(e.target.value)}
-                          className="p-2 h-8 rounded mt-1 text-gray-300 bg-gray-700 font-medium outline-none"
-                        />
+                    <div className="grid space-y-3">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center">
+                          <input
+                            type="number"
+                            id="reward"
+                            value={reward}
+                            onChange={(e) => setReward(e.target.value)}
+                            className="p-2 h-8 rounded w-24 text-gray-300 bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                            placeholder="Reward"
+                          />
+                          <img
+                            src={CoinLogo}
+                            alt="Casper Coin Logo"
+                            className="ml-2 h-5 w-5"
+                          />
+                          <span className="ml-2 text-gray-400">CSPR</span>
+                          <input
+                            type="number"
+                            id="participants"
+                            value={numOfParticipants}
+                            onChange={(e) => setParticipants(e.target.value)}
+                            className="p-2 h-8 ml-8 rounded w-20 text-gray-300 bg-gray-700 font-medium outline-none focus:outline-emerald-500 "
+                            placeholder="# of "
+                          />
+                          <span className="ml-2 text-gray-400">People</span>
+                        </div>
+                        <div className="flex items-center justify-end">
+                          <input
+                            type="date"
+                            id="endDate"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="p-2 h-8 rounded text-gray-300 bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                          />
+                        </div>
                       </div>
+                      <div className="flex justify-between items-end">
+                        <div className="flex items-center space-x-5 ">
+                          <div className='flex flex-col space-y-1'>
+                            <span className="ml-2 text-sm text-gray-400">Min. Balance</span>
+                            <input
+                              type="number"
+                              id="minbalance"
+                              value={pminbalance}
+                              onChange={(e) => setPminBalance(e.target.value)}
+                              className="p-2 h-8 rounded w-24 text-gray-300 bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                              placeholder="Balance"
 
+                            />
+
+                          </div>
+                          <div className='flex flex-col space-y-1'>
+                            <span className="ml-2 text-sm text-gray-400">Min. Stake</span>
+                            <input
+                              type="number"
+                              id="minstake"
+                              value={pminstake}
+                              onChange={(e) => setPminStake(e.target.value)}
+                              className="p-2 h-8 rounded w-20 text-gray-300 bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                              placeholder="Stake"
+                            />
+
+                          </div>
+                          <div className='flex flex-col space-y-1'>
+                            <span className="ml-2 text-sm text-gray-400">Account Age</span>
+                            <input
+                              type="number"
+                              id="age"
+                              value={paccage}
+                              onChange={(e) => setPaccAge(e.target.value)}
+                              className="p-2 h-8 rounded w-24 text-gray-300 bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                              placeholder="Age" // in weeks
+                            />
+
+                          </div>
+                          <div className='flex flex-col space-y-1'>
+                            <span className="ml-2text-sm text-gray-400">Validator Count</span>
+                            <input
+                              type="number"
+                              id="validator"
+                              value={pvalidator}
+                              onChange={(e) => setPValidator(e.target.value)}
+                              className="p-2 h-8 rounded w-28 text-gray-300 bg-gray-700 font-medium outline-none focus:outline-emerald-500"
+                              placeholder="Validator" //??
+                            />
+                          </div>
+                        </div>
+                        <div className='items-center'>
+                          <button
+                            type="submit"
+                            className={`bg-emerald-500 h-8 px-3 place-items-center rounded flex items-center font-semibold text-white ${(!isFormValid || !areAllInputsFilled) &&
+                              "opacity-50 cursor-not-allowed"
+                              }`}
+                            disabled={!isFormValid || !areAllInputsFilled}
+                          >
+                            {id ? "Update" : "Create"}
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-end">
-                      <button
-                        type="submit"
-                        className={`bg-emerald-500 h-8 px-3 rounded font-semibold text-white ${(!isFormValid || !isEndDateFilled) && 'opacity-50 cursor-not-allowed'}`}
-                        disabled={!isFormValid || !isEndDateFilled}
-                      >
-                        {id ? 'Update' : 'Create'}
-                      </button>
-                    </div>
+
                   </form>
                 </div>
               </div>
