@@ -96,67 +96,79 @@ function Survey() {
 
   if (!survey) {
     return (
-      <div className="bg-gray-800 text-center h-screen w-screen text-white flex items-center flex-col  justify-center ">
+      <div className="bg-slate-800 text-center h-screen w-screen text-white flex items-center flex-col  justify-center ">
         <div>Loading...</div>
       </div>);
   }
 
   return (
-    <div className="bg-gray-800 h-screen w-screen text-white flex items-center flex-col justify-center">
-      <div name="logo" className="absolute left-0 top-0 w-64 h-24 flex justify-center items-center p-8">
+    <div className="grid grid-flow-col bg-slate-800 h-auto w-screen">
+      <div className=' w-44 h-screen left-0'>
+
+      </div>
+      <div name="logo" className="absolute left-0 top-0 w-44 h-36 flex justify-center items-center p-8">
         <Link to="/">
           <img src={Logo} alt="logo" width="512px" />
         </Link>
       </div>
-      <div className="py-12 px-8 bg-gray-900 shadow-lg rounded w-3/4">
-        <h2 className="text-2xl font-semibold mb-6">{survey.title}</h2>
-        <p className="mb-6">{survey.description}</p>
-        <form onSubmit={handleSubmit} className="w-full">
-          {survey.questions.map((question, index) => (
-            <div
-              key={question._id}
-              className={`bg-gray-800 p-6 rounded mb-6 transition-opacity duration-300 ${index === currentPage ? 'opacity-100' : 'opacity-0 hidden'
-                }`}
-            >
-              <SurveyQuestion
-                key={question._id}
-                question={{ ...question, selectedAnswer: answers[index] }}
-                onChange={(answer) => handleChange(index, answer)}
-              />
+
+      <div className='col-span-12 '>
+        <div className='flex flex-col w-full items-center justify-center'>
+          <div className="flex w-3/4 h-screen items-center text-white">
+            <div className="w-4/6">
+              <h2 className="text-2xl font-semibold mb-6 text-red-500">{survey.title}</h2>
+
+              <form onSubmit={handleSubmit} className="w-full">
+                {survey.questions.map((question, index) => (
+                  <div
+                    key={question._id}
+                    className={`bg-slate-800 rounded mb-6 transition-opacity duration-300 ${index === currentPage ? 'opacity-100' : 'opacity-0 hidden'
+                      }`}
+                  >
+                    <SurveyQuestion
+                      key={question._id}
+                      question={{ ...question, selectedAnswer: answers[index] }}
+                      onChange={(answer) => handleChange(index, answer)}
+                    />
+                  </div>
+                ))}
+                <div className="flex justify-between">
+                  {(currentPage < survey.questions.length - 1) && (
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                      className="bg-slate-900  px-4 h-8 rounded font-semibold text-white"
+                    >
+                      Next
+                    </button>
+                  )}
+                  {allQuestionsAnswered && (
+
+                    <button
+                      type="submit"
+                      onClick={handleSubmit}
+                      className="bg-red-500 px-4 h-8 rounded font-semibold text-white"
+                    >
+                      Submit
+                    </button>
+
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 0}
+                    className={`bg-slate-900  px-4 h-8 rounded font-semibold text-white ${currentPage !== 0 ? 'opacity-100' : 'opacity-0 hidden'}`}
+                  >
+                    Previous
+                  </button>
+
+                </div>
+              </form>
             </div>
-          ))}
-          <div className="flex justify-between">
-            <button
-              type="button"
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 0}
-              className={`bg-emerald-500 py-2 px-4 rounded font-semibold text-white ${currentPage !== 0 ? 'opacity-100' : 'opacity-0 hidden'}`}
-            >
-              Previous
-            </button>
-            {currentPage < survey.questions.length - 1 ? (
-              <button
-                type="button"
-                onClick={() => setCurrentPage(currentPage + 1)}
-                className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white"
-              >
-                Next
-              </button>
-            ) : null}
           </div>
-        </form>
-      </div>
-      {allQuestionsAnswered && (
-        <div className="mt-4">
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            className="bg-emerald-500 py-2 px-4 rounded font-semibold text-white"
-          >
-            Submit
-          </button>
+
         </div>
-      )}
+      </div>
     </div>
   );
 

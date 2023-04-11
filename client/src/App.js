@@ -18,12 +18,12 @@ function App() {
 
   if (!provider) {
     return (
-      <div className="App bg-gray-800 text-center h-screen w-screen text-white flex items-center flex-col  justify-center ">
+      <div className="App bg-slate-800 text-center h-screen w-screen text-white flex items-center flex-col  justify-center ">
         <img src={Logo} alt="logo" width="512px" />
         <h1 className="text-2xl font-semibold mt-4">
             Do you have Casper Wallet?
             <a href="https://www.casperwallet.io/download">
-              <span className="text-emerald-500 font-semibold"> Download</span>
+              <span className="text-red-500 font-semibold"> Download</span>
             </a>
           </h1>
       </div>

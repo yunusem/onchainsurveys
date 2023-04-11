@@ -94,7 +94,7 @@ function SurveyHistory() {
       return (
         <div
           key={answer.text}
-          className="bg-gray-700 px-4 py-2 mb-2 rounded text-sm flex justify-between items-center"
+          className="bg-slate-700 px-4 py-2 mb-2 rounded text-sm flex justify-between items-center"
         >
           <div>{answer.text}</div>
           <div>{answerPercentage}%</div>
@@ -117,21 +117,21 @@ function SurveyHistory() {
   };
 
   return (
-    <div className="grid gap-0 grid-rows-13 grid-flow-col bg-gray-800 h-screen w-full">
+    <div className="grid gap-0 grid-rows-13 grid-flow-col bg-slate-800 h-screen w-full">
       <NavigationBar />
       <div className='col-span-12'>
         <div>
           <h2 className="text-white justify-center">
             Filter:{"  "}
             <button
-              className={`${!isSurveyFiltered ? "text-emerald-500" : "text-white"
+              className={`${!isSurveyFiltered ? "text-red-500" : "text-white"
                 }`}
               onClick={() => setIsSurveyFiltered(false)}
             >
               All
             </button>{", "}
             <button
-              className={`${isSurveyFiltered ? "text-emerald-500" : "text-white"
+              className={`${isSurveyFiltered ? "text-red-500" : "text-white"
                 }`}
               onClick={() => setIsSurveyFiltered(true)}
             >
@@ -144,7 +144,7 @@ function SurveyHistory() {
             <div className=" text-center">
               <p className="mt-2 font-medium text-sm">
                 There are no surveys created yet.
-                <Link to="/surveys/new" className="text-emerald-500 font-semibold">
+                <Link to="/surveys/new" className="text-red-500 font-semibold">
                   {" "}
                   Create One?
                 </Link>
@@ -159,7 +159,7 @@ function SurveyHistory() {
                 .map((survey) => (
                   <li
                     key={survey._id}
-                    className={`bg-gray-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? "h-auto" : "h-36"
+                    className={`bg-slate-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? "h-auto" : "h-36"
                       }`}
                     onClick={() => toggleSurvey(survey._id)}
                   >
@@ -176,7 +176,7 @@ function SurveyHistory() {
                       <div className="mt-4">
                         <div className="overflow-y-auto max-h-96">
                           {survey.questions.map((question, index) => (
-                            <div key={question.text} className="bg-gray-800 p-4 rounded mt-4">
+                            <div key={question.text} className="bg-slate-800 p-4 rounded mt-4">
                               <p className="font-semibold">{question.text}</p>
                               <div className="mt-2">
                                 {renderAnswerStats(survey, index)}

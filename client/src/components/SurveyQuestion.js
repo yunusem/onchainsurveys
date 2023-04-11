@@ -1,25 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function SurveyQuestion({ question, onChange }) {
-  const handleInputChange = (e) => {
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
+
+  const handleInputChange = (e, index) => {
+    setSelectedAnswerIndex(index);
     onChange(e.target.value);
   };
 
   return (
     <div className="flex flex-col space-y-4">
-      <h3>{question.text}</h3>
+      <h1 className='text-xl font-bold '>{question.text}</h1>
       {question.answers.map((answer, index) => (
-        <div className="flex items-center mb-4" key={`answer-${index}`}>
+        <div className='flex  items-center '>
+          <label
+          htmlFor={`answer-${question._id}-${index}`}
+          key={`answer-${index}`}
+          className={`flex rounded items-center w-full h-8 cursor-pointer ${selectedAnswerIndex === index ? 'bg-red-400' : 'bg-slate-700'}`}
+        >
           <input
             type="radio"
             id={`answer-${question._id}-${index}`}
             name={`question-${question._id}`}
             value={answer.text}
-            className=" w-4 h-4 text-emerald-500 bg-gray-100 border-gray-300 focus:ring-emerald-500 focus:ring-2"
-            onChange={handleInputChange}
+            className="hidden"
+            onChange={(e) => handleInputChange(e, index)}
           />
-          <label for="default-radio-1" className="ml-2 text-sm font-medium text-white dark:text-gray-300" htmlFor={`answer-${question._id}-${index}`}>{answer.text}</label>
-          
+          <div className={`m-2 ${selectedAnswerIndex === index ? 'text-white' : 'text-slate-300' }`}>
+            {answer.text}
+          </div>
+        </label>
         </div>
       ))}
     </div>

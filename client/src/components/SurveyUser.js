@@ -118,7 +118,7 @@ function SurveyUser() {
   });
 
   return (
-    <div className="grid gap-0 grid-rows-13 grid-flow-col bg-gray-800 h-screen w-full">
+    <div className="grid gap-0 grid-rows-13 grid-flow-col bg-slate-800 h-screen w-full">
       <NavigationBar />
       <div className='col-span-12'>
         <div className="text-white flex items-center justify-center overflow-auto h-full">
@@ -127,7 +127,7 @@ function SurveyUser() {
               <div className="text-center ">
                 <p className="font-medium ">
                   You have not created a survey yet.
-                  <Link to="/surveys/new" className="text-emerald-500 font-semibold">
+                  <Link to="/surveys/new" className="text-red-500 font-semibold">
                     {" "}
                     Create One?
                   </Link>

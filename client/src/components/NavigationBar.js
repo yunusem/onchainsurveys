@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/onchain-surveys-logo.svg";
-import QRCode from 'qrcode.react';
+import Identicon from 'react-hooks-identicons';
 import CasperWalletContext from './CasperWalletContext';
 
 
@@ -14,10 +14,10 @@ function NavigationBar() {
     const currentPath = history.location.pathname
 
     const isActive = (path) => {
-        return currentPath === path ? 'bg-gray-800' : 'bg-gray-700 ';
+        return currentPath === path ? 'bg-slate-800' : 'bg-slate-700 ';
     };
     const isCreateActive = (path) => {
-        return currentPath === path ? 'bg-emerald-500 text-white ' : 'bg-gray-700 border-solid border-2 border-emerald-500 text-emerald-500';
+        return currentPath === path ? 'bg-red-500 text-white ' : 'bg-slate-700 border-solid border-2 border-red-500 text-red-500';
     };
 
 
@@ -69,8 +69,8 @@ function NavigationBar() {
 
 
     const walletAddress = localStorage.getItem('active_public_key');
-    const start = walletAddress.substring(0, 6);
-    const end = walletAddress.substring(walletAddress.length - 4);
+    const start = walletAddress.substring(0, 5);
+    const end = walletAddress.substring(walletAddress.length - 3);
     const formattedAddress = `${start}...${end}`;
 
     const handleLogout = async () => {
@@ -95,14 +95,14 @@ function NavigationBar() {
     return (
 
 
-        <div className="w-64 font-bold">
-            <div className="bg-gray-700 h-screen flex-col flex justify-between">
-                <div name="logo" className="h-24 bg-gray-700 flex justify-center items-center p-8">
+        <div className="w-44 font-bold">
+            <div className=" h-screen flex-col flex justify-between">
+                <div name="logo" className="h-36  flex justify-center items-center p-8">
                     <Link to="/">
                         <img src={Logo} alt="logo" width="512px" />
                     </Link>
                 </div>
-                <div name="menu" className="bg-gray-800 flex-col">
+                <div name="menu" className="bg-slate-800 flex-col">
                     <div
                         className={`h-16 justify-center items-center  ${isCreateActive(
                             '/surveys/new'
@@ -128,15 +128,15 @@ function NavigationBar() {
                         </Link>
                     </div>
                 </div>
-                <div className="card bg-gray-800 p-2 h-24 justify-end">
+                <div className="card bg-slate-800 p-2 h-24 justify-end">
                     <div class="grid grid-rows-3 grid-flow-col gap-2">
-                        <div class=" rounded  row-span-3 bg-gray-800 mb-2 flex justify-center items-center">
-                            <QRCode value={walletAddress} size={80} />
+                        <div class=" rounded  row-span-3 bg-slate-500 mb-2 flex justify-center items-center">
+                            <Identicon string={walletAddress} size={50} />
                         </div>
-                        <div className="rounded col-span-2 bg-gray-700 flex justify-center items-center break-all text-white">
+                        <div className="rounded col-span-2 bg-slate-700 flex justify-center items-center break-all text-white text-sm">
                             {formattedAddress}
                         </div>
-                        <button onClick={handleLogout} class="rounded row-span-2 col-span-2 bg-gray-700 border-solid border-2 border-red-400 text-red-400 mb-2 flex justify-center items-center text-base">
+                        <button onClick={handleLogout} class="rounded row-span-2 col-span-2 bg-slate-700 border-solid border-2 border-red-400 text-red-400 mb-2 flex justify-center items-center text-base">
                             Logout
                         </button>
                     </div>
