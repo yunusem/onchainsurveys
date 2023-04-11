@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { createSurvey } from '../api';
+import { createSurvey, fetchSurvey, updateSurvey } from '../api';
 import NavigationBar from './NavigationBar';
 import CoinLogo from "../assets/caspercoin-logo.svg";
 
@@ -12,7 +12,6 @@ function SurveyForm() {
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
   const [endDate, setEndDate] = useState('');
   const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
-  const token = localStorage.getItem('token');
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isCurrentQuestionValidForNewAnswer, setIsCurrentQuestionValidForNewAnswer] = useState(false);
@@ -25,7 +24,23 @@ function SurveyForm() {
   const [pvalidator, setPValidator] = useState(1);
 
 
+  useEffect(() => {
+    const loadSurvey = async () => {
+      if (!id) return;
+      try {
+        const data = await fetchSurvey(id);
+        setTitle(data.title);
+        setQuestions(data.questions);
+        setStartDate(data.startDate);
 
+        setEndDate(data.endDate.slice(0, 10));
+      } catch (error) {
+        console.error('Failed to fetch survey:', error);
+      }
+    };
+
+    loadSurvey();
+  }, [id]);
 
   useEffect(() => {
     const updateFormValidity = () => {
@@ -57,7 +72,7 @@ function SurveyForm() {
 
   useEffect(() => {
     setAreAllInputsFilled(Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage) && Boolean(pvalidator));
-  }, [areAllInputsFilled, endDate, pminbalance, pminstake, paccage,pvalidator]);
+  }, [areAllInputsFilled, endDate, pminbalance, pminstake, paccage, pvalidator]);
 
 
 
@@ -114,6 +129,32 @@ function SurveyForm() {
     fetchSurvey();
   }, [id]);
 
+  const updateExistingSurvey = async () => {
+    try {
+      await updateSurvey(id, { title, questions, startDate, endDate, reward, numOfParticipants });
+      history.push('/surveys');
+    } catch (error) {
+      console.error('Failed to update survey:', error);
+    }
+  };
+
+  const createNewSurvey = async () => {
+    try {
+      
+      const survey = {
+        title,
+        questions,
+        startDate,
+        endDate,
+        creationFee: reward,
+        rewardPerResponse: numOfParticipants,
+      };
+      await createSurvey(survey);
+      history.push('/surveys');
+    } catch (error) {
+      console.error('Failed to create survey:', error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,34 +164,12 @@ function SurveyForm() {
     }
 
     if (!id) {
-      try {
-        //TODO make creationFee adjustable from server, rewardPerResponse dynamic
-        await createSurvey({ title, questions, startDate, endDate, creationFee: 10, rewardPerResponse: 1 });
-        history.push('/surveys');
-      } catch (error) {
-        console.error('Failed to create survey:', error);
-      }
+      createNewSurvey();
     } else {
-      const url = `/api/surveys/${id}`;
-      const method = 'PUT';
-
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ title, questions, startDate, endDate }),
-      });
-
-      if (response.ok) {
-        history.push('/surveys');
-      } else {
-        const error = await response.json();
-        console.error(error);
-      }
+      updateExistingSurvey();
     }
   };
+
 
   const handleQuestionChange = (questionIndex, newText) => {
     const updatedQuestions = [...questions];
@@ -225,9 +244,8 @@ function SurveyForm() {
           </div>
           <div className="w-3/4 ">
             <div className="w-4/6">
-              <div className="flex justify-center mt-3  h-full">
+              <div className="flex justify-center mt-3 h-full">
                 <div className="text-white justify-center  w-full p-1">
-
                   <form onSubmit={handleSubmit} className="w-full">
                     <div className="flex justify-between items-center">
                       <div >
