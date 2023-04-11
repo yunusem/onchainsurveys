@@ -76,8 +76,9 @@ export async function fetchSurvey(id) {
     const error = await response.json();
     throw new Error(error.message);
   }
-
-  return response.json();
+  
+  const data = await response.json();
+  return data;
 }
 
 // This function sends a GET request to fetch all surveys
@@ -118,6 +119,32 @@ export const createSurvey = async (survey) => {
 
   return response.json();
 };
+
+// This function sends a PUT request to update an existing survey
+// It includes the user's token in the request headers
+// It takes an id parameter to identify the survey and a survey object with updated data
+// It throws an error if the response is not ok
+// It returns a promise that resolves to a JSON response
+export async function updateSurvey(id, survey) {
+  const token = localStorage.getItem('token');
+  const walletAddress = localStorage.getItem('active_public_key');
+  const response = await fetch(`${API_BASE_URL}/surveys/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      'x-casper-public-key': walletAddress,
+    },
+    body: JSON.stringify(survey),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
 
 // This function sends a POST request to log in with a wallet
 // It takes a publicAddress parameter to identify the user

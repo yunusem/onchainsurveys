@@ -36,7 +36,7 @@ exports.getSurvey = async (req, res) => {
     if (!survey) {
       return res.status(404).json({ message: 'Survey not found' });
     }
-    res.json(survey);
+    res.status(200).json(survey);
   } catch (err) {
     console.error('Error in getSurvey:', err);
     res.status(500).json({ message: err.message });
@@ -66,7 +66,7 @@ exports.updateSurvey = async (req, res) => {
     survey.description = req.body.description;
     survey.questions = req.body.questions;
     await survey.save();
-    res.json(survey);
+    
     res.status(200).json(survey);
   } catch (err) {
     console.error('Error in updateSurvey:', err);
