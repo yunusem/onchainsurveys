@@ -134,42 +134,51 @@ function SurveyUser() {
                 </p>
               </div>
             </div>
-          ):(
+          ) : (
             <ul className="w-full flex flex-col items-center overflow-auto mt-2 max-h-full">
-            {mySurveys &&
-              mySurveys.map((survey) => (
-                <li
-                  key={survey._id}
-                  className={`bg-gray-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? 'h-auto' : 'h-36'
-                    }`}
-                  onClick={() => toggleSurvey(survey._id)}
-                >
-                  <div className="flex justify-between">
-                    <h3 className="text-xl font-semibold">{survey.title}</h3>
-                    <p>Reward: {survey.rewardPerResponse} CSPR</p>
-                  </div>
-                  <div className="flex justify-between">
-                    <p>Questions: {survey.questions.length}</p>
-                    <p>Participants: {survey.responses.length}</p>
-                  </div>
-                  <p>Days remaining: {daysRemaining(survey.endDate)}</p>
-                  {expandedSurveyId === survey._id && (
-                    <div className="mt-4">
-                      <div className="overflow-y-auto max-h-96">
-                        {survey.questions.map((question, index) => (
-                          <div key={question.text} className="bg-gray-800 p-4 rounded mt-4">
-                            <p className="font-semibold">{question.text}</p>
-                            <div className="mt-2">
-                              {renderAnswerStats(survey, index)}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+              {mySurveys &&
+                mySurveys.map((survey) => (
+                  <li
+                    key={survey._id}
+                    className={`bg-gray-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? 'h-auto' : 'h-36'
+                      }`}
+                    onClick={() => toggleSurvey(survey._id)}
+                  >
+                    <div className="flex justify-between">
+                      <h3 className="text-xl font-semibold">{survey.title}</h3>
+                      <p>Reward: {survey.rewardPerResponse} CSPR</p>
                     </div>
-                  )}
-                </li>
-              ))}
-          </ul>
+                    <div className="flex justify-between">
+                      <p>Questions: {survey.questions.length}</p>
+                      <p>Participants: {survey.responses.length}</p>
+                    </div>
+                    <div className="flex justify-between">
+                      <p>Days remaining: {daysRemaining(survey.endDate)}</p>
+                      <button
+                        type="button"
+                        onClick={() => history.push(`/surveys/${survey._id}/edit`)}
+                        className="bg-emerald-500 rounded font-semibold text-white h-8 w-12"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    {expandedSurveyId === survey._id && (
+                      <div className="mt-4">
+                        <div className="grid grid-cols-3 gap-3 overflow-y-auto max-h-96">
+                          {survey.questions.map((question, index) => (
+                            <div key={question.text} className="bg-gray-800 p-4 rounded">
+                              <p className="font-semibold">{question.text}</p>
+                              <div className="mt-2">
+                                {renderAnswerStats(survey, index)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </li>
+                ))}
+            </ul>
           )}
         </div>
       </div>
