@@ -140,7 +140,7 @@ function SurveyUser() {
                 mySurveys.map((survey) => (
                   <li
                     key={survey._id}
-                    className={`bg-gray-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? 'h-auto' : 'h-36'
+                    className={`bg-slate-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? 'h-auto' : 'h-36'
                       }`}
                     onClick={() => toggleSurvey(survey._id)}
                   >
@@ -157,7 +157,7 @@ function SurveyUser() {
                       <button
                         type="button"
                         onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-                        className="bg-emerald-500 rounded font-semibold text-white h-8 w-12"
+                        className="bg-red-500 rounded font-semibold text-white h-8 w-12"
                       >
                         Edit
                       </button>
@@ -166,7 +166,7 @@ function SurveyUser() {
                       <div className="mt-4">
                         <div className="grid grid-cols-3 gap-3 overflow-y-auto max-h-96">
                           {survey.questions.map((question, index) => (
-                            <div key={question.text} className="bg-gray-800 p-4 rounded">
+                            <div key={question.text} className="bg-slate-800 p-4 rounded">
                               <p className="font-semibold">{question.text}</p>
                               <div className="mt-2">
                                 {renderAnswerStats(survey, index)}
