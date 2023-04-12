@@ -120,28 +120,30 @@ function SurveyHistory() {
     <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
       <NavigationBar />
       <div className="flex flex-col h-screen w-full ">
-        <div className='flex items-center justify-center'>
-        <div className='flex w-3/4 items-center'>
-          <h2 className="mt-3 text-white h-12">
-            Filter:{"  "}
-            <button
-              className={`${!isSurveyFiltered ? "text-red-500" : "text-white"
-                }`}
-              onClick={() => setIsSurveyFiltered(false)}
-            >
-              All
-            </button>{", "}
-            <button
-              className={`${isSurveyFiltered ? "text-red-500" : "text-white"
-                }`}
-              onClick={() => setIsSurveyFiltered(true)}
-            >
-              My History
-            </button>
-          </h2>
-        </div>
-        </div>
-        <div className=" text-white ">
+        {surveys.length !== 0 &&
+          (<div className='flex items-center justify-center'>
+            <div className='flex w-3/4 items-center'>
+              <h2 className="mt-3 text-white h-12">
+                Filter:{"  "}
+                <button
+                  className={`${!isSurveyFiltered ? "text-red-500" : "text-white"
+                    }`}
+                  onClick={() => setIsSurveyFiltered(false)}
+                >
+                  All
+                </button>{", "}
+                <button
+                  className={`${isSurveyFiltered ? "text-red-500" : "text-white"
+                    }`}
+                  onClick={() => setIsSurveyFiltered(true)}
+                >
+                  My History
+                </button>
+              </h2>
+            </div>
+          </div>)
+        }
+        <div className="h-screen">
           {surveys.length === 0 && (
             <div className=" text-center">
               <p className="mt-2 font-medium text-sm">
@@ -153,44 +155,46 @@ function SurveyHistory() {
               </p>
             </div>
           )}
-          <div className=" flex flex-col h-[720px]  overflow-y-auto w-full">
-          <ul className="w-full h-full flex flex-col items-center ">
-            {surveys &&
-              surveys
-                .filter((survey) => !isSurveyFiltered || participatedSurveys().includes(survey))
-                .map((survey) => (
-                  <li
-                    key={survey._id}
-                    className={`bg-slate-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? "h-auto" : "h-36"
-                      }`}
-                    onClick={() => toggleSurvey(survey._id)}
-                  >
-                    <div className="flex justify-between">
-                      <h3 className="text-xl font-semibold">{survey.title}</h3>
-                      <p>Reward: {survey.rewardPerResponse} CSPR</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p>Questions: {survey.questions.length}</p>
-                      <p>Participants: {survey.responses.length}</p>
-                    </div>
-                    <p>Days remaining: {daysRemaining(survey.endDate)}</p>
-                    {expandedSurveyId === survey._id && (
-                      <div className="mt-4">
-                      <div className="grid grid-cols-3 gap-3 overflow-y-auto max-h-96">
-                          {survey.questions.map((question, index) => (
-                            <div key={question.text} className="bg-slate-800 p-4 rounded mt-4">
-                              <p className="font-semibold">{question.text}</p>
-                              <div className="mt-2 text-slate-300">
-                                {renderAnswerStats(survey, index)}
-                              </div>
-                            </div>
-                          ))}
+          <div className="flex flex-col h-[720px]  overflow-y-auto w-full items-center">
+            <div className='h-full w-3/4'>
+              <ul className="relative grid grid-cols-2 gap-4">
+                {surveys &&
+                  surveys
+                    .filter((survey) => !isSurveyFiltered || participatedSurveys().includes(survey))
+                    .map((survey) => (
+                      <li
+                        key={survey._id}
+                        className={` p-4 rounded transition-all ease-linear duration-50 h-28 ${expandedSurveyId === survey._id ? " bg-slate-900" : " bg-slate-700"
+                          }`}
+                        onClick={() => toggleSurvey(survey._id)}
+                      >
+                        <div className="flex justify-between">
+                          <h3 className="text-xl font-semibold">{survey.title}</h3>
+                          <p>Reward: {survey.rewardPerResponse} CSPR</p>
                         </div>
-                      </div>
-                    )}
-                  </li>
-                ))}
-          </ul>
+                        <div className="flex justify-between">
+                          <p>Questions: {survey.questions.length}</p>
+                          <p>Participants: {survey.responses.length}</p>
+                        </div>
+                        <p>Days remaining: {daysRemaining(survey.endDate)}</p>
+                        {expandedSurveyId === survey._id && (
+                          <div className="absolute bg-slate-900 rounded w-full right-0">
+                            <div className=" grid grid-cols-2 gap-3 overflow-y-auto max-h-full ">
+                              {survey.questions.map((question, index) => (
+                                <div key={question.text} className="bg-slate-900 p-4 rounded mt-4">
+                                  <p className="font-semibold">{question.text}</p>
+                                  <div className="mt-2 text-slate-300">
+                                    {renderAnswerStats(survey, index)}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </li>
+                    ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

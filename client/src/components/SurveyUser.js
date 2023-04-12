@@ -94,7 +94,7 @@ function SurveyUser() {
       return (
         <div
           key={answer.text}
-          className="bg-green-700 px-4 py-2 mb-2 rounded text-sm flex justify-between items-center"
+          className="bg-slate-700 px-4 py-2 mb-2 rounded text-sm flex justify-between items-center"
         >
           <div>{answer.text}</div>
           <div>{answerPercentage}%</div>
@@ -135,50 +135,54 @@ function SurveyUser() {
               </div>
             </div>
           ) : (
-            <ul className="w-full flex flex-col items-center overflow-auto mt-2 max-h-full">
-              {mySurveys &&
-                mySurveys.map((survey) => (
-                  <li
-                    key={survey._id}
-                    className={`bg-slate-900 p-6 rounded mb-6 w-3/4 transition-all duration-300 ${expandedSurveyId === survey._id ? 'h-auto' : 'h-36'
-                      }`}
-                    onClick={() => toggleSurvey(survey._id)}
-                  >
-                    <div className="flex justify-between">
-                      <h3 className="text-xl font-semibold">{survey.title}</h3>
-                      <p>Reward: {survey.rewardPerResponse} CSPR</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p>Questions: {survey.questions.length}</p>
-                      <p>Participants: {survey.responses.length}</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p>Days remaining: {daysRemaining(survey.endDate)}</p>
-                      <button
-                        type="button"
-                        onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-                        className="bg-red-500 rounded font-semibold text-white h-8 w-12"
+            <div className="flex flex-col h-[720px] overflow-y-auto w-full items-center">
+              <div className='h-full w-3/4'>
+                <ul className="relative grid grid-cols-2 gap-4">
+                  {mySurveys &&
+                    mySurveys.map((survey) => (
+                      <li
+                        key={survey._id}
+                        className={` p-4 rounded transition-all ease-linear duration-50 h-28 ${expandedSurveyId === survey._id ? " bg-slate-900" : " bg-slate-700"
+                          }`}
+                        onClick={() => toggleSurvey(survey._id)}
                       >
-                        Edit
-                      </button>
-                    </div>
-                    {expandedSurveyId === survey._id && (
-                      <div className="mt-4">
-                        <div className="grid grid-cols-3 gap-3 overflow-y-auto max-h-96">
-                          {survey.questions.map((question, index) => (
-                            <div key={question.text} className="bg-slate-800 p-4 rounded">
-                              <p className="font-semibold">{question.text}</p>
-                              <div className="mt-2">
-                                {renderAnswerStats(survey, index)}
-                              </div>
-                            </div>
-                          ))}
+                        <div className="flex justify-between">
+                          <h3 className="text-xl font-semibold">{survey.title}</h3>
+                          <p>Reward: {survey.rewardPerResponse} CSPR</p>
                         </div>
-                      </div>
-                    )}
-                  </li>
-                ))}
-            </ul>
+                        <div className="flex justify-between">
+                          <p>Questions: {survey.questions.length}</p>
+                          <p>Participants: {survey.responses.length}</p>
+                        </div>
+                        <div className="flex justify-between">
+                          <p>Days remaining: {daysRemaining(survey.endDate)}</p>
+                          <button
+                            type="button"
+                            onClick={() => history.push(`/surveys/${survey._id}/edit`)}
+                            className="bg-red-500 rounded font-semibold text-white h-8 w-12"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                        {expandedSurveyId === survey._id && (
+                          <div className="absolute bg-slate-900 rounded w-full right-0">
+                            <div className=" grid grid-cols-2 gap-3 overflow-y-auto max-h-full ">
+                              {survey.questions.map((question, index) => (
+                                <div key={question.text} className="bg-slate-900 p-4 rounded mt-4">
+                                  <p className="font-semibold">{question.text}</p>
+                                  <div className="mt-2 text-slate-300">
+                                    {renderAnswerStats(survey, index)}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            </div>
           )}
         </div>
       </div>
