@@ -140,40 +140,38 @@ function Home() {
 
   // Render the Home component
   return (
-    <div className="bg-slate-800 text-center h-screen w-full text-white flex items-center justify-center">
+    <div className="flex bg-slate-800 text-center h-screen w-full text-white items-center justify-center">
       {isAuthenticated ? (
-        <div className="w-screen items-center">
-          <div className="grid gap-0 grid-rows-13 grid-flow-col bg-slate-800 h-screen w-full">
-            <NavigationBar />
-            <div className="flex flex-col w-full items-center justify-items-center">
-              <h2 className="p-8">Available Surveys</h2>
-              <ul className="w-full flex flex-col items-center overflow-auto h-80">
-                {availabeSurveys && availabeSurveys.map((survey) => (
-                  <li
-                    key={survey._id}
-                    className="bg-slate-900 p-1 rounded mb-2 w-3/4 flex items-stretch group"
-                  >
-                    <div className="grid grid-cols-5 gap-4 flex-grow items-center">
-                      <div className="col-span-2 justify-items-start">
-                        {survey.title}
-                      </div>
-                      <div>Questions: {survey.questions.length}</div>
-                      <div>Reward: {survey.rewardPerResponse} CSPR</div>
-                      <div>{remainingTime(survey.endDate)} left</div>
+        <div className="flex h-screen w-full">
+          <NavigationBar />
+          <div className="flex flex-col h-screen w-full">
+            <h2 className="text-xl font-bold text-white p-8 h-12 mb-12">Available Surveys</h2>
+            <ul className="w-full h-full flex flex-col items-center overflow-auto  h-[720px]">
+              {availabeSurveys && availabeSurveys.map((survey) => (
+                <li
+                  key={survey._id}
+                  className="bg-slate-900 p-1 rounded mb-2 w-3/4 flex items-stretch group"
+                >
+                  <div className="grid grid-cols-5 gap-4 flex-grow items-center">
+                    <div className="col-span-2 justify-items-start">
+                      {survey.title}
                     </div>
-                    <div className="flex justify-end items-stretch">
-                      <button
-                        className="bg-red-500 rounded font-semibold p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        onClick={() => handleTakeSurvey(survey._id)}
-                      >
-                        Take Survey
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    <div>Questions: {survey.questions.length}</div>
+                    <div>Reward: {survey.rewardPerResponse} CSPR</div>
+                    <div>{remainingTime(survey.endDate)} left</div>
+                  </div>
+                  <div className="flex justify-end items-stretch">
+                    <button
+                      className="bg-red-500 rounded font-semibold p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      onClick={() => handleTakeSurvey(survey._id)}
+                    >
+                      Take Survey
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
 
-            </div>
           </div>
         </div>
       ) : (

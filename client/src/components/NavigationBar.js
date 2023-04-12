@@ -89,7 +89,7 @@ function NavigationBar() {
     };
 
     return (
-        <div className="w-44 font-bold">
+        <div className="w-48 font-bold">
             <div className=" h-screen flex-col flex justify-between">
                 <div name="logo" className="h-36  flex justify-center items-center p-8">
                     <Link to="/">

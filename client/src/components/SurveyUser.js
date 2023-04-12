@@ -118,12 +118,12 @@ function SurveyUser() {
   });
 
   return (
-    <div className="grid gap-0 grid-rows-13 grid-flow-col bg-slate-800 h-screen w-full">
+    <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
       <NavigationBar />
-      <div className='col-span-12'>
-        <div className="text-white flex items-center justify-center overflow-auto h-full">
+      <div className="h-screen w-full">
+        <div className="text-white flex justify-center overflow-y-auto h-full">
           {mySurveys.length === 0 ? (
-            <div className='w-48 items-center justify-center'>
+            <div className='flex w-48 items-center justify-center'>
               <div className="text-center ">
                 <p className="font-medium ">
                   You have not created a survey yet.

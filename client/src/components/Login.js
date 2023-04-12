@@ -109,7 +109,7 @@ function Login() {
   };
 
   return (
-    <div className="bg-slate-800 text-center h-screen w-full text-white flex items-center justify-center">
+    <div className="flex bg-slate-800 text-center h-screen w-full text-white items-center justify-center">
       <div className="relative flex flex-col items-center justify-between">
         <div className="mb-24">
           <Link to="/">

@@ -140,7 +140,7 @@ function SurveyForm() {
 
   const createNewSurvey = async () => {
     try {
-      
+
       const survey = {
         title,
         questions,
@@ -231,239 +231,241 @@ function SurveyForm() {
   // number of participants
 
   return (
-    <div className="grid grid-flow-col bg-slate-800 h-auto w-screen">
-      <NavigationBar />
-      <div className='col-span-12'>
-        <div className='flex flex-col w-full items-center justify-center'>
-          <div className='mt-7 w-3/4 flex h-32 flex-col text-white'>
-            <div className='w-2/4 '>
-              <h1 className=" text-3xl font-bold  text-white   text-left">
-                {id ? 'Edit Survey' : 'Create Survey'}
-              </h1>
-              <p className='text-slate-300 text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-red-500'>Casper</span> </a> Blockchain Technology.</p>            </div>
-          </div>
-          <div className="w-3/4 ">
+    <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
+      <div className="flex h-screen w-full">
+        <NavigationBar />
+        <div className="flex flex-col h-screen w-full">
+          <div className='flex flex-col w-full items-center justify-center'>
+            <div className=' mt-7 w-3/4 flex h-32 flex-col text-white'>
+              <div className='w-2/4 '>
+                <h1 className=" text-3xl font-bold  text-white   text-left">
+                  {id ? 'Edit Survey' : 'Create Survey'}
+                </h1>
+                <p className='text-slate-300 text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-red-500'>Casper</span> </a> Blockchain Technology.</p>            </div>
+            </div>
             <div className="w-3/4">
-              <div className="flex justify-center mt-3  h-full">
-                <div className="text-white justify-center  w-full p-1">
-                  <form onSubmit={handleSubmit} className="w-full">
-                    <div className="flex justify-between items-center">
-                      <div >
-                        <label htmlFor="title" className="font-medium bg-slate ">
-                          Title
-                        </label>
-                      </div>
+              <div className="w-3/4">
+                <div className="flex justify-center mt-3  h-full">
+                  <div className="text-white justify-center  w-full p-1">
+                    <form onSubmit={handleSubmit} className="w-full">
+                      <div className="flex justify-between items-center">
+                        <div >
+                          <label htmlFor="title" className="font-medium bg-slate ">
+                            Title
+                          </label>
+                        </div>
 
-                    </div>
-                    <div className='flex'>
-                      <input
-                        type="text"
-                        id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="p-2 h-8 rounded mt-1 w-full text-white bg-slate-700 font-medium outline-none focus:outline-red-500"
-                      />
-                    </div>
-                    <hr className='border-slate-400 mt-6 h-3 w-full '></hr>
-                    {questions.map((question, questionIndex) => (
-                      questionIndex === activeQuestionIndex && (
-                        <div key={questionIndex} className=" relative ">
-                          <div className="flex flex-col ">
-                            <div className=' flex justify-between items-center '>
-                              <div>
-                                <label htmlFor={`question-${questionIndex}`} className="font-medium">
-                                  Question {questionIndex + 1}
-                                </label>
+                      </div>
+                      <div className='flex'>
+                        <input
+                          type="text"
+                          id="title"
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                          className="p-2 h-8 rounded mt-1 w-full text-white bg-slate-700 font-medium outline-none focus:outline-red-500"
+                        />
+                      </div>
+                      <hr className='border-slate-400 mt-6 h-3 w-full '></hr>
+                      {questions.map((question, questionIndex) => (
+                        questionIndex === activeQuestionIndex && (
+                          <div key={questionIndex} className=" relative ">
+                            <div className="flex flex-col ">
+                              <div className=' flex justify-between items-center '>
+                                <div>
+                                  <label htmlFor={`question-${questionIndex}`} className="font-medium">
+                                    Question {questionIndex + 1}
+                                  </label>
+                                </div>
+                                <div className="flex space-x-2">
+                                  {activeQuestionIndex > 0 && (
+                                    <button
+                                      onClick={goToPreviousQuestion}
+                                      className="w-6 h-6 rounded bg-red-500 text-white items-center"
+                                    >
+                                      {"<"}
+                                    </button>
+                                  )}
+                                  {questions.length > 0 && activeQuestionIndex !== questions.length - 1 && (
+                                    <button
+                                      onClick={goToNextQuestion}
+                                      className="w-6 h-6 rounded bg-red-500 text-white items-center"
+                                    >
+                                      {">"}
+                                    </button>
+                                  )}
+                                </div>
                               </div>
-                              <div className="flex space-x-2">
-                                {activeQuestionIndex > 0 && (
-                                  <button
-                                    onClick={goToPreviousQuestion}
-                                    className="w-6 h-6 rounded bg-red-500 text-white items-center"
-                                  >
-                                    {"<"}
-                                  </button>
-                                )}
-                                {questions.length > 0 && activeQuestionIndex !== questions.length - 1 && (
-                                  <button
-                                    onClick={goToNextQuestion}
-                                    className="w-6 h-6 rounded bg-red-500 text-white items-center"
-                                  >
-                                    {">"}
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                            <div className="flex items-center">
-                              <input
-                                type="text"
-                                id={`question-${questionIndex}`}
-                                value={question.text}
-                                onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                                className="p-2 h-8 bg-slate-700 rounded mt-1 text-white font-medium outline-none focus:outline-red-500 flex-grow"
-                              />
-                              {questionIndex > 0 && (
-                                <button
-                                  type="button"
-                                  onClick={() => removeQuestion(questionIndex)}
-                                  className="absolute right-0 top-7 ml-2 bg-slate-700 px-2 text-slate-300 rounded text-xl"
-                                >
-                                  x
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                          {question.answers.map((answer, answerIndex) => (
-                            <div key={answerIndex} className="mt-3 relative">
                               <div className="flex items-center">
                                 <input
                                   type="text"
-                                  id={`question-${questionIndex}-answer-${answerIndex}`}
-                                  value={answer.text}
-                                  placeholder={`Answer ${answerIndex + 1}`}
-                                  onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
-                                  className="p-2 h-8 bg-slate-600 rounded mt-1 text-whit font-medium outline-none focus:outline-red-500 flex-grow"
+                                  id={`question-${questionIndex}`}
+                                  value={question.text}
+                                  onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
+                                  className="p-2 h-8 bg-slate-700 rounded mt-1 text-white font-medium outline-none focus:outline-red-500 flex-grow"
                                 />
-                                {answerIndex >= 2 && (
+                                {questionIndex > 0 && (
                                   <button
                                     type="button"
-                                    onClick={() => removeAnswer(questionIndex, answerIndex)}
-                                    className="absolute right-0 top-1 ml-2 bg-slate-600 px-2 text-slate-300 rounded text-xl"
+                                    onClick={() => removeQuestion(questionIndex)}
+                                    className="absolute right-0 top-7 ml-2 bg-slate-700 px-2 text-slate-300 rounded text-xl"
                                   >
                                     x
                                   </button>
                                 )}
                               </div>
                             </div>
-                          ))}
-                          <div className="flex  mt-3 h-12">
-                            <button
-                              type="button"
-                              onClick={() => addAnswer(questionIndex)}
-                              className={`bg-red-500 rounded font-semibold text-white mr-2 h-8 w-40 ${!isCurrentQuestionValidForNewAnswer && 'opacity-50 cursor-not-allowed'}`}
-                              disabled={!isCurrentQuestionValidForNewAnswer}
-                            >
-                              Add Answer
-                            </button>
+                            {question.answers.map((answer, answerIndex) => (
+                              <div key={answerIndex} className="mt-3 relative">
+                                <div className="flex items-center">
+                                  <input
+                                    type="text"
+                                    id={`question-${questionIndex}-answer-${answerIndex}`}
+                                    value={answer.text}
+                                    placeholder={`Answer ${answerIndex + 1}`}
+                                    onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
+                                    className="p-2 h-8 bg-slate-600 rounded mt-1 text-whit font-medium outline-none focus:outline-red-500 flex-grow"
+                                  />
+                                  {answerIndex >= 2 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => removeAnswer(questionIndex, answerIndex)}
+                                      className="absolute right-0 top-1 ml-2 bg-slate-600 px-2 text-slate-300 rounded text-xl"
+                                    >
+                                      x
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                            <div className="flex  mt-3 h-12">
+                              <button
+                                type="button"
+                                onClick={() => addAnswer(questionIndex)}
+                                className={`bg-red-500 rounded font-semibold text-white mr-2 h-8 w-40 ${!isCurrentQuestionValidForNewAnswer && 'opacity-50 cursor-not-allowed'}`}
+                                disabled={!isCurrentQuestionValidForNewAnswer}
+                              >
+                                Add Answer
+                              </button>
 
-                            <div className='grid justify-items-end content-end w-full h-8'>
-                              <div className='grid h-8 w-36 justify-items-end'>
-                                <button
-                                  className={`text-red-500 text-end ${!isFormValid && 'opacity-50 cursor-not-allowed'}`}
-                                  onClick={addQuestion}
-                                  disabled={!isFormValid}
-                                >
-                                  Add  Question ?
-                                </button>
+                              <div className='grid justify-items-end content-end w-full h-8'>
+                                <div className='grid h-8 w-36 justify-items-end'>
+                                  <button
+                                    className={`text-red-500 text-end ${!isFormValid && 'opacity-50 cursor-not-allowed'}`}
+                                    onClick={addQuestion}
+                                    disabled={!isFormValid}
+                                  >
+                                    Add  Question ?
+                                  </button>
+                                </div>
                               </div>
                             </div>
+                            <hr className='border-slate-400  h-3 w-full '></hr>
                           </div>
-                          <hr className='border-slate-400  h-3 w-full '></hr>
+                        )))}
+                      <div className="grid space-y-3">
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center">
+                            <input
+                              type="number"
+                              id="reward"
+                              value={reward}
+                              onChange={(e) => setReward(e.target.value)}
+                              className="p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
+                              placeholder="Reward"
+                            />
+                            <img
+                              src={CoinLogo}
+                              alt="Casper Coin Logo"
+                              className="ml-2 h-5 w-5"
+                            />
+                            <span className="ml-2 text-slate-400">CSPR</span>
+                            <input
+                              type="number"
+                              id="participants"
+                              value={numOfParticipants}
+                              onChange={(e) => setParticipants(e.target.value)}
+                              className="p-2 h-8 ml-8 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500 "
+                              placeholder="# of "
+                            />
+                            <span className="ml-2 text-slate-400">People</span>
+                          </div>
+                          <div className="flex items-center justify-end">
+                            <input
+                              type="date"
+                              id="endDate"
+                              value={endDate}
+                              onChange={(e) => setEndDate(e.target.value)}
+                              className="p-2 h-8 rounded text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
+                            />
+                          </div>
                         </div>
-                      )))}
-                    <div className="grid space-y-3">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <input
-                            type="number"
-                            id="reward"
-                            value={reward}
-                            onChange={(e) => setReward(e.target.value)}
-                            className="p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
-                            placeholder="Reward"
-                          />
-                          <img
-                            src={CoinLogo}
-                            alt="Casper Coin Logo"
-                            className="ml-2 h-5 w-5"
-                          />
-                          <span className="ml-2 text-slate-400">CSPR</span>
-                          <input
-                            type="number"
-                            id="participants"
-                            value={numOfParticipants}
-                            onChange={(e) => setParticipants(e.target.value)}
-                            className="p-2 h-8 ml-8 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500 "
-                            placeholder="# of "
-                          />
-                          <span className="ml-2 text-slate-400">People</span>
-                        </div>
-                        <div className="flex items-center justify-end">
-                          <input
-                            type="date"
-                            id="endDate"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            className="p-2 h-8 rounded text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
-                          />
+                        <div className="flex justify-between items-end">
+                          <div className="flex items-center space-x-5 ">
+                            <div className='flex flex-col space-y-1'>
+                              <span className="ml-2 text-sm text-slate-400">Min. Balance</span>
+                              <input
+                                type="number"
+                                id="minbalance"
+                                value={pminbalance}
+                                onChange={(e) => setPminBalance(e.target.value)}
+                                className="p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
+                                placeholder="Balance"
+
+                              />
+
+                            </div>
+                            <div className='flex flex-col space-y-1'>
+                              <span className="ml-2 text-sm text-slate-400">Min. Stake</span>
+                              <input
+                                type="number"
+                                id="minstake"
+                                value={pminstake}
+                                onChange={(e) => setPminStake(e.target.value)}
+                                className="p-2 h-8 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
+                                placeholder="Stake"
+                              />
+
+                            </div>
+                            <div className='flex flex-col space-y-1'>
+                              <span className="ml-2 text-sm text-slate-400">Account Age</span>
+                              <input
+                                type="number"
+                                id="age"
+                                value={paccage}
+                                onChange={(e) => setPaccAge(e.target.value)}
+                                className="p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
+                                placeholder="Age" // in weeks
+                              />
+
+                            </div>
+                            <div className='flex flex-col space-y-1'>
+                              <span className="ml-2text-sm text-slate-400">Validator Count</span>
+                              <input
+                                type="number"
+                                id="validator"
+                                value={pvalidator}
+                                onChange={(e) => setPValidator(e.target.value)}
+                                className="p-2 h-8 rounded w-28 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
+                                placeholder="Validator" //??
+                              />
+                            </div>
+                          </div>
+                          <div className='items-center'>
+                            <button
+                              type="submit"
+                              className={`bg-red-500 h-8 px-3 place-items-center rounded flex items-center font-semibold text-white ${(!isFormValid || !areAllInputsFilled) &&
+                                "opacity-50 cursor-not-allowed"
+                                }`}
+                              disabled={!isFormValid || !areAllInputsFilled}
+                            >
+                              {id ? "Update" : "Create"}
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex justify-between items-end">
-                        <div className="flex items-center space-x-5 ">
-                          <div className='flex flex-col space-y-1'>
-                            <span className="ml-2 text-sm text-slate-400">Min. Balance</span>
-                            <input
-                              type="number"
-                              id="minbalance"
-                              value={pminbalance}
-                              onChange={(e) => setPminBalance(e.target.value)}
-                              className="p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
-                              placeholder="Balance"
 
-                            />
-
-                          </div>
-                          <div className='flex flex-col space-y-1'>
-                            <span className="ml-2 text-sm text-slate-400">Min. Stake</span>
-                            <input
-                              type="number"
-                              id="minstake"
-                              value={pminstake}
-                              onChange={(e) => setPminStake(e.target.value)}
-                              className="p-2 h-8 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
-                              placeholder="Stake"
-                            />
-
-                          </div>
-                          <div className='flex flex-col space-y-1'>
-                            <span className="ml-2 text-sm text-slate-400">Account Age</span>
-                            <input
-                              type="number"
-                              id="age"
-                              value={paccage}
-                              onChange={(e) => setPaccAge(e.target.value)}
-                              className="p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
-                              placeholder="Age" // in weeks
-                            />
-
-                          </div>
-                          <div className='flex flex-col space-y-1'>
-                            <span className="ml-2text-sm text-slate-400">Validator Count</span>
-                            <input
-                              type="number"
-                              id="validator"
-                              value={pvalidator}
-                              onChange={(e) => setPValidator(e.target.value)}
-                              className="p-2 h-8 rounded w-28 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
-                              placeholder="Validator" //??
-                            />
-                          </div>
-                        </div>
-                        <div className='items-center'>
-                          <button
-                            type="submit"
-                            className={`bg-red-500 h-8 px-3 place-items-center rounded flex items-center font-semibold text-white ${(!isFormValid || !areAllInputsFilled) &&
-                              "opacity-50 cursor-not-allowed"
-                              }`}
-                            disabled={!isFormValid || !areAllInputsFilled}
-                          >
-                            {id ? "Update" : "Create"}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                  </form>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>

@@ -117,11 +117,12 @@ function SurveyHistory() {
   };
 
   return (
-    <div className="grid gap-0 grid-rows-13 grid-flow-col bg-slate-800 h-screen w-full">
+    <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
       <NavigationBar />
-      <div className='col-span-12'>
-        <div>
-          <h2 className="text-white justify-center">
+      <div className="flex flex-col h-screen w-full ">
+        <div className='flex items-center justify-center'>
+        <div className='flex w-3/4 items-center'>
+          <h2 className="mt-3 text-white h-12">
             Filter:{"  "}
             <button
               className={`${!isSurveyFiltered ? "text-red-500" : "text-white"
@@ -138,8 +139,9 @@ function SurveyHistory() {
               My History
             </button>
           </h2>
-        </div >
-        <div className=" text-white  justify-center  flex ">
+        </div>
+        </div>
+        <div className=" text-white ">
           {surveys.length === 0 && (
             <div className=" text-center">
               <p className="mt-2 font-medium text-sm">
@@ -151,8 +153,8 @@ function SurveyHistory() {
               </p>
             </div>
           )}
-
-          <ul className="w-full flex flex-col items-center overflow-auto mt-2 max-h-full">
+          <div className=" flex flex-col h-[720px]  overflow-y-auto w-full">
+          <ul className="w-full h-full flex flex-col items-center ">
             {surveys &&
               surveys
                 .filter((survey) => !isSurveyFiltered || participatedSurveys().includes(survey))
@@ -174,11 +176,11 @@ function SurveyHistory() {
                     <p>Days remaining: {daysRemaining(survey.endDate)}</p>
                     {expandedSurveyId === survey._id && (
                       <div className="mt-4">
-                        <div className="overflow-y-auto max-h-96">
+                      <div className="grid grid-cols-3 gap-3 overflow-y-auto max-h-96">
                           {survey.questions.map((question, index) => (
                             <div key={question.text} className="bg-slate-800 p-4 rounded mt-4">
                               <p className="font-semibold">{question.text}</p>
-                              <div className="mt-2">
+                              <div className="mt-2 text-slate-300">
                                 {renderAnswerStats(survey, index)}
                               </div>
                             </div>
@@ -189,6 +191,7 @@ function SurveyHistory() {
                   </li>
                 ))}
           </ul>
+          </div>
         </div>
       </div>
     </div>

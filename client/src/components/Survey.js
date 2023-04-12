@@ -102,8 +102,8 @@ function Survey() {
   }
 
   return (
-    <div className="grid grid-flow-col bg-slate-800 h-auto w-screen">
-      <div className=' w-44 h-screen left-0'>
+    <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
+      <div className=' w-44 h-screen'>
 
       </div>
       <div name="logo" className="absolute left-0 top-0 w-44 h-36 flex justify-center items-center p-8">
@@ -112,7 +112,7 @@ function Survey() {
         </Link>
       </div>
 
-      <div className='col-span-12 '>
+      <div className="h-screen w-full">
         <div className='flex flex-col w-full items-center justify-center'>
           <div className="flex w-3/4 h-screen items-center text-white">
             <div className="w-4/6">
