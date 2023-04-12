@@ -109,44 +109,46 @@ function Login() {
   };
 
   return (
-    <div className="bg-slate-800 h-screen w-screen text-white flex items-center flex-col justify-center">
-      <Link to="/">
-        <img src={Logo} alt="logo" width="512px" />
-      </Link>
-      <h2 className="text-4xl font-semibold my-4">
-      Wallet <span className="text-red-500">Connected!</span>
-      </h2>
-      <form onSubmit={handleSubmit} className="w-72">
-        <div className="flex flex-col">
-          {isUserAlreadySigned ? (<br></br>) : (
-            <input
-              type="email"
-              id="email"
-              placeholder="E-mail address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
-            />
-          )
-          }
+    <div className="bg-slate-800 text-center h-screen w-full text-white flex items-center justify-center">
+      <div className="relative flex flex-col items-center justify-between">
+        <div className="mb-24">
+          <Link to="/">
+            <img src={Logo} alt="logo" width="256px" />
+          </Link>
         </div>
-        <br />
-        <button
-          type="submit"
-          className="bg-red-500  py-3 rounded font-semibold px-5 text-white w-72">
-          {isVerifying ? ("Verifying ...") : (isUserAlreadySigned ? "Verify" : "Verify Email")}
-        </button>
-      </form>
-      <br></br>
-      <br></br>
-      <p className="w-96 px-12 py-12 font-medium text-sm">
-      
-            Activity problem ? Checkout
-            <a href="https://www.casperwallet.io/download">
-              <span className="text-red-500 font-semibold"> CSPR.live</span>
-            </a>
-          
-      </p>
+        <h1 className="w-fit font-medium text-4xl mt-4 p-6 text-slate-300">
+          Wallet <span className="text-red-500">Connected!</span>
+        </h1>
+        <form onSubmit={handleSubmit} className="w-72">
+          <div className="flex flex-col">
+            {isUserAlreadySigned ? (<br></br>) : (
+              <input
+                type="email"
+                id="email"
+                placeholder="E-mail address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="p-2 h-11 rounded mt-1 text-black font-medium outline-none"
+              />
+            )
+            }
+          </div>
+          <br />
+          <button
+            type="submit"
+            className="bg-red-500  py-3 rounded font-semibold px-5 text-white w-72">
+            {isVerifying ? ("Verifying ...") : (isUserAlreadySigned ? "Verify" : "Verify Email")}
+          </button>
+        </form>
+        <p className="mt-4 w-fit text-slate-300 font-medium text-sm">
+
+          Activity problem ? Checkout
+          <a href="https://www.casperwallet.io/download">
+            <span className="text-red-500 font-semibold"> CSPR.live</span>
+          </a>
+
+        </p>
+      </div>
     </div>
   );
 }

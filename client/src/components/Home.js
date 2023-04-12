@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
+import Logo from "../assets/onchain-surveys-logo.svg";
 import { fetchSurveys, loginWithWallet } from '../api';
 import CasperWalletContext from './CasperWalletContext';
 import { useUserActivation } from './UserActivationContext';
@@ -111,10 +112,10 @@ function Home() {
     if (!survey.createdBy) {
       return false;
     }
-     if (survey.responses.length > 0) {
+    if (survey.responses.length > 0) {
       return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date() && survey.responses.some((response) => response.user !== userId);
-     }
-      return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date();
+    }
+    return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date();
   });
 
   // Define a function to calculate remaining time
@@ -176,8 +177,13 @@ function Home() {
           </div>
         </div>
       ) : (
-        <div className="w-3/4 bg-slate-800 items-center justify-center">
-          <h1 className="text-4xl font-semibold mt-4 p-6 break-normal">
+        <div className="flex flex-col w-full items-center justify-center">
+          <div className="mb-20">
+            <Link to="/">
+              <img src={Logo} alt="logo" width="256px" />
+            </Link>
+          </div>
+          <h1 className="w-[720px] text-4xl mt-4 p-6 break-normal text-slate-300">
             Create<span className="text-red-500">/Vote</span> on Casper-based surveys using coins and get rewarded automatically
           </h1>
           <button
