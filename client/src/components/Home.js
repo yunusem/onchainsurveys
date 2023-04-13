@@ -123,7 +123,7 @@ function Home() {
     const remainingMs = new Date(endDate) - new Date();
     const remainingDays = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
     const remainingHours = Math.floor((remainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+    //const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
 
     // Calculate remaining time and return a string
     let timeString = '';
@@ -131,9 +131,9 @@ function Home() {
       timeString += `${remainingDays} day${remainingDays > 1 ? 's' : ''}, `;
     }
     if (remainingHours > 0) {
-      timeString += `${remainingHours} hour${remainingHours > 1 ? 's' : ''}, `;
+      timeString += `${remainingHours} hour${remainingHours > 1 ? 's' : ''} `;
     }
-    timeString += `${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''}`;
+    // timeString += `${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''}`;
 
     return timeString;
   };
@@ -146,13 +146,13 @@ function Home() {
           <NavigationBar />
           <div className="flex flex-col h-screen w-full">
             <h2 className="text-xl font-bold text-white p-8 h-12 mb-12">Available Surveys</h2>
-            <ul className="w-full h-full flex flex-col items-center overflow-auto  h-[720px]">
+            <ul className="w-full flex flex-col items-center overflow-auto  h-[720px]">
               {availabeSurveys && availabeSurveys.map((survey) => (
                 <li
                   key={survey._id}
                   className="bg-slate-900 p-1 rounded mb-2 w-3/4 flex items-stretch group"
                 >
-                  <div className="grid grid-cols-5 gap-4 flex-grow items-center">
+                  <div className="grid grid-cols-5 gap-4 flex-grow items-center mr-3">
                     <div className="col-span-2 justify-items-start">
                       {survey.title}
                     </div>

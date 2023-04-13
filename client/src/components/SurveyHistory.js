@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { fetchSurveys } from '../api';
 import NavigationBar from './NavigationBar';
+import QuestionIcon from "../assets/question-mark.png";
+import VolunteerIcon from "../assets/volunteer.png";
+import CalendarIcon from "../assets/calendar.png";
+import CoinLogo from "../assets/caspercoin-logo.svg";
+
 function SurveyHistory() {
   const [surveys, setSurveys] = useState([]);
   const [expandedSurveyId, setExpandedSurveyId] = useState(null);
@@ -157,31 +162,62 @@ function SurveyHistory() {
           )}
           <div className="flex flex-col h-[720px]  overflow-y-auto w-full items-center">
             <div className='h-full w-3/4'>
-              <ul className="relative grid grid-cols-2 gap-4">
+              <ul className="flex flex-col space-y-4">
                 {surveys &&
                   surveys
                     .filter((survey) => !isSurveyFiltered || participatedSurveys().includes(survey))
                     .map((survey) => (
                       <li
                         key={survey._id}
-                        className={` p-4 rounded transition-all ease-linear duration-50 h-28 ${expandedSurveyId === survey._id ? " bg-slate-900" : " bg-slate-700"
+                        className={` flex flex-col justify-between p-3 rounded transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-900 h-auto" : " h-24 bg-slate-700"
                           }`}
                         onClick={() => toggleSurvey(survey._id)}
                       >
-                        <div className="flex justify-between">
+                        <div className="flex justify-between ">
                           <h3 className="text-xl font-semibold">{survey.title}</h3>
-                          <p>Reward: {survey.rewardPerResponse} CSPR</p>
+
                         </div>
-                        <div className="flex justify-between">
-                          <p>Questions: {survey.questions.length}</p>
-                          <p>Participants: {survey.responses.length}</p>
+                        <div className="flex justify-between ">
+                          <div className='flex items-center space-x-10'>
+                            <div className='flex w-8 space-x-1'>
+                              <img
+                                src={CoinLogo}
+                                alt="Casper Coin Logo"
+                                className=" h-5 w-5 "
+                              />
+                              <p> {survey.rewardPerResponse} </p>
+                            </div>
+                            <div className='flex w-8 space-x-1'>
+                              <img
+                                src={QuestionIcon}
+                                alt="Question Icon"
+                                className=" h-5 w-5"
+                              />
+                              <p> {survey.questions.length}</p>
+                            </div>
+                            <div className='flex w-8 space-x-1'>
+                              <img
+                                src={VolunteerIcon}
+                                alt="Volunteer Icon"
+                                className="ml-2 h-5 w-5"
+                              />
+                              <p> {survey.responses.length}</p>
+                            </div>
+                            <div className='flex w-8 space-x-1'>
+                              <img
+                                src={CalendarIcon}
+                                alt="Calendar Icon"
+                                className=" h-5 w-5"
+                              />
+                              <p> {daysRemaining(survey.endDate)}</p>
+                            </div>
+                          </div>
                         </div>
-                        <p>Days remaining: {daysRemaining(survey.endDate)}</p>
                         {expandedSurveyId === survey._id && (
-                          <div className="absolute bg-slate-900 rounded w-full right-0">
+                          <div className="bg-slate-900 rounded ">
                             <div className=" grid grid-cols-2 gap-3 overflow-y-auto max-h-full ">
                               {survey.questions.map((question, index) => (
-                                <div key={question.text} className="bg-slate-900 p-4 rounded mt-4">
+                                <div key={question.text} className={` p-4 rounded mt-4 ${survey.questions.length === 1 ? "col-span-2" : ""}`}>
                                   <p className="font-semibold">{question.text}</p>
                                   <div className="mt-2 text-slate-300">
                                     {renderAnswerStats(survey, index)}

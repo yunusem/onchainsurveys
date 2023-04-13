@@ -96,28 +96,29 @@ function NavigationBar() {
                         <img src={Logo} alt="logo" width="512px" />
                     </Link>
                 </div>
-                <div name="menu" className="flex-col">
+                <div name="menu" className="flex flex-col">
                     <div
-                        className={`h-16 rounded items-center  ${isCreateActive(
-                            '/surveys/new'
-                        )}`}
-                    >
+                        className={`h-16 rounded items-center  ${isCreateActive('/surveys/new')}`}>
                         <Link to="/surveys/new">
-                            <div className="h-full flex items-center justify-center ">
+                            <div className="h-full flex items-center ml-8 ">
                                 Create +
                             </div>
                         </Link>
                     </div>
-                    <Link to="/surveysall">
-                        <div className={`h-16 text-white flex rounded justify-center items-center ${isActive('/surveysall')}`}>
-                            History
-                        </div>
-                    </Link>
-                    <Link to="/surveys">
-                        <div className={`h-16 text-white flex rounded justify-center items-center ${isActive('/surveys')}`}>
-                            My Surveys
-                        </div>
-                    </Link>
+                    <div className={`h-16 rounded items-center ${isActive('/surveysall')}`}>
+                        <Link to="/surveysall">
+                            <div className={`h-full flex items-center ml-8 `}>
+                                History
+                            </div>
+                        </Link>
+                    </div>
+                    <div className={`h-16 rounded items-center ${isActive('/surveys')}`}>
+                        <Link to="/surveys">
+                            <div className={`h-full flex items-center ml-8`}>
+                                My Surveys
+                            </div>
+                        </Link>
+                    </div>
                 </div>
                 <div className="card bg-slate-800 p-2 h-24 justify-end">
                     <div className="grid grid-rows-3 grid-flow-col gap-2">
