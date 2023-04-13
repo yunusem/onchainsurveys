@@ -120,22 +120,53 @@ function SurveyUser() {
     }
     return survey.createdBy._id === userId;
   });
+  const renderSurveyQuestions = () => {
+    const survey = surveys.find(s => s._id === expandedSurveyId);
+    if (!survey) {
+      return <div className="text-center text-white">Select a survey to view its questions.</div>;
+    }
 
+    return (
+      <div className="border border-red-500 rounded p-4 h-full overflow-y-auto w-full">
+        <div className='flex  justify-between'>
+
+          <h3 className="text-xl font-semibold mb-4">{survey.title}</h3>
+          <button
+            type="button"
+            onClick={() => history.push(`/surveys/${survey._id}/edit`)}
+            className="bg-slate-500 rounded font-semibold text-white h-8 w-12 bottom-0"
+          >
+            Edit
+          </button>
+        </div>
+        <div className="space-y-4">
+          {survey.questions.map((question, index) => (
+            <div key={question.text} className="bg-slate-600 p-4 rounded w-full min-w-[450px] overflow-y-auto">
+              <p className="font-semibold">{question.text}</p>
+              <div className="mt-2 text-slate-300 ">
+                {renderAnswerStats(survey, index)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
   return (
     <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
       <NavigationBar />
       <div className="flex flex-col h-screen w-full">
-        <div className=" flex flex-col overflow-y-auto h-full">
-          <div className='flex w-full justify-center'>
-            <div className='flex w-3/4 h-24 items-center'>
+        <div className=" flex flex-col overflow-y-auto h-full ">
+          <div className='flex w-full justify-center '>
+            <div className='flex w-3/4 h-24 items-center '>
               <h1 className=" text-3xl font-bold  text-white   text-left">
                 {'My Own Surveys'}
               </h1>
             </div>
           </div>
           {mySurveys.length === 0 ? (
-            <div className='flex  h-full items-center justify-center'>
-              <div className="text-center w-48">
+            <div className='flex  h-full items-center justify-center '>
+              <div className="text-center w-48 ">
                 <p className="font-medium ">
                   You have not created a survey yet.
                   <Link to="/surveys/new" className="text-red-500 font-semibold">
@@ -146,81 +177,68 @@ function SurveyUser() {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col h-[720px] overflow-y-auto w-full items-center">
-              <div className='h-full w-3/4'>
-                <ul className="flex flex-col space-y-4">
-                  {mySurveys &&
-                    mySurveys.map((survey) => (
-                      <li
-                        key={survey._id}
-                        className={` flex flex-col justify-between p-4 rounded transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-900 h-auto" : " h-24 bg-slate-700"
-                          }`}
-                        onClick={() => toggleSurvey(survey._id)}
-                      >
-                        <div className="flex justify-between ">
-                          <h3 className="text-xl font-semibold">{survey.title}</h3>
-
-                        </div>
-                        <div className="flex justify-between ">
-                          <div className='flex items-center space-x-10'>
-                            <div className='flex w-8 space-x-1'>
-                              <img
-                                src={CoinLogo}
-                                alt="Casper Coin Logo"
-                                className="h-5 w-5 "
-                              />
-                              <p> {survey.rewardPerResponse} </p>
-                            </div>
-                            <div className='flex w-8 space-x-1'>
-                              <img
-                                src={QuestionIcon}
-                                alt="Question Icon"
-                                className=" h-5 w-5"
-                              />
-                              <p> {survey.questions.length}</p>
-                            </div>
-                            <div className='flex w-8 space-x-1'>
-                              <img
-                                src={VolunteerIcon}
-                                alt="Volunteer Icon"
-                                className="h-5 w-5"
-                              />
-                              <p> {survey.responses.length}</p>
-                            </div>
-                            <div className='flex w-8 space-x-1'>
-                              <img
-                                src={CalendarIcon}
-                                alt="Calendar Icon"
-                                className="h-5 w-5"
-                              />
-                              <p> {daysRemaining(survey.endDate)}</p>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-                            className="bg-slate-500 rounded font-semibold text-white h-8 w-12 bottom-0"
+            <div className="flex flex-col h-[720px]  w-full items-center ">
+              <div className='flex h-full w-3/4  '>
+                <div className='flex w-full  justify-between '>
+                  <div className=' h-fit w-full overflow-y-auto'>
+                    <ul className=" flex flex-col space-y-4">
+                      {mySurveys &&
+                        mySurveys.map((survey) => (
+                          <li
+                            key={survey._id}
+                            className={` flex flex-col justify-between p-4 rounded transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 h-auto border border-red-500" : " h-24 bg-slate-700"
+                              }`}
+                            onClick={() => toggleSurvey(survey._id)}
                           >
-                            Edit
-                          </button>
-                        </div>
-                        {expandedSurveyId === survey._id && (
-                          <div className="bg-slate-900 rounded ">
-                            <div className=" grid grid-cols-2 gap-3 overflow-y-auto max-h-full ">
-                              {survey.questions.map((question, index) => (
-                                <div key={question.text} className={` p-4 rounded mt-4 ${survey.questions.length === 1 ? "col-span-2" : ""}`}>
-                                  <p className="font-semibold">{question.text}</p>
-                                  <div className="mt-2 text-slate-300">
-                                    {renderAnswerStats(survey, index)}
-                                  </div>
-                                </div>
-                              ))}
+                            <div className="flex justify-between ">
+                              <h3 className="text-xl font-semibold">{survey.title}</h3>
+
                             </div>
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                </ul>
+                            <div className="flex justify-between ">
+                              <div className='flex items-center space-x-10'>
+                                <div className='flex w-8 space-x-1'>
+                                  <img
+                                    src={CoinLogo}
+                                    alt="Casper Coin Logo"
+                                    className="h-5 w-5 "
+                                  />
+                                  <p> {survey.rewardPerResponse} </p>
+                                </div>
+                                <div className='flex w-8 space-x-1'>
+                                  <img
+                                    src={QuestionIcon}
+                                    alt="Question Icon"
+                                    className=" h-5 w-5"
+                                  />
+                                  <p> {survey.questions.length}</p>
+                                </div>
+                                <div className='flex w-8 space-x-1'>
+                                  <img
+                                    src={VolunteerIcon}
+                                    alt="Volunteer Icon"
+                                    className="h-5 w-5"
+                                  />
+                                  <p> {survey.responses.length}</p>
+                                </div>
+                                <div className='flex w-8 space-x-1'>
+                                  <img
+                                    src={CalendarIcon}
+                                    alt="Calendar Icon"
+                                    className="h-5 w-5"
+                                  />
+                                  <p> {daysRemaining(survey.endDate)}</p>
+                                </div>
+                              </div>
+
+                            </div>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                  <div className='h-[720px] w-full ml-3 flex '>
+                    {expandedSurveyId && renderSurveyQuestions()}
+                  </div>
+                </div>
               </div>
             </div>
           )}
