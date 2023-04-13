@@ -134,8 +134,8 @@ function SurveyUser() {
             </div>
           </div>
           {mySurveys.length === 0 ? (
-            <div className='flex w-48 items-center justify-center'>
-              <div className="text-center ">
+            <div className='flex  h-full items-center justify-center'>
+              <div className="text-center w-48">
                 <p className="font-medium ">
                   You have not created a survey yet.
                   <Link to="/surveys/new" className="text-red-500 font-semibold">
