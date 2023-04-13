@@ -29,7 +29,7 @@ exports.activateUser = async (req, res) => {
 
     const pageCount = await fetchCsprLiveAccountData(user.publicAddress);
 
-    if (pageCount >= 0) {
+    if (pageCount >= 1) {
       user.active = true;
       await user.save();
       res.status(200).json({ success: true, message: 'User successfully activated' });
