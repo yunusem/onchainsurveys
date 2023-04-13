@@ -98,14 +98,25 @@ function SurveyUser() {
       return (
         <div
           key={answer.text}
-          className="bg-slate-700 px-4 py-2 mb-2 rounded text-sm flex justify-between items-center"
+          className="relative bg-slate-700  mb-2 rounded text-sm flex justify-between items-center"
         >
-          <div>{answer.text}</div>
-          <div>{answerPercentage}%</div>
+          
+          <div
+            style={{ width: `${answerPercentage}%` }}
+            className=" bg-slate-600 rounded py-4  mr-2"
+            
+          >
+            </div>
+            <div className='text-slate-400 mr-2'>{answerPercentage}%</div>
+            <div className='absolute ml-3 w-full'>{answer.text}</div>
+          
+          
+          
         </div>
       );
     });
   };
+
 
   const daysRemaining = (endDate) => {
     const now = new Date();
@@ -127,23 +138,23 @@ function SurveyUser() {
     }
 
     return (
-      <div className="border border-red-500 rounded p-4 h-full overflow-y-auto w-full">
+      <div className="border border-red-500  rounded p-4 h-full overflow-y-auto w-full">
         <div className='flex  justify-between'>
 
-          <h3 className="text-xl font-semibold mb-4">{survey.title}</h3>
+          <h3 className="text-xl font-semibold mb-4 text-red-500">{survey.title}</h3>
           <button
             type="button"
             onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-            className="bg-slate-500 rounded font-semibold text-white h-8 w-12 bottom-0"
+            className="bg-slate-900 rounded font-semibold text-white h-8 w-12 bottom-0"
           >
             Edit
           </button>
         </div>
         <div className="space-y-4">
           {survey.questions.map((question, index) => (
-            <div key={question.text} className="bg-slate-600 p-4 rounded w-full min-w-[450px] overflow-y-auto">
+            <div key={question.text} className="  rounded w-full min-w-[450px] overflow-y-auto">
               <p className="font-semibold">{question.text}</p>
-              <div className="mt-2 text-slate-300 ">
+              <div className="mr-3 mt-2 text-slate-300 ">
                 {renderAnswerStats(survey, index)}
               </div>
             </div>
@@ -180,18 +191,20 @@ function SurveyUser() {
             <div className="flex flex-col h-[720px]  w-full items-center ">
               <div className='flex h-full w-3/4  '>
                 <div className='flex w-full  justify-between '>
-                  <div className=' h-fit w-full overflow-y-auto'>
+                  <div className='h-full w-full overflow-y-auto'>
                     <ul className=" flex flex-col space-y-4">
                       {mySurveys &&
                         mySurveys.map((survey) => (
                           <li
                             key={survey._id}
-                            className={` flex flex-col justify-between p-4 rounded transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 h-auto border border-red-500" : " h-24 bg-slate-700"
+                            className={` flex flex-col h-24 justify-between p-4 rounded transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 border border-red-500" : "  bg-slate-700 text-slate-400"
                               }`}
                             onClick={() => toggleSurvey(survey._id)}
                           >
-                            <div className="flex justify-between ">
-                              <h3 className="text-xl font-semibold">{survey.title}</h3>
+                            <div className="flex justify-between "> 
+                              <h3 className={` text-xl font-semibold   ${daysRemaining(survey.endDate) === 0 ? "line-through" : ""
+                              }`}>
+                                {survey.title}</h3>
 
                             </div>
                             <div className="flex justify-between ">
