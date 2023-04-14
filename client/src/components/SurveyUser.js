@@ -125,6 +125,13 @@ function SurveyUser() {
     return diff > 0 ? diff : 0;
   };
 
+  const isSurveyEnded = (endDate) => {
+    const now = new Date();
+    const end = new Date(endDate);
+    const diff = end - now;
+    return diff > 0 ? diff : 0;
+  };
+
   const mySurveys = surveys.filter(survey => {
     if (!survey.createdBy) {
       return false;
@@ -145,7 +152,7 @@ function SurveyUser() {
           <button
             type="button"
             onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-            className="bg-slate-900 rounded font-semibold text-white h-8 w-12 bottom-0"
+            className={`bg-slate-900 rounded font-semibold text-white h-8 w-12 bottom-0 ${(daysRemaining(survey.endDate) === 0 || survey.responses.length > 0) ? "hidden" : ""}`}
           >
             Edit
           </button>
@@ -202,7 +209,7 @@ function SurveyUser() {
                             onClick={() => toggleSurvey(survey._id)}
                           >
                             <div className="flex justify-between "> 
-                              <h3 className={` text-xl font-semibold   ${daysRemaining(survey.endDate) === 0 ? "line-through" : ""
+                              <h3 className={` text-xl font-semibold   ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""
                               }`}>
                                 {survey.title}</h3>
 
