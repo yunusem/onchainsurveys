@@ -16,8 +16,8 @@ function SurveyForm() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isCurrentQuestionValidForNewAnswer, setIsCurrentQuestionValidForNewAnswer] = useState(false);
   const [areAllInputsFilled, setAreAllInputsFilled] = useState(false);
-  const [reward, setReward] = useState('');
-  const [plimit, setPlimit] = useState('');
+  const [reward, setReward] = useState(0);
+  const [plimit, setPlimit] = useState(0);
   const [pminbalance, setPminBalance] = useState(10);
   const [pminstake, setPminStake] = useState(1);
   const [paccage, setPaccAge] = useState(1);
@@ -35,18 +35,20 @@ function SurveyForm() {
         setPlimit('');
         return;
       }
-      const data = await fetchSurvey(id);
-      
-      setTitle(data.title);
-      setQuestions(data.questions);
-      setStartDate(data.startDate);
-      setEndDate(new Date(data.endDate).toISOString().slice(0, 10));
-      setReward(data.rewardPerResponse);
-      setPlimit(data.participantsLimit);
-      setPminBalance(data.minimumRequiredBalance);
-      setPminStake(data.minimumRequiredStake);
-      setPaccAge(data.minimumAgeInDays);
-      setPValidator(Boolean(data.validatorStatus));
+      else {
+        const data = await fetchSurvey(id);
+
+        setTitle(data.title);
+        setQuestions(data.questions);
+        setStartDate(data.startDate);
+        setEndDate(new Date(data.endDate).toISOString().slice(0, 10));
+        setReward(data.rewardPerResponse);
+        setPlimit(data.participantsLimit);
+        setPminBalance(data.minimumRequiredBalance);
+        setPminStake(data.minimumRequiredStake);
+        setPaccAge(data.minimumAgeInDays);
+        setPValidator(Boolean(data.validatorStatus));
+      }
     };
 
     loadSurvey();
@@ -251,7 +253,7 @@ function SurveyForm() {
                 <p className='text-slate-300 text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-red-500'>Casper</span> </a> Blockchain Technology.</p>            </div>
             </div>
             <div className="w-3/4">
-              <div className="w-3/4">
+              <div className="w-1/2">
                 <div className="flex justify-center mt-3  h-full">
                   <div className="text-white justify-center  w-full p-1">
                     <form onSubmit={handleSubmit} className="w-full">
@@ -261,7 +263,6 @@ function SurveyForm() {
                             Title
                           </label>
                         </div>
-
                       </div>
                       <div className='flex'>
                         <input
@@ -273,13 +274,13 @@ function SurveyForm() {
                           placeholder='A relevant title of the survey'
                         />
                       </div>
-                      <hr className='border-slate-400 mt-4 h-3 w-full '></hr>
+                      <hr className='border-slate-500 mt-4 h-3 w-full '></hr>
                       {questions.map((question, questionIndex) => (
                         questionIndex === activeQuestionIndex && (
                           <div key={questionIndex} className=" relative ">
-                            <div className="flex flex-col ">
-                              <div className=' flex justify-between items-center mb-2'>
-                                <div>
+                            <div className="flex flex-col  ">
+                              <div className='flex  items-center space-x-6 mb-2'>
+                                <div >
                                   <label htmlFor={`question-${questionIndex}`} className="font-medium">
                                     Question {questionIndex + 1}
                                   </label>
@@ -316,7 +317,7 @@ function SurveyForm() {
                                   <button
                                     type="button"
                                     onClick={() => removeQuestion(questionIndex)}
-                                    className="absolute right-0 top-7 ml-2 bg-slate-700 px-2 text-slate-300 rounded text-xl"
+                                    className="absolute right-0 top-8 ml-2 bg-slate-700 px-2 text-slate-300 rounded text-xl"
                                   >
                                     x
                                   </button>
@@ -330,7 +331,7 @@ function SurveyForm() {
                                     type="text"
                                     id={`question-${questionIndex}-answer-${answerIndex}`}
                                     value={answer.text}
-                                    placeholder={`Answer ${answerIndex + 1}`}
+                                    placeholder={`Option ${answerIndex + 1}`}
                                     onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
                                     className="p-2 h-8 bg-slate-600 rounded mt-1 text-whit font-medium outline-none focus:outline-red-500 flex-grow"
                                   />
@@ -350,7 +351,7 @@ function SurveyForm() {
                               <button
                                 type="button"
                                 onClick={() => addAnswer(questionIndex)}
-                                className={`bg-red-500 rounded font-semibold text-white mr-2 h-8 w-40 ${!isCurrentQuestionValidForNewAnswer && 'opacity-50 cursor-not-allowed'}`}
+                                className={`bg-red-500 rounded font-semibold text-white mr-2 h-8 w-48 px-2 ${!isCurrentQuestionValidForNewAnswer && 'opacity-50 cursor-not-allowed'}`}
                                 disabled={!isCurrentQuestionValidForNewAnswer}
                               >
                                 Add Answer
@@ -359,7 +360,7 @@ function SurveyForm() {
                                 or
                               </div>
                               <button
-                                className={`text-red-500  h-8 w-48 ${!isFormValid && 'opacity-50 cursor-not-allowed'}`}
+                                className={`text-red-500  h-8 w-56 ${!isFormValid && 'opacity-50 cursor-not-allowed'}`}
                                 onClick={addQuestion}
                                 disabled={!isFormValid}
                               >
@@ -371,7 +372,7 @@ function SurveyForm() {
                                 </div>
                               </div>
                             </div>
-                            <hr className='border-slate-400  h-3 mt-3 w-full '></hr>
+                            <hr className='border-slate-500  h-3 mt-3 w-full '></hr>
                           </div>
                         )))}
                       <div className="grid space-y-3">
@@ -422,7 +423,7 @@ function SurveyForm() {
                                 id="minbalance"
                                 value={pminbalance}
                                 onChange={(e) => setPminBalance(e.target.value)}
-                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
                                 placeholder="Balance"
                               />
 
@@ -434,7 +435,7 @@ function SurveyForm() {
                                 id="minstake"
                                 value={pminstake}
                                 onChange={(e) => setPminStake(e.target.value)}
-                                className={`p-2 h-8 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded w-20 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
                                 placeholder="Stake"
                               />
 
@@ -446,7 +447,7 @@ function SurveyForm() {
                                 id="age"
                                 value={paccage}
                                 onChange={(e) => setPaccAge(e.target.value)}
-                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
                                 placeholder="Age" // in days
                               />
 
@@ -457,7 +458,7 @@ function SurveyForm() {
                                 id="validator"
                                 value={pvalidator}
                                 onChange={(e) => setPValidator(e.target.value)}
-                                className={`px-1 h-8 rounded w-28 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
+                                className={`px-1 h-8 rounded w-28 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
                               >
                                 <option value="true">True</option>
                                 <option value="false">False</option>
