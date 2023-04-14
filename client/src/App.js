@@ -5,7 +5,6 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Survey from './components/Survey';
 import SurveyHistory from './components/SurveyHistory';
-import SurveyUser from './components/SurveyUser';
 import SurveyForm from './components/SurveyForm';
 import ThankYou from './components/ThankYou';
 import CasperWalletPresence from './components/CasperWalletPresence';
@@ -39,8 +38,7 @@ function App() {
               <Route path="/" exact component={Home} />
               <Route path="/login" component={Login} />
               <PrivateRoute path="/survey/:id" component={Survey} />
-              <PrivateRoute path="/surveys" exact component={SurveyUser} />
-              <PrivateRoute path="/surveysall" exact component={SurveyHistory} />
+              <PrivateRoute path="/surveys" exact component={SurveyHistory} />
               <PrivateRoute path="/surveys/new" component={SurveyForm} />
               <PrivateRoute path="/surveys/:id/edit" component={SurveyForm} />
               <Route path="/thankyou" component={ThankYou} />

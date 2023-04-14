@@ -4,14 +4,15 @@ import { fetchSurveys } from '../api';
 import NavigationBar from './NavigationBar';
 import QuestionIcon from "../assets/question-mark.svg";
 import VolunteerIcon from "../assets/volunteer.svg";
+import VolunteerRedIcon from "../assets/volunteer-red.svg";
 import CalendarIcon from "../assets/calendar.svg";
-import CoinLogo from "../assets/caspercoin-logo.svg";
+import CoinLogo from "../assets/casper-logo.svg";
 
 function SurveyHistory() {
   const [surveys, setSurveys] = useState([]);
   const [expandedSurveyId, setExpandedSurveyId] = useState(null);
+  const [filter, setFilter] = useState('All');
   const history = useHistory();
-  const [isSurveyFiltered, setIsSurveyFiltered] = useState(false);
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
   const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
@@ -82,6 +83,45 @@ function SurveyHistory() {
     }
   };
 
+  
+
+  const daysRemaining = (endDate) => {
+    const now = new Date();
+    const end = new Date(endDate);
+    const diff = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+    return diff > 0 ? diff : 0;
+  };
+
+  const isSurveyEnded = (endDate) => {
+    const now = new Date();
+    const end = new Date(endDate);
+    const diff = end - now;
+    return diff > 0 ? diff : 0;
+  };
+
+  const isParticipated = (survey) => {
+    return survey.responses.some((response) => response.user === userId);
+  }
+
+  const isMyAnswer = (survey, answer) => {
+    return survey.responses.some(
+      (response) =>
+        response.user === userId &&
+        response.answers.includes(answer.text)
+    );
+  };
+
+  const isSurveyEditable = (survey) => {
+    if(survey.createdBy && survey.createdBy._id === userId) {
+      if(daysRemaining(survey.endDate) === 0) {
+        if(survey.responses.length > 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   const renderAnswerStats = (survey, questionIndex) => {
     const questionResponses = survey.responses.map(
       (response) => response.answers[questionIndex]
@@ -99,139 +139,188 @@ function SurveyHistory() {
       return (
         <div
           key={answer.text}
-          className="bg-slate-700 px-4 py-2 mb-2 rounded text-sm flex justify-between items-center"
+          className="relative  mb-2 rounded text-sm flex justify-between items-center bg-slate-700 "
         >
-          <div>{answer.text}</div>
-          <div>{answerPercentage}%</div>
+          <div
+            style={{ width: `${answerPercentage}%` }}
+            className={`rounded py-4  mr-2 ${isMyAnswer(survey,answer) ? "bg-red-400" : "bg-slate-600 "}`}  
+          >
+          </div>
+          <div className='text-slate-400 mr-2'>{answerPercentage}%</div>
+          <div className={`absolute ml-3 w-full ${isMyAnswer(survey,answer) ? "text-slate-800 font-semibold" : ""}`} 
+          >{answer.text}</div>
+
         </div>
       );
     });
   };
 
-  const daysRemaining = (endDate) => {
-    const now = new Date();
-    const end = new Date(endDate);
-    const diff = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
-    return diff > 0 ? diff : 0;
+
+  const renderSurveyQuestions = () => {
+    const survey = surveys.find(s => s._id === expandedSurveyId);
+    if (!survey) {
+      return <div className="text-center text-white">Select a survey to view its questions.</div>;
+    }
+    return (
+      <div className="border border-red-500  rounded p-4 h-full overflow-y-auto w-full">
+        <div className='flex  justify-between'>
+
+          <h3 className="text-xl font-semibold mb-4 text-red-500">{survey.title}</h3>
+          <button
+            type="button"
+            onClick={() => history.push(`/surveys/${survey._id}/edit`)}
+            className={`bg-slate-900 rounded font-semibold text-white h-8 w-12 bottom-0 ${isSurveyEditable(survey) ?  "" : "hidden"}`}
+          >
+            Edit
+          </button>
+        </div>
+        <div className="space-y-4">
+          {survey.questions.map((question, index) => (
+            <div key={question.text} className="  rounded w-full min-w-[450px] overflow-y-auto">
+              <p className="font-semibold">{question.text}</p>
+              <div className="mr-3 mt-2 text-slate-300 ">
+                {renderAnswerStats(survey, index)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
-  const participatedSurveys = () => {
-    return surveys.filter((survey) =>
-      survey.responses.some((response) => response.user === userId)
-    );
+  const getFilteredSurveys = () => {
+    if (filter === 'MyOwnSurvey') {
+      return surveys.filter(survey => survey.createdBy && survey.createdBy._id === userId);
+    } else if (filter === 'All') {
+      return surveys;
+    } else if (filter === 'MyHistory') {
+      return surveys.filter(survey => survey.responses.some(response => response.user === userId));
+    }
   };
 
   return (
     <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
       <NavigationBar />
-      <div className="flex flex-col h-screen w-full ">
-        {surveys.length !== 0 &&
-          (<div className='flex items-center justify-center'>
-            <div className='flex w-3/4 items-center'>
-              <h2 className="mt-3 text-white h-12">
-                Filter:{"  "}
-                <button
-                  className={`${!isSurveyFiltered ? "text-red-500" : "text-white"
-                    }`}
-                  onClick={() => setIsSurveyFiltered(false)}
-                >
-                  All
-                </button>{", "}
-                <button
-                  className={`${isSurveyFiltered ? "text-red-500" : "text-white"
-                    }`}
-                  onClick={() => setIsSurveyFiltered(true)}
-                >
-                  My History
-                </button>
-              </h2>
+      <div className="flex flex-col h-screen w-full">
+        <div className=" flex flex-col overflow-y-auto h-full ">
+          <div className='flex flex-col '>
+          <div className='flex w-full  justify-center'>
+            <div className='flex  mt-7 w-3/4 items-center '>
+              <h1 className=" text-3xl font-bold  text-white">
+                History
+              </h1>
             </div>
-          </div>)
-        }
-        <div className="h-screen">
-          {surveys.length === 0 && (
-            <div className=" text-center">
-              <p className="mt-2 font-medium text-sm">
-                There are no surveys created yet.
-                <Link to="/surveys/new" className="text-red-500 font-semibold">
-                  {" "}
-                  Create One?
-                </Link>
-              </p>
+            </div>
+              <div className='flex  items-center justify-center'>
+                <div className='flex w-3/4 items-center'>
+                  <h2 className="mt-3 text-slate-300 h-12">
+                    Filter:{"  "}
+                    <button
+                      className={`${filter === 'All' ? "text-red-500" : "text-slate-300"
+                        }`}
+                      onClick={() => setFilter('All')}
+                    >
+                      All
+                    </button>
+                    {", "}
+                    <button
+                      className={`${filter === 'MyHistory' ? "text-red-500" : "text-slate-300"
+                        }`}
+                      onClick={() => setFilter('MyHistory')}
+                    >
+                      My History
+                    </button>
+                    {", "}
+                    <button
+                      className={`${filter === 'MyOwnSurvey' ? "text-red-500" : "text-slate-300"
+                        }`}
+                      onClick={() => setFilter('MyOwnSurvey')}
+                    >
+                      My Own Surveys
+                    </button>
+                  </h2>
+                </div>
+              </div>
+          </div>
+          {getFilteredSurveys().length === 0 ? (
+            <div className='flex  h-full items-center justify-center '>
+              <div className="text-center w-48 ">
+                <p className="font-medium ">
+                  You have not created a survey yet.
+                  <Link to="/surveys/new" className="text-red-500 font-semibold">
+                    {" "}
+                    Create One?
+                  </Link>
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col h-[720px]  w-full items-center ">
+              <div className='flex h-full w-3/4  '>
+                <div className='flex w-full  justify-between '>
+                  <div className='h-full w-full overflow-y-auto'>
+                    <ul className=" flex flex-col space-y-4">
+                      {surveys && getFilteredSurveys().map((survey) => (
+                        <li
+                          key={survey._id}
+                          className={` flex flex-col h-24 justify-between p-4 rounded transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 border border-red-500" : "  bg-slate-700 text-slate-400"
+                            }`}
+                          onClick={() => toggleSurvey(survey._id)}
+                        >
+                          <div className="flex justify-between ">
+                            <h3 className={` text-xl font-semibold   ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""
+                              }`}>
+                              {survey.title}</h3>
+
+                          </div>
+                          <div className="flex justify-between ">
+                            <div className='flex items-center space-x-10'>
+                              <div className='flex w-8 space-x-1'>
+                                <img
+                                  src={CoinLogo}
+                                  alt="Casper Coin Logo"
+                                  className="h-5 w-5 "
+                                />
+                                <p> {survey.rewardPerResponse} </p>
+                              </div>
+                              <div className='flex w-8 space-x-1'>
+                                <img
+                                  src={QuestionIcon}
+                                  alt="Question Icon"
+                                  className=" h-5 w-5"
+                                />
+                                <p> {survey.questions.length}</p>
+                              </div>
+                              <div className='flex w-8 space-x-1'>
+                                <img
+                                  src={!isParticipated(survey) ? VolunteerIcon : VolunteerRedIcon} 
+                                  alt="Volunteer Icon"
+                                  className="h-5 w-5"
+                                />
+                                <p> {survey.responses.length}</p>
+                              </div>
+                              <div className='flex w-8 space-x-1'>
+                                <img
+                                  src={CalendarIcon}
+                                  alt="Calendar Icon"
+                                  className="h-5 w-5"
+                                />
+                                <p> {daysRemaining(survey.endDate)}</p>
+                              </div>
+                            </div>
+
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className='h-[720px] w-full ml-3 flex '>
+                    {expandedSurveyId && renderSurveyQuestions()}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
-          <div className="flex flex-col h-[720px]  overflow-y-auto w-full items-center">
-            <div className='h-full w-3/4'>
-              <ul className="flex flex-col space-y-4">
-                {surveys &&
-                  surveys
-                    .filter((survey) => !isSurveyFiltered || participatedSurveys().includes(survey))
-                    .map((survey) => (
-                      <li
-                        key={survey._id}
-                        className={` flex flex-col justify-between p-3 rounded transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-900 h-auto" : " h-24 bg-slate-700"
-                          }`}
-                        onClick={() => toggleSurvey(survey._id)}
-                      >
-                        <div className="flex justify-between ">
-                          <h3 className="text-xl font-semibold">{survey.title}</h3>
-
-                        </div>
-                        <div className="flex justify-between ">
-                          <div className='flex items-center space-x-10'>
-                            <div className='flex w-8 space-x-1'>
-                              <img
-                                src={CoinLogo}
-                                alt="Casper Coin Logo"
-                                className=" h-5 w-5 "
-                              />
-                              <p> {survey.rewardPerResponse} </p>
-                            </div>
-                            <div className='flex w-8 space-x-1'>
-                              <img
-                                src={QuestionIcon}
-                                alt="Question Icon"
-                                className=" h-5 w-5"
-                              />
-                              <p> {survey.questions.length}</p>
-                            </div>
-                            <div className='flex w-8 space-x-1'>
-                              <img
-                                src={VolunteerIcon}
-                                alt="Volunteer Icon"
-                                className="ml-2 h-5 w-5"
-                              />
-                              <p> {survey.responses.length}</p>
-                            </div>
-                            <div className='flex w-8 space-x-1'>
-                              <img
-                                src={CalendarIcon}
-                                alt="Calendar Icon"
-                                className=" h-5 w-5"
-                              />
-                              <p> {daysRemaining(survey.endDate)}</p>
-                            </div>
-                          </div>
-                        </div>
-                        {expandedSurveyId === survey._id && (
-                          <div className="bg-slate-900 rounded ">
-                            <div className=" grid grid-cols-2 gap-3 overflow-y-auto max-h-full ">
-                              {survey.questions.map((question, index) => (
-                                <div key={question.text} className={` p-4 rounded mt-4 ${survey.questions.length === 1 ? "col-span-2" : ""}`}>
-                                  <p className="font-semibold">{question.text}</p>
-                                  <div className="mt-2 text-slate-300">
-                                    {renderAnswerStats(survey, index)}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </li>
-                    ))}
-              </ul>
-            </div>
-          </div>
         </div>
       </div>
     </div>

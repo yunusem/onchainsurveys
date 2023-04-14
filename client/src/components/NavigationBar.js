@@ -105,17 +105,10 @@ function NavigationBar() {
                             </div>
                         </Link>
                     </div>
-                    <div className={`h-16 rounded items-center ${isActive('/surveysall')}`}>
-                        <Link to="/surveysall">
-                            <div className={`h-full flex items-center ml-8 `}>
-                                History
-                            </div>
-                        </Link>
-                    </div>
                     <div className={`h-16 rounded items-center ${isActive('/surveys')}`}>
                         <Link to="/surveys">
-                            <div className={`h-full flex items-center ml-8`}>
-                                My Surveys
+                            <div className={`h-full flex items-center ml-8 `}>
+                                History
                             </div>
                         </Link>
                     </div>
