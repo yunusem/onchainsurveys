@@ -83,7 +83,7 @@ function SurveyHistory() {
     }
   };
 
-  
+
 
   const daysRemaining = (endDate) => {
     const now = new Date();
@@ -112,9 +112,9 @@ function SurveyHistory() {
   };
 
   const isSurveyEditable = (survey) => {
-    if(survey.createdBy && survey.createdBy._id === userId) {
-      if(daysRemaining(survey.endDate) === 0) {
-        if(survey.responses.length > 0) {
+    if (survey.createdBy && survey.createdBy._id === userId) {
+      if (daysRemaining(survey.endDate) !== 0) {
+        if (survey.responses.length === 0) {
           return true;
         }
       }
@@ -138,16 +138,16 @@ function SurveyHistory() {
 
       return (
         <div
-          key={answer.text}
+          key={answer._id}
           className="relative  mb-2 rounded text-sm flex justify-between items-center bg-slate-700 "
         >
           <div
             style={{ width: `${answerPercentage}%` }}
-            className={`rounded py-4  mr-2 ${isMyAnswer(survey,answer) ? "bg-red-400" : "bg-slate-600 "}`}  
+            className={`rounded py-4  mr-2 ${isMyAnswer(survey, answer) ? "bg-red-400" : "bg-slate-600 "}`}
           >
           </div>
           <div className='text-slate-400 mr-2'>{answerPercentage}%</div>
-          <div className={`absolute ml-3 w-full ${isMyAnswer(survey,answer) ? "text-slate-800 font-semibold" : ""}`} 
+          <div className={`absolute ml-3 w-full ${isMyAnswer(survey, answer) ? "text-slate-800 font-semibold" : ""}`}
           >{answer.text}</div>
 
         </div>
@@ -161,6 +161,7 @@ function SurveyHistory() {
     if (!survey) {
       return <div className="text-center text-white">Select a survey to view its questions.</div>;
     }
+    
     return (
       <div className="border border-red-500  rounded p-4 h-full overflow-y-auto w-full">
         <div className='flex  justify-between'>
@@ -169,14 +170,14 @@ function SurveyHistory() {
           <button
             type="button"
             onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-            className={`bg-slate-900 rounded font-semibold text-white h-8 w-12 bottom-0 ${isSurveyEditable(survey) ?  "" : "hidden"}`}
+            className={`bg-slate-900 rounded font-semibold text-white h-8 w-12 bottom-0 ${isSurveyEditable(survey) ? "" : "hidden"}`}
           >
             Edit
           </button>
         </div>
         <div className="space-y-4">
           {survey.questions.map((question, index) => (
-            <div key={question.text} className="  rounded w-full min-w-[450px] overflow-y-auto">
+            <div key={question._id} className="  rounded w-full min-w-[450px] overflow-y-auto">
               <p className="font-semibold">{question.text}</p>
               <div className="mr-3 mt-2 text-slate-300 ">
                 {renderAnswerStats(survey, index)}
@@ -204,56 +205,82 @@ function SurveyHistory() {
       <div className="flex flex-col h-screen w-full">
         <div className=" flex flex-col overflow-y-auto h-full ">
           <div className='flex flex-col '>
-          <div className='flex w-full  justify-center'>
-            <div className='flex  mt-7 w-3/4 items-center '>
-              <h1 className=" text-3xl font-bold  text-white">
-                History
-              </h1>
-            </div>
-            </div>
-              <div className='flex  items-center justify-center'>
-                <div className='flex w-3/4 items-center'>
-                  <h2 className="mt-3 text-slate-300 h-12">
-                    Filter:{"  "}
-                    <button
-                      className={`${filter === 'All' ? "text-red-500" : "text-slate-300"
-                        }`}
-                      onClick={() => setFilter('All')}
-                    >
-                      All
-                    </button>
-                    {", "}
-                    <button
-                      className={`${filter === 'MyHistory' ? "text-red-500" : "text-slate-300"
-                        }`}
-                      onClick={() => setFilter('MyHistory')}
-                    >
-                      My History
-                    </button>
-                    {", "}
-                    <button
-                      className={`${filter === 'MyOwnSurvey' ? "text-red-500" : "text-slate-300"
-                        }`}
-                      onClick={() => setFilter('MyOwnSurvey')}
-                    >
-                      My Own Surveys
-                    </button>
-                  </h2>
-                </div>
+            <div className='flex w-full  justify-center'>
+              <div className='flex  mt-7 w-3/4 items-center '>
+                <h1 className=" text-3xl font-bold  text-white">
+                  History
+                </h1>
               </div>
+            </div>
+            <div className='flex  items-center justify-center'>
+              <div className='flex w-3/4 items-center'>
+                <h2 className="mt-3 text-slate-300 h-12">
+                  Filter:{"  "}
+                  <button
+                    className={`${filter === 'All' ? "text-red-500" : "text-slate-300"
+                      }`}
+                    onClick={() => setFilter('All')}
+                  >
+                    All
+                  </button>
+                  {", "}
+                  <button
+                    className={`${filter === 'MyHistory' ? "text-red-500" : "text-slate-300"
+                      }`}
+                    onClick={() => setFilter('MyHistory')}
+                  >
+                    My History
+                  </button>
+                  {", "}
+                  <button
+                    className={`${filter === 'MyOwnSurvey' ? "text-red-500" : "text-slate-300"
+                      }`}
+                    onClick={() => setFilter('MyOwnSurvey')}
+                  >
+                    My Own Surveys
+                  </button>
+                </h2>
+              </div>
+            </div>
           </div>
           {getFilteredSurveys().length === 0 ? (
-            <div className='flex  h-full items-center justify-center '>
-              <div className="text-center w-48 ">
-                <p className="font-medium ">
-                  You have not created a survey yet.
-                  <Link to="/surveys/new" className="text-red-500 font-semibold">
-                    {" "}
-                    Create One?
-                  </Link>
-                </p>
+            filter === 'MyOwnSurvey' ? (
+              <div className="flex h-full items-center justify-center">
+                <div className="text-center w-48">
+                  <p className="font-medium">
+                    You have not created a survey yet.
+                    <Link to="/surveys/new" className="text-red-500 font-semibold">
+                      {" "}
+                      Create One?
+                    </Link>
+                  </p>
+                </div>
               </div>
-            </div>
+            ) : filter === 'All' ? (
+              <div className="flex h-full items-center justify-center">
+                <div className="text-center w-40">
+                  <p className="font-medium">
+                    No surveys available.
+                    <Link to="/surveys/new" className="text-red-500 font-semibold">
+                      {" "}
+                      Create One?
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex h-full items-center justify-center">
+                <div className="text-center w-52">
+                  <p className="font-medium">
+                    You have not participated in any surveys yet.
+                    <Link to="/" className="text-red-500 font-semibold">
+                      {" "}
+                      Take One?
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            )
           ) : (
             <div className="flex flex-col h-[720px]  w-full items-center ">
               <div className='flex h-full w-3/4  '>
@@ -293,7 +320,7 @@ function SurveyHistory() {
                               </div>
                               <div className='flex w-8 space-x-1'>
                                 <img
-                                  src={!isParticipated(survey) ? VolunteerIcon : VolunteerRedIcon} 
+                                  src={!isParticipated(survey) ? VolunteerIcon : VolunteerRedIcon}
                                   alt="Volunteer Icon"
                                   className="h-5 w-5"
                                 />
