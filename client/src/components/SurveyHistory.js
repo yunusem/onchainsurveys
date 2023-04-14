@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { fetchSurveys } from '../api';
 import NavigationBar from './NavigationBar';
-import QuestionIcon from "../assets/question-mark.png";
-import VolunteerIcon from "../assets/volunteer.png";
-import CalendarIcon from "../assets/calendar.png";
+import QuestionIcon from "../assets/question-mark.svg";
+import VolunteerIcon from "../assets/volunteer.svg";
+import CalendarIcon from "../assets/calendar.svg";
 import CoinLogo from "../assets/caspercoin-logo.svg";
 
 function SurveyHistory() {
