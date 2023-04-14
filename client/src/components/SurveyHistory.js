@@ -286,11 +286,11 @@ function SurveyHistory() {
               <div className='flex h-full w-3/4  '>
                 <div className='flex w-full  justify-between '>
                   <div className='h-full w-full overflow-y-auto'>
-                    <ul className=" flex flex-col space-y-4">
+                    <ul className=" flex w-full flex-col space-y-4">
                       {surveys && getFilteredSurveys().map((survey) => (
                         <li
                           key={survey._id}
-                          className={` flex flex-col h-24 justify-between p-4 rounded transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 border border-red-500" : "  bg-slate-700 text-slate-400"
+                          className={` flex  w-full flex-col space-y-2 h-fit justify-between p-3 rounded transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 border border-red-500" : "  bg-slate-700 text-slate-400"
                             }`}
                           onClick={() => toggleSurvey(survey._id)}
                         >
@@ -300,8 +300,8 @@ function SurveyHistory() {
                               {survey.title}</h3>
 
                           </div>
-                          <div className="flex justify-between ">
-                            <div className='flex items-center space-x-10'>
+                          <div className="flex justify-between w-full">
+                            <div className='flex items-center space-x-8'>
                               <div className='flex w-8 space-x-1'>
                                 <img
                                   src={CoinLogo}
