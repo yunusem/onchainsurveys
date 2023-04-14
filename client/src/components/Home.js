@@ -113,7 +113,12 @@ function Home() {
       return false;
     }
     if (survey.responses.length > 0) {
-      return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date() && survey.responses.some((response) => response.user !== userId);
+      if(survey.responses.find((response) => response.user === userId)) {
+          return false;
+      } else if(new Date(survey.endDate) > new Date()) {
+          return survey.createdBy._id !== userId ;
+         
+      }
     }
     return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date();
   });
