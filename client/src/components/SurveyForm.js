@@ -17,26 +17,36 @@ function SurveyForm() {
   const [isCurrentQuestionValidForNewAnswer, setIsCurrentQuestionValidForNewAnswer] = useState(false);
   const [areAllInputsFilled, setAreAllInputsFilled] = useState(false);
   const [reward, setReward] = useState('');
-  const [numOfParticipants, setParticipants] = useState('');
+  const [plimit, setPlimit] = useState('');
   const [pminbalance, setPminBalance] = useState(10);
   const [pminstake, setPminStake] = useState(1);
   const [paccage, setPaccAge] = useState(1);
-  const [pvalidator, setPValidator] = useState(1);
+  const [pvalidator, setPValidator] = useState(false);
 
 
   useEffect(() => {
     const loadSurvey = async () => {
-      if (!id) return;
-      try {
-        const data = await fetchSurvey(id);
-        setTitle(data.title);
-        setQuestions(data.questions);
-        setStartDate(data.startDate);
-
-        setEndDate(data.endDate.slice(0, 10));
-      } catch (error) {
-        console.error('Failed to fetch survey:', error);
+      if (!id) {
+        setTitle('');
+        setQuestions([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
+        setStartDate(new Date().toISOString().slice(0, 10));
+        setEndDate('');
+        setReward('');
+        setPlimit('');
+        return;
       }
+      const data = await fetchSurvey(id);
+      
+      setTitle(data.title);
+      setQuestions(data.questions);
+      setStartDate(data.startDate);
+      setEndDate(new Date(data.endDate).toISOString().slice(0, 10));
+      setReward(data.rewardPerResponse);
+      setPlimit(data.participantsLimit);
+      setPminBalance(data.minimumRequiredBalance);
+      setPminStake(data.minimumRequiredStake);
+      setPaccAge(data.minimumAgeInDays);
+      setPValidator(Boolean(data.validatorStatus));
     };
 
     loadSurvey();
@@ -71,7 +81,7 @@ function SurveyForm() {
   }, [title, questions, activeQuestionIndex]);
 
   useEffect(() => {
-    setAreAllInputsFilled(Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage) && Boolean(pvalidator));
+    setAreAllInputsFilled(Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage));
   }, [areAllInputsFilled, endDate, pminbalance, pminstake, paccage, pvalidator]);
 
 
@@ -115,23 +125,24 @@ function SurveyForm() {
     };
   }, [history]);
 
-  useEffect(() => {
-    const fetchSurvey = async () => {
-      if (!id) return;
-      const response = await fetch(`/api/surveys/${id}`);
-      const data = await response.json();
-      setTitle(data.title);
-      setQuestions(data.questions);
-      setStartDate(data.startDate);
-      setEndDate(data.endDate);
-    };
 
-    fetchSurvey();
-  }, [id]);
 
   const updateExistingSurvey = async () => {
     try {
-      await updateSurvey(id, { title, questions, startDate, endDate, reward, numOfParticipants });
+      const survey = {
+        title,
+        questions,
+        startDate,
+        endDate,
+        creationFee: 5,
+        reward,
+        plimit,
+        pminbalance,
+        pminstake,
+        paccage,
+        pvalidator
+      };
+      await updateSurvey(id, survey);
       history.push('/surveys');
     } catch (error) {
       console.error('Failed to update survey:', error);
@@ -140,14 +151,18 @@ function SurveyForm() {
 
   const createNewSurvey = async () => {
     try {
-
       const survey = {
         title,
         questions,
         startDate,
         endDate,
-        creationFee: reward,
-        rewardPerResponse: numOfParticipants,
+        creationFee: 5,
+        reward,
+        plimit,
+        pminbalance,
+        pminstake,
+        paccage,
+        pvalidator
       };
       await createSurvey(survey);
       history.push('/surveys');
@@ -222,14 +237,6 @@ function SurveyForm() {
     }
   };
 
-  // minimum balance
-  // minimum stake
-  // account age
-  // validator status
-
-  // reward
-  // number of participants
-
   return (
     <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
       <div className="flex h-screen w-full">
@@ -262,15 +269,16 @@ function SurveyForm() {
                           id="title"
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
-                          className="p-2 h-8 rounded mt-1 w-full text-white bg-slate-700 font-medium outline-none focus:outline-red-500"
+                          className="p-2 h-8 rounded mt-1 w-full text-white bg-slate-700 font-medium outline-none focus:outline-red-500 focus:scale-105"
+                          placeholder='A relevant title of the survey'
                         />
                       </div>
-                      <hr className='border-slate-400 mt-6 h-3 w-full '></hr>
+                      <hr className='border-slate-400 mt-4 h-3 w-full '></hr>
                       {questions.map((question, questionIndex) => (
                         questionIndex === activeQuestionIndex && (
                           <div key={questionIndex} className=" relative ">
                             <div className="flex flex-col ">
-                              <div className=' flex justify-between items-center '>
+                              <div className=' flex justify-between items-center mb-2'>
                                 <div>
                                   <label htmlFor={`question-${questionIndex}`} className="font-medium">
                                     Question {questionIndex + 1}
@@ -301,7 +309,8 @@ function SurveyForm() {
                                   id={`question-${questionIndex}`}
                                   value={question.text}
                                   onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                                  className="p-2 h-8 bg-slate-700 rounded mt-1 text-white font-medium outline-none focus:outline-red-500 flex-grow"
+                                  className="p-2 h-8 bg-slate-700 rounded mb-1 text-white font-medium outline-none flex-grow focus:outline-red-500 focus:scale-105 "
+                                  placeholder='Which one is your favorite?'
                                 />
                                 {questionIndex > 0 && (
                                   <button
@@ -315,7 +324,7 @@ function SurveyForm() {
                               </div>
                             </div>
                             {question.answers.map((answer, answerIndex) => (
-                              <div key={answerIndex} className="mt-3 relative">
+                              <div key={answerIndex} className="relative mt-1">
                                 <div className="flex items-center">
                                   <input
                                     type="text"
@@ -337,7 +346,7 @@ function SurveyForm() {
                                 </div>
                               </div>
                             ))}
-                            <div className="flex  mt-3 h-12">
+                            <div className="flex items-center mt-4 h-8">
                               <button
                                 type="button"
                                 onClick={() => addAnswer(questionIndex)}
@@ -346,20 +355,23 @@ function SurveyForm() {
                               >
                                 Add Answer
                               </button>
-
+                              <div className='flex items-center justify-center ml-1 mr-1 h-8 w-10 text-slate-400 cursor-not-allowed'>
+                                or
+                              </div>
+                              <button
+                                className={`text-red-500  h-8 w-48 ${!isFormValid && 'opacity-50 cursor-not-allowed'}`}
+                                onClick={addQuestion}
+                                disabled={!isFormValid}
+                              >
+                                Add  Question ?
+                              </button>
                               <div className='grid justify-items-end content-end w-full h-8'>
                                 <div className='grid h-8 w-36 justify-items-end'>
-                                  <button
-                                    className={`text-red-500 text-end ${!isFormValid && 'opacity-50 cursor-not-allowed'}`}
-                                    onClick={addQuestion}
-                                    disabled={!isFormValid}
-                                  >
-                                    Add  Question ?
-                                  </button>
+
                                 </div>
                               </div>
                             </div>
-                            <hr className='border-slate-400  h-3 w-full '></hr>
+                            <hr className='border-slate-400  h-3 mt-3 w-full '></hr>
                           </div>
                         )))}
                       <div className="grid space-y-3">
@@ -370,22 +382,24 @@ function SurveyForm() {
                               id="reward"
                               value={reward}
                               onChange={(e) => setReward(e.target.value)}
-                              className="p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
+                              className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                               placeholder="Reward"
+                              disabled={Boolean(id)}
                             />
                             <img
                               src={CoinLogo}
                               alt="Casper Coin Logo"
                               className="ml-2 h-5 w-5"
                             />
-                            <span className="ml-2 text-slate-400">CSPR</span>
+                            <span className="ml-2 text-slate-400">CSPR each to</span>
                             <input
                               type="number"
                               id="participants"
-                              value={numOfParticipants}
-                              onChange={(e) => setParticipants(e.target.value)}
-                              className="p-2 h-8 ml-8 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500 "
+                              value={plimit}
+                              onChange={(e) => setPlimit(e.target.value)}
+                              className={`p-2 h-8 ml-2 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                               placeholder="# of "
+                              disabled={Boolean(id)}
                             />
                             <span className="ml-2 text-slate-400">People</span>
                           </div>
@@ -395,59 +409,59 @@ function SurveyForm() {
                               id="endDate"
                               value={endDate}
                               onChange={(e) => setEndDate(e.target.value)}
-                              className="p-2 h-8 rounded text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
+                              className={`p-2 h-8 rounded text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
                             />
                           </div>
                         </div>
                         <div className="flex justify-between items-end">
                           <div className="flex items-center space-x-5 ">
                             <div className='flex flex-col space-y-1'>
-                              <span className="ml-2 text-sm text-slate-400">Min. Balance</span>
+                              <span className="ml-1 text-sm text-slate-400">Min. Balance</span>
                               <input
                                 type="number"
                                 id="minbalance"
                                 value={pminbalance}
                                 onChange={(e) => setPminBalance(e.target.value)}
-                                className="p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
+                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
                                 placeholder="Balance"
-
                               />
 
                             </div>
                             <div className='flex flex-col space-y-1'>
-                              <span className="ml-2 text-sm text-slate-400">Min. Stake</span>
+                              <span className="ml-1 text-sm text-slate-400">Min. Stake</span>
                               <input
                                 type="number"
                                 id="minstake"
                                 value={pminstake}
                                 onChange={(e) => setPminStake(e.target.value)}
-                                className="p-2 h-8 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
+                                className={`p-2 h-8 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
                                 placeholder="Stake"
                               />
 
                             </div>
                             <div className='flex flex-col space-y-1'>
-                              <span className="ml-2 text-sm text-slate-400">Account Age</span>
+                              <span className="ml-1 text-sm text-slate-400">Account Age</span>
                               <input
                                 type="number"
                                 id="age"
                                 value={paccage}
                                 onChange={(e) => setPaccAge(e.target.value)}
-                                className="p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
-                                placeholder="Age" // in weeks
+                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
+                                placeholder="Age" // in days
                               />
 
                             </div>
                             <div className='flex flex-col space-y-1'>
-                              <span className="ml-2text-sm text-slate-400">Validator Count</span>
-                              <input
-                                type="number"
+                              <span className="ml-1 text-sm text-slate-400">Validator Status</span>
+                              <select
                                 id="validator"
                                 value={pvalidator}
                                 onChange={(e) => setPValidator(e.target.value)}
-                                className="p-2 h-8 rounded w-28 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500"
-                                placeholder="Validator" //??
-                              />
+                                className={`px-1 h-8 rounded w-28 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
+                              >
+                                <option value="true">True</option>
+                                <option value="false">False</option>
+                              </select>
                             </div>
                           </div>
                           <div className='items-center'>

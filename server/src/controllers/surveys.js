@@ -1,12 +1,12 @@
 const Survey = require('../models/Survey');
+//TODO: handle all missing settings as well :
+// min balance
+// min stake
+// account age
+// validator status
 
 exports.createSurvey = async (req, res) => {
   try {
-    console.log('Request body JSON:', JSON.stringify(req.body));
-
-    // TODO: Improve Casper-related code to handle survey creation fees and survey rewards here
-    const { creationFee, rewardPerResponse } = req.body;
-
     const survey = new Survey({
       title: req.body.title,
       description: req.body.description,
@@ -14,8 +14,14 @@ exports.createSurvey = async (req, res) => {
       startDate: req.body.startDate,
       endDate: req.body.endDate,
       createdBy: req.user._id,
-      creationFee,
-      rewardPerResponse,
+      creationFee: 5,
+      rewardPerResponse: req.body.reward,
+      participantsLimit: req.body.participantsLimit,
+      minimumRequiredBalance: req.body.pminbalance,
+      minimumRequiredStake: req.body.pminstake,
+      minimumAgeInDays: req.body.paccage,
+      validatorStatus: req.body.pvalidator,
+
     });
     await survey.save();
     res.status(201).json(survey);
@@ -65,8 +71,15 @@ exports.updateSurvey = async (req, res) => {
     survey.title = req.body.title;
     survey.description = req.body.description;
     survey.questions = req.body.questions;
-    await survey.save();
-    
+    survey.reward = req.body.reward;
+    survey.endDate = req.body.endDate;
+    survey.minimumRequiredBalance = req.body.pminbalance,
+    survey.minimumRequiredStake = req.body.pminstake,
+    survey.minimumAgeInDays = req.body.paccage,
+    survey.validatorStatus = req.body.pvalidator,
+
+      await survey.save();
+
     res.status(200).json(survey);
   } catch (err) {
     console.error('Error in updateSurvey:', err);
