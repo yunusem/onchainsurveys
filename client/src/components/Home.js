@@ -154,7 +154,7 @@ function Home() {
         <div className="flex h-screen w-full">
           <NavigationBar />
           <div className="flex flex-col h-screen w-full">
-            <div className=" flex flex-col overflow-y-auto h-full ">
+            <div className="flex flex-col overflow-y-auto h-full ">
               <div className=' flex flex-col space-y-16'>
                 <div className='flex w-full  justify-center'>
                   <div className='flex  mt-7 w-3/4 items-center '>
@@ -168,11 +168,11 @@ function Home() {
                     {availabeSurveys && availabeSurveys.map((survey) => (
                       <li
                         key={survey._id}
-                        className="bg-slate-700 h-20 rounded w-full col-span-1 flex items-center space-x-2 group"
+                        className="select-none bg-slate-700 h-20 rounded w-full col-span-1 flex items-center space-x-2 group"
                       >
                        
                         <div className=" flex w-full flex-col space-y-2 h-fit p-3 justify-between rounded">
-                          <div className="select-none col-span-2 flex text-xl font-semibold">
+                          <div className=" col-span-2 flex text-xl font-semibold">
                             {survey.title}
                           </div>
                           <div className="flex justify-between w-full">
@@ -213,9 +213,9 @@ function Home() {
 
                           </div>
                         </div>
-                        <div className="flex justify-center items-center">
+                        <div className="flex justify-center items-center h-full px-3 py-4">
                           <button
-                            className="bg-red-500  px-4 py-3 flex items-center rounded font-semibold text-white mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                            className="bg-red-500  px-4 flex h-full items-center rounded font-semibold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                             onClick={() => handleTakeSurvey(survey._id)}
                           >
                             Vote
