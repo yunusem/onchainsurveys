@@ -1,16 +1,25 @@
 const Survey = require('../models/Survey');
-//TODO: handle all missing settings as well :
-// min balance
-// min stake
-// account age
-// validator status
 
 exports.createSurvey = async (req, res) => {
   try {
+    const questions = req.body.questions.map((q) => {
+      const answers = q.answers.map((a) => {
+        return {
+          _id: mongoose.Types.ObjectId(),
+          text: a,
+        };
+      });
+
+      return {
+        text: q.text,
+        answers: answers,
+      };
+    });
+
     const survey = new Survey({
       title: req.body.title,
       description: req.body.description,
-      questions: req.body.questions,
+      questions: questions,
       startDate: req.body.startDate,
       endDate: req.body.endDate,
       createdBy: req.user._id,
@@ -21,8 +30,8 @@ exports.createSurvey = async (req, res) => {
       minimumRequiredStake: req.body.pminstake,
       minimumAgeInDays: req.body.paccage,
       validatorStatus: req.body.pvalidator,
-
     });
+
     await survey.save();
     res.status(201).json(survey);
   } catch (err) {
@@ -30,6 +39,7 @@ exports.createSurvey = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
 
 
 exports.getSurvey = async (req, res) => {
@@ -110,9 +120,19 @@ exports.submitResponse = async (req, res) => {
     if (!survey) {
       return res.status(404).json({ message: 'Survey not found' });
     }
+
+    const submittedAnswers = req.body.answers;
+    const mappedAnswers = submittedAnswers.map((submittedAnswer, index) => {
+      const question = survey.questions[index];
+      const answer = question.answers.find(
+        (answer) => answer.text === submittedAnswer
+      );
+      return answer._id;
+    });
+
     const response = {
       user: req.user._id,
-      answers: req.body.answers,
+      answers: mappedAnswers,
     };
     survey.responses.push(response);
     await survey.save();

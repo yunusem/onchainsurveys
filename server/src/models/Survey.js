@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const AnswerSchema = new mongoose.Schema({
+  _id: {
+    type: [mongoose.Schema.Types.ObjectId],
+    required: true,
+  },
   text: {
     type: String,
     required: true,
@@ -22,7 +26,7 @@ const ResponseSchema = new mongoose.Schema({
     required: true,
   },
   answers: {
-    type: [String],
+    type: [mongoose.Schema.Types.ObjectId],
     required: true,
   },
   submissionDate: {
@@ -35,6 +39,11 @@ const SurveySchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+  },
+  description: {
+    type: String,
+    required: false,
+    default: "",
   },
   questions: [QuestionSchema],
   createdBy: {
