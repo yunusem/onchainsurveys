@@ -158,7 +158,7 @@ function Home() {
                   className="bg-slate-900 p-1 rounded mb-2 w-3/4 flex items-stretch group"
                 >
                   <div className="grid grid-cols-5 gap-4 flex-grow items-center mr-3">
-                    <div className="col-span-2 justify-items-start">
+                    <div className="select-none col-span-2 justify-items-start">
                       {survey.title}
                     </div>
                     <div>Questions: {survey.questions.length}</div>

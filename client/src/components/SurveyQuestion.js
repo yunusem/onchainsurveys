@@ -26,7 +26,7 @@ function SurveyQuestion({ question, onChange }) {
             className="hidden"
             onChange={(e) => handleInputChange(e, index)}
           />
-          <div className={`m-2 ${selectedAnswerIndex === index ? 'text-white' : 'text-slate-300' }`}>
+          <div className={`m-2 ${selectedAnswerIndex === index ? 'text-slate-900 font-medium' : 'text-slate-300' }`}>
             {answer.text}
           </div>
         </label>

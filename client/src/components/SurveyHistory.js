@@ -107,7 +107,7 @@ function SurveyHistory() {
     return survey.responses.some(
       (response) =>
         response.user === userId &&
-        response.answers.includes(answer.text)
+        response.answers.includes(answer._id)
     );
   };
 
@@ -123,15 +123,12 @@ function SurveyHistory() {
   }
 
   const renderAnswerStats = (survey, questionIndex) => {
-    const questionResponses = survey.responses.map(
-      (response) => response.answers[questionIndex]
-    );
-    const totalResponses = questionResponses.length;
+    const totalResponses = survey.responses.length;
 
     return survey.questions[questionIndex].answers.map((answer) => {
-      const answerCount = questionResponses.filter(
-        (response) => response === answer.text
-      ).length;
+      const answerCount = survey.responses.filter((response) => {
+        return response.answers.includes(answer._id);
+      }).length;
       const answerPercentage = totalResponses
         ? ((answerCount / totalResponses) * 100).toFixed(2)
         : 0;
@@ -161,7 +158,7 @@ function SurveyHistory() {
     if (!survey) {
       return <div className="text-center text-white">Select a survey to view its questions.</div>;
     }
-    
+
     return (
       <div className="border border-red-500  rounded p-4 h-full overflow-y-auto w-full">
         <div className='flex  justify-between'>
@@ -290,12 +287,12 @@ function SurveyHistory() {
                       {surveys && getFilteredSurveys().map((survey) => (
                         <li
                           key={survey._id}
-                          className={` flex  w-full flex-col space-y-2 h-fit justify-between p-3 rounded transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 border border-red-500" : "  bg-slate-700 text-slate-400"
+                          className={`flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded cursor-pointer transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 border border-red-500" : "  bg-slate-700 text-slate-400"
                             }`}
                           onClick={() => toggleSurvey(survey._id)}
                         >
                           <div className="flex justify-between ">
-                            <h3 className={` text-xl font-semibold   ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""
+                            <h3 className={` text-xl font-semibold select-none ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""
                               }`}>
                               {survey.title}</h3>
 

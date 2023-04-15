@@ -333,7 +333,7 @@ function SurveyForm() {
                                     value={answer.text}
                                     placeholder={`Option ${answerIndex + 1}`}
                                     onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
-                                    className="p-2 h-8 bg-slate-600 rounded mt-1 text-whit font-medium outline-none focus:outline-red-500 flex-grow"
+                                    className="p-2 h-8 bg-slate-600 rounded mt-1 text-slate-200 font-normal outline-none focus:outline-red-500 flex-grow"
                                   />
                                   {answerIndex >= 2 && (
                                     <button
