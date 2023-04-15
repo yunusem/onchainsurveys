@@ -12,7 +12,6 @@ function SurveyForm() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isCurrentQuestionValidForNewAnswer, setIsCurrentQuestionValidForNewAnswer] = useState(false);
   const [areAllInputsFilled, setAreAllInputsFilled] = useState(false);
-  const [inputFollowingON, setInputFollowingON] = useState(false);
   const [timer, setTimer] = useState(null);
 
   const [title, setTitle] = useState('');
@@ -137,24 +136,23 @@ function SurveyForm() {
 
 
   const focusFirstEmptyInput = () => {
-    console.log("forcing focus")
     const emptyInputs = [
       title ? null : titleRef,
       questions[activeQuestionIndex].text ? null : questionRef,
     ];
-  
+
     questions[activeQuestionIndex].answers.forEach((answer, index) => {
       if (answer.text === '') {
         emptyInputs.push({ current: answerRefs.current[`question-${activeQuestionIndex}-answer-${index}`] });
       }
     });
-  
+
     emptyInputs.push(
       reward ? null : rewardRef,
       plimit ? null : plimitRef,
       endDate ? null : endDateRef
     );
-  
+
     for (const inputRef of emptyInputs) {
       if (inputRef && inputRef.current) {
         inputRef.current.focus();
@@ -162,11 +160,11 @@ function SurveyForm() {
       }
     }
   };
-  
-  
+
+
 
   const handleInput = () => {
-    setInputFollowingON(true);
+
     if (timer) {
       clearTimeout(timer);
       setTimer(null);
@@ -176,7 +174,7 @@ function SurveyForm() {
   const handleBlur = () => {
 
     const newTimer = setTimeout(() => {
-      setInputFollowingON(false);
+
       focusFirstEmptyInput();
     }, 5000); // 5 seconds
     timer && clearTimeout(timer);
@@ -298,16 +296,17 @@ function SurveyForm() {
       <div className="flex h-screen w-full">
         <NavigationBar />
         <div className="flex flex-col h-screen w-full">
-          <div className='flex flex-col w-full items-center justify-center'>
-            <div className=' mt-7 w-3/4 flex h-32 flex-col text-white'>
-              <div className='w-2/4 '>
+          <div className='flex flex-col w-full items-center justify-center space-y-12'>
+            <div className=' mt-7 w-3/4 flex flex-col text-white'>
+              <div className='w-1/2'>
                 <h1 className=" text-3xl font-bold  text-white   text-left">
                   {id ? 'Edit Survey' : 'Create Survey'}
                 </h1>
-                <p className='text-slate-300 text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-red-500'>Casper</span> </a> Blockchain Technology.</p>            </div>
+                <p className='text-slate-300 text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-red-500'>Casper</span> </a> Blockchain Technology.</p>
+              </div>
             </div>
-            <div className="w-3/4">
-              <div className="w-1/2">
+            <div className="flex w-3/4">
+              <div className="min-w-[50%]">
                 <div className="flex justify-center mt-3  h-full">
                   <div className="text-white justify-center  w-full p-1">
                     <form onSubmit={handleSubmit} className="w-full">
@@ -367,7 +366,7 @@ function SurveyForm() {
                                   id={`question-${questionIndex}`}
                                   value={question.text}
                                   onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                                  className="p-2 h-8 bg-slate-700 rounded mb-1 text-white font-medium outline-none flex-grow focus:outline-red-500 focus:scale-105 "
+                                  className="p-2 h-8 bg-slate-700 rounded mb-5 text-white font-medium outline-none flex-grow focus:outline-red-500 focus:scale-105 "
                                   placeholder='Which one is your favorite?'
                                   onInput={handleInput}
                                   onBlur={handleBlur}
@@ -414,7 +413,7 @@ function SurveyForm() {
                               <button
                                 type="button"
                                 onClick={() => addAnswer(questionIndex)}
-                                className={`bg-red-500 rounded font-semibold text-white mr-2 h-8 w-48 px-2 ${!isCurrentQuestionValidForNewAnswer && 'opacity-50 cursor-not-allowed'}`}
+                                className={`bg-red-500 h-8 rounded font-semibold whitespace-nowrap text-white mr-2 px-2 ${!isCurrentQuestionValidForNewAnswer && 'opacity-50 cursor-not-allowed'}`}
                                 disabled={!isCurrentQuestionValidForNewAnswer}
                               >
                                 Add Answer
@@ -423,7 +422,7 @@ function SurveyForm() {
                                 or
                               </div>
                               <button
-                                className={`text-red-500  h-8 w-56 ${!isFormValid && 'opacity-50 cursor-not-allowed'}`}
+                                className={`text-red-500  h-8 whitespace-nowrap ${!isFormValid && 'opacity-50 cursor-not-allowed'}`}
                                 onClick={addQuestion}
                                 disabled={!isFormValid}
                               >
@@ -497,7 +496,7 @@ function SurveyForm() {
                                 onChange={(e) => setPminBalance(e.target.value)}
                                 className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
                                 placeholder="Balance"
-                                
+
                               />
 
                             </div>
@@ -531,7 +530,7 @@ function SurveyForm() {
                                 id="validator"
                                 value={pvalidator}
                                 onChange={(e) => setPValidator(e.target.value)}
-                                className={`px-1 h-8 rounded w-28 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
+                                className={`px-1 h-8 rounded w-20 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
                               >
                                 <option value="true">True</option>
                                 <option value="false">False</option>
