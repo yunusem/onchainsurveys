@@ -199,7 +199,7 @@ function SurveyHistory() {
   return (
     <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
       <NavigationBar />
-      <div className="flex flex-col h-screen w-full">
+      <div className="select-none flex flex-col h-screen w-full">
         <div className=" flex flex-col overflow-y-auto h-full ">
           <div className='flex flex-col '>
             <div className='flex w-full  justify-center'>
@@ -287,12 +287,12 @@ function SurveyHistory() {
                       {surveys && getFilteredSurveys().map((survey) => (
                         <li
                           key={survey._id}
-                          className={`flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded cursor-pointer transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 border border-red-500" : "  bg-slate-700 text-slate-400"
+                          className={`select-none flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded cursor-pointer transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 border border-red-500" : "  bg-slate-700 text-slate-400"
                             }`}
                           onClick={() => toggleSurvey(survey._id)}
                         >
                           <div className="flex justify-between ">
-                            <h3 className={` text-xl font-semibold select-none ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""
+                            <h3 className={` text-xl font-semibold  ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""
                               }`}>
                               {survey.title}</h3>
 

@@ -295,7 +295,7 @@ function SurveyForm() {
     <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
       <div className="flex h-screen w-full">
         <NavigationBar />
-        <div className="flex flex-col h-screen w-full">
+        <div className="select-none flex flex-col h-screen w-full">
           <div className='flex flex-col w-full items-center justify-center space-y-12'>
             <div className=' mt-7 w-3/4 flex flex-col text-white'>
               <div className='w-1/2'>

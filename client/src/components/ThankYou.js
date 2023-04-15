@@ -10,7 +10,7 @@ function ThankYou() {
   };
 
   return (
-    <div className="bg-slate-800 h-screen w-screen text-slate-200 flex items-center flex-col justify-center">
+    <div className="select-none bg-slate-800 h-screen w-screen text-slate-200 flex items-center flex-col justify-center">
     <div name="logo" className="absolute left-0 top-0 w-44 h-36 flex justify-center items-center p-8">
         <Link to="/">
           <img src={Logo} alt="logo" width="512px" />

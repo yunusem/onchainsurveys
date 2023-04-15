@@ -149,7 +149,7 @@ function Home() {
 
   // Render the Home component
   return (
-    <div className="flex bg-slate-800 text-center h-screen w-full text-slate-400 items-center justify-center">
+    <div className="select-none flex bg-slate-800 text-center h-screen w-full text-slate-400 items-center justify-center">
       {isAuthenticated ? (
         <div className="flex h-screen w-full">
           <NavigationBar />

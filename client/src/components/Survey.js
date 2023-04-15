@@ -102,7 +102,7 @@ function Survey() {
   }
 
   return (
-    <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
+    <div className="select-none flex bg-slate-800 h-screen w-full text-white items-center justify-center">
       <div className=' w-44 h-screen'>
 
       </div>
