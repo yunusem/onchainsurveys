@@ -5,6 +5,10 @@ import { fetchSurveys, loginWithWallet } from '../api';
 import CasperWalletContext from './CasperWalletContext';
 import { useUserActivation } from './UserActivationContext';
 import NavigationBar from './NavigationBar';
+import QuestionIcon from "../assets/question-mark.svg";
+import VolunteerIcon from "../assets/volunteer.svg";
+import CalendarIcon from "../assets/calendar.svg";
+import CoinLogo from "../assets/casper-logo.svg";
 
 function Home() {
   // Define state variables and hooks
@@ -113,11 +117,11 @@ function Home() {
       return false;
     }
     if (survey.responses.length > 0) {
-      if(survey.responses.find((response) => response.user === userId)) {
-          return false;
-      } else if(new Date(survey.endDate) > new Date()) {
-          return survey.createdBy._id !== userId ;
-         
+      if (survey.responses.find((response) => response.user === userId)) {
+        return false;
+      } else if (new Date(survey.endDate) > new Date()) {
+        return survey.createdBy._id !== userId;
+
       }
     }
     return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date();
@@ -145,38 +149,85 @@ function Home() {
 
   // Render the Home component
   return (
-    <div className="flex bg-slate-800 text-center h-screen w-full text-white items-center justify-center">
+    <div className="flex bg-slate-800 text-center h-screen w-full text-slate-400 items-center justify-center">
       {isAuthenticated ? (
         <div className="flex h-screen w-full">
           <NavigationBar />
           <div className="flex flex-col h-screen w-full">
-            <h2 className="text-xl font-bold text-white p-8 h-12 mb-12">Available Surveys</h2>
-            <ul className="w-full flex flex-col items-center overflow-auto  h-[720px]">
-              {availabeSurveys && availabeSurveys.map((survey) => (
-                <li
-                  key={survey._id}
-                  className="bg-slate-900 p-1 rounded mb-2 w-3/4 flex items-stretch group"
-                >
-                  <div className="grid grid-cols-5 gap-4 flex-grow items-center mr-3">
-                    <div className="select-none col-span-2 justify-items-start">
-                      {survey.title}
-                    </div>
-                    <div>Questions: {survey.questions.length}</div>
-                    <div>Reward: {survey.rewardPerResponse} CSPR</div>
-                    <div>{remainingTime(survey.endDate)} left</div>
+            <div className=" flex flex-col overflow-y-auto h-full ">
+              <div className=' flex flex-col space-y-16'>
+                <div className='flex w-full  justify-center'>
+                  <div className='flex  mt-7 w-3/4 items-center '>
+                    <h1 className=" text-3xl font-bold  text-white">
+                      Available Surveys
+                    </h1>
                   </div>
-                  <div className="flex justify-end items-stretch">
-                    <button
-                      className="bg-red-500 rounded font-semibold p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      onClick={() => handleTakeSurvey(survey._id)}
-                    >
-                      Take Survey
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                </div>
+                <div className="w-full flex justify-center h-[720px]">
+                  <ul className="w-3/4 grid grid-cols-2 grid-rows-7 overflow-y-auto gap-3 gap-y-4 content-start">
+                    {availabeSurveys && availabeSurveys.map((survey) => (
+                      <li
+                        key={survey._id}
+                        className="bg-slate-700 h-20 rounded w-full col-span-1 flex items-center space-x-2 group"
+                      >
+                       
+                        <div className=" flex w-full flex-col space-y-2 h-fit p-3 justify-between rounded">
+                          <div className="select-none col-span-2 flex text-xl font-semibold">
+                            {survey.title}
+                          </div>
+                          <div className="flex justify-between w-full">
+                            <div className='flex items-center space-x-8'>
+                              <div className='flex w-8 space-x-1'>
+                                <img
+                                  src={CoinLogo}
+                                  alt="Casper Coin Logo"
+                                  className="h-5 w-5 "
+                                />
+                                <p> {survey.rewardPerResponse} </p>
+                              </div>
+                              <div className='flex w-8 space-x-1'>
+                                <img
+                                  src={QuestionIcon}
+                                  alt="Question Icon"
+                                  className=" h-5 w-5"
+                                />
+                                <p> {survey.questions.length}</p>
+                              </div>
+                              <div className='flex w-8 space-x-1'>
+                                <img
+                                  src={VolunteerIcon}
+                                  alt="Volunteer Icon"
+                                  className="h-5 w-5"
+                                />
+                                <p> {survey.responses.length}</p>
+                              </div>
+                              <div className='flex space-x-1'>
+                                <img
+                                  src={CalendarIcon}
+                                  alt="Calendar Icon"
+                                  className="h-5 w-5"
+                                />
+                                <p> {remainingTime(survey.endDate)}</p>
+                              </div>
+                            </div>
 
+                          </div>
+                        </div>
+                        <div className="flex justify-center items-center">
+                          <button
+                            className="bg-red-500  px-4 py-3 flex items-center rounded font-semibold text-white mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                            onClick={() => handleTakeSurvey(survey._id)}
+                          >
+                            Vote
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                      
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       ) : (
