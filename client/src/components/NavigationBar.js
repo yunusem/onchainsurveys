@@ -90,8 +90,8 @@ function NavigationBar() {
 
     return (
         <div className="w-48 font-bold">
-            <div className=" h-screen flex-col flex justify-between">
-                <div name="logo" className="h-36  flex justify-center items-center p-8">
+            <div className="h-screen flex-col flex justify-between">
+                <div name="logo" className=" h-36  flex justify-center items-center p-8">
                     <Link to="/">
                         <img src={Logo} alt="logo" width="512px" />
                     </Link>
@@ -113,18 +113,22 @@ function NavigationBar() {
                         </Link>
                     </div>
                 </div>
-                <div className="card bg-slate-800 p-2 h-24 justify-end">
+                <div className="card absolute right-3 top-7 p-2 h-24 justify-end">
                     <div className="grid grid-rows-3 grid-flow-col gap-2">
-                        <div className=" rounded  row-span-3 bg-slate-500 mb-2 flex justify-center items-center">
-                            <Identicon string={walletAddress} size={50} />
-                        </div>
-                        <div className="rounded col-span-2 bg-slate-700 flex justify-center items-center break-all text-white text-sm">
+                        
+                        <div className="rounded col-span-2 bg-slate-700 flex justify-center px-1 items-center break-all text-slate-200 text-sm">
                             {formattedAddress}
                         </div>
-                        <button onClick={handleLogout} className="rounded row-span-2 col-span-2 bg-slate-700 border-solid border-2 border-red-400 text-red-400 mb-2 flex justify-center items-center text-base">
+                        <button onClick={handleLogout} className="rounded row-span-2 col-span-2 border-solid border border-red-500 text-red-500 mb-2 flex justify-center font-medium items-center">
                             Logout
                         </button>
+                        <div className=" rounded  row-span-3 bg-slate-200 mb-2 flex justify-center items-center">
+                            <Identicon string={walletAddress} size={50} />
+                        </div>
                     </div>
+                </div>
+                <div className="h-2 w-full">
+
                 </div>
             </div>
         </div>
