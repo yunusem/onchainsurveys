@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { createSurvey, fetchSurvey, updateSurvey } from '../api';
 import NavigationBar from './NavigationBar';
@@ -7,15 +7,18 @@ import CoinLogo from "../assets/caspercoin-logo.svg";
 function SurveyForm() {
   const { id } = useParams();
   const history = useHistory();
-  const [title, setTitle] = useState('');
-  const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
-  const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
-  const [endDate, setEndDate] = useState('');
   const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isCurrentQuestionValidForNewAnswer, setIsCurrentQuestionValidForNewAnswer] = useState(false);
   const [areAllInputsFilled, setAreAllInputsFilled] = useState(false);
+  const [inputFollowingON, setInputFollowingON] = useState(false);
+  const [timer, setTimer] = useState(null);
+
+  const [title, setTitle] = useState('');
+  const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
+  const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
+  const [endDate, setEndDate] = useState('');
   const [reward, setReward] = useState(0);
   const [plimit, setPlimit] = useState(0);
   const [pminbalance, setPminBalance] = useState(10);
@@ -23,6 +26,15 @@ function SurveyForm() {
   const [paccage, setPaccAge] = useState(1);
   const [pvalidator, setPValidator] = useState(false);
 
+
+  function removeItems() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('active_public_key');
+    localStorage.removeItem('user_already_signed');
+    localStorage.removeItem('x_casper_provided_signature');
+    localStorage.removeItem('user_is_activated');
+  }
 
   useEffect(() => {
     const loadSurvey = async () => {
@@ -84,18 +96,7 @@ function SurveyForm() {
 
   useEffect(() => {
     setAreAllInputsFilled(Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage));
-  }, [areAllInputsFilled, endDate, pminbalance, pminstake, paccage, pvalidator]);
-
-
-
-  function removeItems() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('active_public_key');
-    localStorage.removeItem('user_already_signed');
-    localStorage.removeItem('x_casper_provided_signature');
-    localStorage.removeItem('user_is_activated');
-  }
+  }, [endDate, pminbalance, pminstake, paccage, pvalidator]);
 
   useEffect(() => {
     if (!isWalletConnected) {
@@ -127,7 +128,60 @@ function SurveyForm() {
     };
   }, [history]);
 
+  const titleRef = useRef(null);
+  const questionRef = useRef(null);
+  const answerRefs = useRef([]);
+  const endDateRef = useRef(null);
+  const rewardRef = useRef(null);
+  const plimitRef = useRef(null);
 
+
+  const focusFirstEmptyInput = () => {
+    console.log("forcing focus")
+    const emptyInputs = [
+      title ? null : titleRef,
+      questions[activeQuestionIndex].text ? null : questionRef,
+    ];
+  
+    questions[activeQuestionIndex].answers.forEach((answer, index) => {
+      if (answer.text === '') {
+        emptyInputs.push({ current: answerRefs.current[`question-${activeQuestionIndex}-answer-${index}`] });
+      }
+    });
+  
+    emptyInputs.push(
+      reward ? null : rewardRef,
+      plimit ? null : plimitRef,
+      endDate ? null : endDateRef
+    );
+  
+    for (const inputRef of emptyInputs) {
+      if (inputRef && inputRef.current) {
+        inputRef.current.focus();
+        break;
+      }
+    }
+  };
+  
+  
+
+  const handleInput = () => {
+    setInputFollowingON(true);
+    if (timer) {
+      clearTimeout(timer);
+      setTimer(null);
+    }
+  };
+
+  const handleBlur = () => {
+
+    const newTimer = setTimeout(() => {
+      setInputFollowingON(false);
+      focusFirstEmptyInput();
+    }, 5000); // 5 seconds
+    timer && clearTimeout(timer);
+    setTimer(newTimer);
+  };
 
   const updateExistingSurvey = async () => {
     try {
@@ -272,6 +326,9 @@ function SurveyForm() {
                           onChange={(e) => setTitle(e.target.value)}
                           className="p-2 h-8 rounded mt-1 w-full text-white bg-slate-700 font-medium outline-none focus:outline-red-500 focus:scale-105"
                           placeholder='A relevant title of the survey'
+                          onInput={handleInput}
+                          onBlur={handleBlur}
+                          ref={titleRef}
                         />
                       </div>
                       <hr className='border-slate-500 mt-4 h-3 w-full '></hr>
@@ -312,6 +369,9 @@ function SurveyForm() {
                                   onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
                                   className="p-2 h-8 bg-slate-700 rounded mb-1 text-white font-medium outline-none flex-grow focus:outline-red-500 focus:scale-105 "
                                   placeholder='Which one is your favorite?'
+                                  onInput={handleInput}
+                                  onBlur={handleBlur}
+                                  ref={questionRef}
                                 />
                                 {questionIndex > 0 && (
                                   <button
@@ -334,6 +394,9 @@ function SurveyForm() {
                                     placeholder={`Option ${answerIndex + 1}`}
                                     onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
                                     className="p-2 h-8 bg-slate-600 rounded mt-1 text-slate-200 font-normal outline-none focus:outline-red-500 flex-grow"
+                                    onInput={handleInput}
+                                    onBlur={handleBlur}
+                                    ref={(el) => (answerRefs.current[`question-${questionIndex}-answer-${answerIndex}`] = el)}
                                   />
                                   {answerIndex >= 2 && (
                                     <button
@@ -386,6 +449,9 @@ function SurveyForm() {
                               className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                               placeholder="Reward"
                               disabled={Boolean(id)}
+                              onInput={handleInput}
+                              onBlur={handleBlur}
+                              ref={rewardRef}
                             />
                             <img
                               src={CoinLogo}
@@ -401,6 +467,9 @@ function SurveyForm() {
                               className={`p-2 h-8 ml-2 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                               placeholder="# of "
                               disabled={Boolean(id)}
+                              onInput={handleInput}
+                              onBlur={handleBlur}
+                              ref={plimitRef}
                             />
                             <span className="ml-2 text-slate-400">People</span>
                           </div>
@@ -411,6 +480,9 @@ function SurveyForm() {
                               value={endDate}
                               onChange={(e) => setEndDate(e.target.value)}
                               className={`p-2 h-8 rounded text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
+                              onInput={handleInput}
+                              onBlur={handleBlur}
+                              ref={endDateRef}
                             />
                           </div>
                         </div>
@@ -425,6 +497,7 @@ function SurveyForm() {
                                 onChange={(e) => setPminBalance(e.target.value)}
                                 className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
                                 placeholder="Balance"
+                                
                               />
 
                             </div>
