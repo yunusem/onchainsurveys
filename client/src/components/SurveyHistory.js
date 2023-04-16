@@ -149,10 +149,10 @@ function SurveyHistory() {
         >
           <div
             style={{ width: `${answerPercentage}%` }}
-            className={`rounded py-4  mr-2 ${isMyAnswer(survey, answer) ? "bg-red-400" : "bg-slate-600 "}`}
+            className={`rounded shadow-md py-4  mr-2 ${isMyAnswer(survey, answer) ? "bg-red-400" : "bg-slate-600 "}`}
           >
           </div>
-          <div className='text-slate-400 mr-2'>{answerPercentage}%</div>
+          <div className='text-slate-500 mr-2'>{answerPercentage}%</div>
           <div className={`absolute ml-3 w-full ${isMyAnswer(survey, answer) ? "text-slate-800 font-semibold" : ""}`}
           >{answer.text}</div>
 
@@ -167,13 +167,13 @@ function SurveyHistory() {
     const survey = surveys.find(s => s._id === expandedSurveyId);
     if (survey && isDetailsVisible) {
       return (
-        <div className={`ring-2 ring-red-500 rounded p-4 h-full overflow-y-auto w-full transition-all duration-100 ease-in-out`}>
+        <div className={`ring-2 ring-red-500 rounded drop-shadow-lg p-4 h-full overflow-y-auto w-full transition-all duration-100 ease-in-out`}>
           <div className='flex  justify-between'>
             <h3 className="text-xl font-semibold mb-4 text-red-500">{survey.title}</h3>
             <button
               type="button"
               onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-              className={`bg-slate-900 rounded font-semibold text-white h-8 w-12 bottom-0 ${isSurveyEditable(survey) ? "" : "hidden"}`}
+              className={`bg-red-500 rounded drop-shadow-lg font-semibold text-white px-4 h-8 bottom-0 ${isSurveyEditable(survey) ? "" : "hidden"}`}
             >
               Edit
             </button>
@@ -295,7 +295,7 @@ function SurveyHistory() {
                       {surveys && getFilteredSurveys().map((survey) => (
                         <li
                           key={survey._id}
-                          className={`select-none flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded cursor-pointer transition-all ease-in-out duration-300  ${expandedSurveyId === survey._id ? " bg-slate-800 ring-2 ring-red-500" : "  bg-slate-700 text-slate-400"
+                          className={`select-none flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded drop-shadow-lg cursor-pointer transition-all ease-in-out duration-300  ${expandedSurveyId === survey._id ? " bg-slate-800 ring-2 ring-red-500" : "  bg-slate-700 text-slate-400"
                             }`}
                           onClick={() => toggleSurvey(survey._id)}
                         >
@@ -349,7 +349,7 @@ function SurveyHistory() {
                   <div className={`h-[720px] w-full flex`}>
                     {!expandedSurveyId && (
                       <div className={`absolute p-4 h-24 w-1/3 flex justify-center items-center`}>
-                        <div className="text-center text-slate-400">
+                        <div className="text-center text-slate-500">
                           Select a survey to view its details.
                         </div>
                       </div>

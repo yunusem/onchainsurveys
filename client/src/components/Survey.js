@@ -137,7 +137,7 @@ function Survey() {
                     <button
                       type="button"
                       onClick={() => setCurrentPage(currentPage + 1)}
-                      className="bg-slate-900  px-4 h-8 rounded font-semibold text-white"
+                      className="bg-slate-900  px-4 h-8 rounded drop-shadow-lg font-semibold text-red-500"
                     >
                       Next
                     </button>
@@ -147,7 +147,7 @@ function Survey() {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      className="bg-red-500 px-4 h-8 rounded font-semibold text-white"
+                      className="bg-red-500 px-4 h-8 rounded drop-shadow-lg font-semibold text-white"
                     >
                       Submit
                     </button>
@@ -157,7 +157,7 @@ function Survey() {
                     type="button"
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 0}
-                    className={`bg-slate-900  px-4 h-8 rounded font-semibold text-white ${currentPage !== 0 ? 'opacity-100' : 'opacity-0 hidden'}`}
+                    className={`bg-slate-900  px-4 h-8 rounded drop-shadow-lg font-semibold text-red-500 ${currentPage !== 0 ? 'opacity-100' : 'opacity-0 hidden'}`}
                   >
                     Previous
                   </button>

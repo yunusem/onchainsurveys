@@ -58,8 +58,8 @@ function NavigationBar() {
     }
 
     const walletAddress = localStorage.getItem('active_public_key');
-    const start = walletAddress.substring(0, 5);
-    const end = walletAddress.substring(walletAddress.length - 3);
+    const start = walletAddress.substring(0, 4);
+    const end = walletAddress.substring(walletAddress.length - 4);
     const formattedAddress = `${start}...${end}`;
 
     const handleLogout = async () => {
@@ -88,15 +88,15 @@ function NavigationBar() {
                         <img src={Logo} alt="logo" width="512px" />
                     </Link>
                 </div>
-                <div name="menu" className="flex flex-col">
-                    <div className={`h-16 rounded items-center ${currentPath === "/surveys/new" ? "bg-red-500 text-white" : "bg-slate-800 border-solid border-2 border-red-500 text-red-500" }`}>
+                <div name="menu" className="flex flex-col  space-y-3 translate-x-8">
+                    <div className={`h-16 text-xl rounded drop-shadow-lg items-center outline-none ${currentPath === "/surveys/new" ? "bg-slate-800 text-red-400 outline-red-500" : "bg-slate-700 text-slate-300" }`}>
                         <Link to="/surveys/new">
                             <div className="h-full flex items-center ml-8 ">
                                 Create +
                             </div>
                         </Link>
                     </div>
-                    <div className={`h-16 rounded items-center ${currentPath === "/surveys" ? "bg-slate-700" : "bg-slate-800 "}`}>
+                    <div className={`h-16 text-xl rounded drop-shadow-lg items-center outline-none ${currentPath === "/surveys" ? "bg-slate-800 text-white outline-red-500" : "bg-slate-700 text-slate-300"}`}>
                         <Link to="/surveys">
                             <div className={`h-full flex items-center ml-8 `}>
                                 History
@@ -107,13 +107,13 @@ function NavigationBar() {
                 <div className="card absolute right-3 top-7 p-2 h-24 justify-end">
                     <div className="grid grid-rows-3 grid-flow-col gap-2">
                         
-                        <div className="rounded col-span-2 bg-slate-700 flex justify-center px-1 items-center break-all text-slate-200 text-sm">
+                        <div className="rounded drop-shadow-lg col-span-2 bg-slate-600 flex justify-center px-1 items-center break-all text-slate-300 text-sm font-normal">
                             {formattedAddress}
                         </div>
-                        <button onClick={handleLogout} className="rounded row-span-2 col-span-2 border-solid border border-red-500 text-red-500 mb-2 flex justify-center font-medium items-center">
+                        <button onClick={handleLogout} className="rounded drop-shadow-lg row-span-2 col-span-2 text-red-500 bg-slate-900 flex justify-center font-semibold items-center">
                             Logout
                         </button>
-                        <div className=" rounded  row-span-3 bg-slate-200 mb-2 flex justify-center items-center">
+                        <div className=" rounded drop-shadow-lg row-span-3 bg-slate-200 flex justify-center items-center">
                             <Identicon string={walletAddress} size={50} />
                         </div>
                     </div>

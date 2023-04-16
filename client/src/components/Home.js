@@ -168,7 +168,7 @@ function Home() {
                     {availabeSurveys && availabeSurveys.map((survey) => (
                       <li
                         key={survey._id}
-                        className="select-none bg-slate-700 h-20 rounded w-full col-span-1 flex items-center space-x-2 group"
+                        className="select-none bg-slate-700 h-20 rounded drop-shadow-lg w-full col-span-1 flex items-center space-x-2 group"
                       >
                        
                         <div className=" flex w-full flex-col space-y-2 h-fit p-3 justify-between rounded">
@@ -177,7 +177,7 @@ function Home() {
                           </div>
                           <div className="flex justify-between w-full">
                             <div className='flex items-center space-x-8'>
-                              <div className='flex w-8 space-x-1'>
+                              <div className='flex w-8 space-x-1 '>
                                 <img
                                   src={CoinLogo}
                                   alt="Casper Coin Logo"
@@ -213,9 +213,9 @@ function Home() {
 
                           </div>
                         </div>
-                        <div className="flex justify-center items-center h-full px-3 py-4">
+                        <div className="flex justify-center items-start h-full px-3 py-4">
                           <button
-                            className="bg-red-500  px-4 flex h-full items-center rounded font-semibold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                            className="bg-red-500  px-4 flex h-full items-center rounded drop-shadow-lg font-semibold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                             onClick={() => handleTakeSurvey(survey._id)}
                           >
                             Vote

@@ -320,7 +320,7 @@ function SurveyForm() {
                           id="title"
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
-                          className="p-2 h-8 rounded mt-1 w-full text-white bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
+                          className="p-2 h-8 rounded drop-shadow-lg mt-1 w-full text-white bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                           placeholder='A relevant title of the survey'
                           onInput={handleInput}
                           onBlur={handleBlur}
@@ -342,7 +342,7 @@ function SurveyForm() {
                                   {activeQuestionIndex > 0 && (
                                     <button
                                       onClick={goToPreviousQuestion}
-                                      className="w-6 h-6 flex rounded bg-red-500 text-white items-start justify-center"
+                                      className="w-6 h-6 flex rounded drop-shadow-lg bg-red-500 text-white items-start justify-center"
                                     >
                                       <div className="flex h-4 items-center justify-center mt-[3px] font-semibold">{`<`}</div>
                                     </button>
@@ -350,7 +350,7 @@ function SurveyForm() {
                                   {questions.length > 0 && activeQuestionIndex !== questions.length - 1 && (
                                     <button
                                       onClick={goToNextQuestion}
-                                      className="w-6 h-6 flex rounded bg-red-500 text-white items-start justify-center"
+                                      className="w-6 h-6 flex rounded drop-shadow-lg bg-red-500 text-white items-start justify-center"
                                     >
                                       <div className="flex h-4 items-center justify-center mt-[3px] font-semibold">{`>`}</div>
                                     </button>
@@ -363,7 +363,7 @@ function SurveyForm() {
                                   id={`question-${questionIndex}`}
                                   value={question.text}
                                   onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                                  className="p-2 h-8 bg-slate-700 rounded mb-5 text-white font-medium flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
+                                  className="p-2 h-8 bg-slate-700 rounded drop-shadow-lg mb-5 text-white font-medium flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                                   placeholder='Which one is your favorite?'
                                   onInput={handleInput}
                                   onBlur={handleBlur}
@@ -389,7 +389,7 @@ function SurveyForm() {
                                     value={answer.text}
                                     placeholder={`Option ${answerIndex + 1}`}
                                     onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
-                                    className="p-2 h-8 bg-slate-600 rounded mt-1 text-slate-200 font-normal flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
+                                    className="p-2 h-8 bg-slate-600 rounded drop-shadow-lg mt-1 text-slate-200 font-normal flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                                     onInput={handleInput}
                                     onBlur={handleBlur}
                                     ref={(el) => (answerRefs.current[`question-${questionIndex}-answer-${answerIndex}`] = el)}
@@ -410,7 +410,7 @@ function SurveyForm() {
                               <button
                                 type="button"
                                 onClick={() => addAnswer(questionIndex)}
-                                className={`bg-red-500 h-8 rounded font-semibold whitespace-nowrap text-white mr-2 px-3 ${!isCurrentQuestionValidForNewAnswer && 'opacity-30 cursor-not-allowed'}`}
+                                className={`bg-red-500 h-8 rounded drop-shadow-lg font-semibold whitespace-nowrap text-white mr-2 px-3 ${!isCurrentQuestionValidForNewAnswer && 'opacity-30 cursor-not-allowed'}`}
                                 disabled={!isCurrentQuestionValidForNewAnswer}
                               >
                                 Add Answer
@@ -442,7 +442,7 @@ function SurveyForm() {
                               id="reward"
                               value={reward}
                               onChange={(e) => setReward(e.target.value)}
-                              className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
+                              className={`p-2 h-8 rounded drop-shadow-lg w-24 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                               placeholder="Reward"
                               disabled={Boolean(id)}
                               onInput={handleInput}
@@ -460,7 +460,7 @@ function SurveyForm() {
                               id="participants"
                               value={plimit}
                               onChange={(e) => setPlimit(e.target.value)}
-                              className={`p-2 h-8 ml-2 rounded w-20 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
+                              className={`p-2 h-8 ml-2 rounded drop-shadow-lg w-20 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                               placeholder="# of "
                               disabled={Boolean(id)}
                               onInput={handleInput}
@@ -475,7 +475,7 @@ function SurveyForm() {
                               id="endDate"
                               value={endDate}
                               onChange={(e) => setEndDate(e.target.value)}
-                              className={`p-2 h-8 rounded text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
+                              className={`p-2 h-8 rounded drop-shadow-lg text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                               onInput={handleInput}
                               onBlur={handleBlur}
                               ref={endDateRef}
@@ -491,7 +491,7 @@ function SurveyForm() {
                                 id="minbalance"
                                 value={pminbalance}
                                 onChange={(e) => setPminBalance(e.target.value)}
-                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded drop-shadow-lg w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
                                 placeholder="Balance"
 
                               />
@@ -504,7 +504,7 @@ function SurveyForm() {
                                 id="minstake"
                                 value={pminstake}
                                 onChange={(e) => setPminStake(e.target.value)}
-                                className={`p-2 h-8 rounded w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded drop-shadow-lg w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                                 placeholder="Stake"
                               />
 
@@ -516,7 +516,7 @@ function SurveyForm() {
                                 id="age"
                                 value={paccage}
                                 onChange={(e) => setPaccAge(e.target.value)}
-                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded drop-shadow-lg w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                                 placeholder="Age" // in days
                               />
 
@@ -527,7 +527,7 @@ function SurveyForm() {
                                 id="validator"
                                 value={pvalidator}
                                 onChange={(e) => setPValidator(e.target.value)}
-                                className={`px-1 h-8 rounded w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
+                                className={`px-1 h-8 rounded drop-shadow-lg w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
                               >
                                 <option value="true">True</option>
                                 <option value="false">False</option>
@@ -537,7 +537,7 @@ function SurveyForm() {
                           <div className='items-center'>
                             <button
                               type="submit"
-                              className={`bg-red-500 h-8 px-3 place-items-center rounded flex items-center font-semibold text-white transition-all duration-300 ease-in-out  ${(!isFormValid || !areAllInputsFilled) &&
+                              className={`bg-red-500 h-8 px-3 place-items-center rounded drop-shadow-lg flex items-center font-semibold text-white transition-all duration-300 ease-in-out  ${(!isFormValid || !areAllInputsFilled) &&
                                 "opacity-30 cursor-not-allowed"
                                 }`}
                               disabled={!isFormValid || !areAllInputsFilled}

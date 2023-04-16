@@ -16,12 +16,12 @@ function ThankYou() {
           <img src={Logo} alt="logo" width="512px" />
         </Link>
       </div>
-      <div className="py-12 px-8 bg-slate-700 shadow-lg rounded">
+      <div className="py-12 px-8 bg-slate-700 drop-shadow-lg rounded">
         <h2 className="text-2xl font-semibold mb-6">Thank you for submitting your response!</h2>
         <p className="mb-6">Your input is valuable to us.</p>
         <button
           onClick={handleClick}
-          className="bg-red-500 py-2 px-4 rounded font-semibold text-white"
+          className="bg-red-500 py-2 px-4 rounded drop-shadow-lg font-semibold text-white"
         >
           Go to Home Page
         </button>

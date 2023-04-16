@@ -16,7 +16,7 @@ function SurveyQuestion({ question, onChange }) {
           <label
           htmlFor={`answer-${question._id}-${index}`}
           key={`answer-${index}`}
-          className={`flex rounded items-center w-full h-8 cursor-pointer ${selectedAnswerIndex === index ? 'bg-red-400' : 'bg-slate-700'}`}
+          className={`flex rounded drop-shadow-lg items-center w-full h-8 cursor-pointer ${selectedAnswerIndex === index ? 'bg-red-400' : 'bg-slate-700'}`}
         >
           <input
             type="radio"
