@@ -94,8 +94,8 @@ function SurveyForm() {
   }, [title, questions, activeQuestionIndex]);
 
   useEffect(() => {
-    setAreAllInputsFilled(Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage));
-  }, [endDate, pminbalance, pminstake, paccage, pvalidator]);
+    setAreAllInputsFilled(Boolean(reward) && Boolean(plimit) && Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage));
+  }, [endDate, reward, plimit, pminbalance, pminstake, paccage, pvalidator]);
 
   useEffect(() => {
     if (!isWalletConnected) {
@@ -136,35 +136,34 @@ function SurveyForm() {
 
 
   const focusFirstEmptyInput = () => {
-    const emptyInputs = [
-      title ? null : titleRef,
-      questions[activeQuestionIndex].text ? null : questionRef,
-    ];
+    if (document.activeElement === document.body) {
+      const emptyInputs = [
+        title ? null : titleRef,
+        questions[activeQuestionIndex].text ? null : questionRef,
+      ];
 
-    questions[activeQuestionIndex].answers.forEach((answer, index) => {
-      if (answer.text === '') {
-        emptyInputs.push({ current: answerRefs.current[`question-${activeQuestionIndex}-answer-${index}`] });
-      }
-    });
+      questions[activeQuestionIndex].answers.forEach((answer, index) => {
+        if (answer.text === '') {
+          emptyInputs.push({ current: answerRefs.current[`question-${activeQuestionIndex}-answer-${index}`] });
+        }
+      });
 
-    emptyInputs.push(
-      reward ? null : rewardRef,
-      plimit ? null : plimitRef,
-      endDate ? null : endDateRef
-    );
+      emptyInputs.push(
+        reward ? null : rewardRef,
+        plimit ? null : plimitRef,
+        endDate ? null : endDateRef
+      );
 
-    for (const inputRef of emptyInputs) {
-      if (inputRef && inputRef.current) {
-        inputRef.current.focus();
-        break;
+      for (const inputRef of emptyInputs) {
+        if (inputRef && inputRef.current) {
+          inputRef.current.focus();
+          break;
+        }
       }
     }
   };
 
-
-
   const handleInput = () => {
-
     if (timer) {
       clearTimeout(timer);
       setTimer(null);
@@ -172,9 +171,7 @@ function SurveyForm() {
   };
 
   const handleBlur = () => {
-
     const newTimer = setTimeout(() => {
-
       focusFirstEmptyInput();
     }, 5000); // 5 seconds
     timer && clearTimeout(timer);
@@ -308,8 +305,8 @@ function SurveyForm() {
             <div className="flex w-3/4">
               <div className="min-w-[50%]">
                 <div className="flex justify-center mt-3  h-full">
-                  <div className="text-white justify-center  w-full p-1">
-                    <form onSubmit={handleSubmit} className="w-full">
+                  <div className="text-white justify-center  w-full p-1 ">
+                    <form onSubmit={handleSubmit} className="w-full ">
                       <div className="flex justify-between items-center">
                         <div >
                           <label htmlFor="title" className="font-medium bg-slate ">
@@ -323,7 +320,7 @@ function SurveyForm() {
                           id="title"
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
-                          className="p-2 h-8 rounded mt-1 w-full text-white bg-slate-700 font-medium outline-none focus:outline-red-500 focus:scale-105"
+                          className="p-2 h-8 rounded mt-1 w-full text-white bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                           placeholder='A relevant title of the survey'
                           onInput={handleInput}
                           onBlur={handleBlur}
@@ -335,9 +332,9 @@ function SurveyForm() {
                         questionIndex === activeQuestionIndex && (
                           <div key={questionIndex} className=" relative ">
                             <div className="flex flex-col  ">
-                              <div className='flex  items-center space-x-6 mb-2'>
+                              <div className='flex items-center space-x-3 mb-2'>
                                 <div >
-                                  <label htmlFor={`question-${questionIndex}`} className="font-medium">
+                                  <label htmlFor={`question-${questionIndex}`} className="font-medium flex w-28">
                                     Question {questionIndex + 1}
                                   </label>
                                 </div>
@@ -345,17 +342,17 @@ function SurveyForm() {
                                   {activeQuestionIndex > 0 && (
                                     <button
                                       onClick={goToPreviousQuestion}
-                                      className="w-6 h-6 rounded bg-red-500 text-white items-center"
+                                      className="w-6 h-6 flex rounded bg-red-500 text-white items-start justify-center"
                                     >
-                                      {"<"}
+                                      <div className="flex h-4 items-center justify-center mt-[3px] font-semibold">{`<`}</div>
                                     </button>
                                   )}
                                   {questions.length > 0 && activeQuestionIndex !== questions.length - 1 && (
                                     <button
                                       onClick={goToNextQuestion}
-                                      className="w-6 h-6 rounded bg-red-500 text-white items-center"
+                                      className="w-6 h-6 flex rounded bg-red-500 text-white items-start justify-center"
                                     >
-                                      {">"}
+                                      <div className="flex h-4 items-center justify-center mt-[3px] font-semibold">{`>`}</div>
                                     </button>
                                   )}
                                 </div>
@@ -366,7 +363,7 @@ function SurveyForm() {
                                   id={`question-${questionIndex}`}
                                   value={question.text}
                                   onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                                  className="p-2 h-8 bg-slate-700 rounded mb-5 text-white font-medium outline-none flex-grow focus:outline-red-500 focus:scale-105 "
+                                  className="p-2 h-8 bg-slate-700 rounded mb-5 text-white font-medium flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                                   placeholder='Which one is your favorite?'
                                   onInput={handleInput}
                                   onBlur={handleBlur}
@@ -392,7 +389,7 @@ function SurveyForm() {
                                     value={answer.text}
                                     placeholder={`Option ${answerIndex + 1}`}
                                     onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
-                                    className="p-2 h-8 bg-slate-600 rounded mt-1 text-slate-200 font-normal outline-none focus:outline-red-500 flex-grow"
+                                    className="p-2 h-8 bg-slate-600 rounded mt-1 text-slate-200 font-normal flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                                     onInput={handleInput}
                                     onBlur={handleBlur}
                                     ref={(el) => (answerRefs.current[`question-${questionIndex}-answer-${answerIndex}`] = el)}
@@ -413,7 +410,7 @@ function SurveyForm() {
                               <button
                                 type="button"
                                 onClick={() => addAnswer(questionIndex)}
-                                className={`bg-red-500 h-8 rounded font-semibold whitespace-nowrap text-white mr-2 px-2 ${!isCurrentQuestionValidForNewAnswer && 'opacity-50 cursor-not-allowed'}`}
+                                className={`bg-red-500 h-8 rounded font-semibold whitespace-nowrap text-white mr-2 px-3 ${!isCurrentQuestionValidForNewAnswer && 'opacity-30 cursor-not-allowed'}`}
                                 disabled={!isCurrentQuestionValidForNewAnswer}
                               >
                                 Add Answer
@@ -422,7 +419,7 @@ function SurveyForm() {
                                 or
                               </div>
                               <button
-                                className={`text-red-500  h-8 whitespace-nowrap ${!isFormValid && 'opacity-50 cursor-not-allowed'}`}
+                                className={`text-red-500  h-8 whitespace-nowrap ${!isFormValid && 'opacity-30 cursor-not-allowed'}`}
                                 onClick={addQuestion}
                                 disabled={!isFormValid}
                               >
@@ -445,7 +442,7 @@ function SurveyForm() {
                               id="reward"
                               value={reward}
                               onChange={(e) => setReward(e.target.value)}
-                              className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
+                              className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                               placeholder="Reward"
                               disabled={Boolean(id)}
                               onInput={handleInput}
@@ -463,7 +460,7 @@ function SurveyForm() {
                               id="participants"
                               value={plimit}
                               onChange={(e) => setPlimit(e.target.value)}
-                              className={`p-2 h-8 ml-2 rounded w-20 text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
+                              className={`p-2 h-8 ml-2 rounded w-20 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                               placeholder="# of "
                               disabled={Boolean(id)}
                               onInput={handleInput}
@@ -478,7 +475,7 @@ function SurveyForm() {
                               id="endDate"
                               value={endDate}
                               onChange={(e) => setEndDate(e.target.value)}
-                              className={`p-2 h-8 rounded text-slate-300 bg-slate-700 font-medium outline-none focus:outline-red-500`}
+                              className={`p-2 h-8 rounded text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                               onInput={handleInput}
                               onBlur={handleBlur}
                               ref={endDateRef}
@@ -494,7 +491,7 @@ function SurveyForm() {
                                 id="minbalance"
                                 value={pminbalance}
                                 onChange={(e) => setPminBalance(e.target.value)}
-                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
                                 placeholder="Balance"
 
                               />
@@ -507,7 +504,7 @@ function SurveyForm() {
                                 id="minstake"
                                 value={pminstake}
                                 onChange={(e) => setPminStake(e.target.value)}
-                                className={`p-2 h-8 rounded w-20 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                                 placeholder="Stake"
                               />
 
@@ -519,7 +516,7 @@ function SurveyForm() {
                                 id="age"
                                 value={paccage}
                                 onChange={(e) => setPaccAge(e.target.value)}
-                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                                 placeholder="Age" // in days
                               />
 
@@ -530,7 +527,7 @@ function SurveyForm() {
                                 id="validator"
                                 value={pvalidator}
                                 onChange={(e) => setPValidator(e.target.value)}
-                                className={`px-1 h-8 rounded w-20 text-slate-300 bg-slate-700 text-sm outline-none focus:outline-red-500`}
+                                className={`px-1 h-8 rounded w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
                               >
                                 <option value="true">True</option>
                                 <option value="false">False</option>
@@ -540,8 +537,8 @@ function SurveyForm() {
                           <div className='items-center'>
                             <button
                               type="submit"
-                              className={`bg-red-500 h-8 px-3 place-items-center rounded flex items-center font-semibold text-white ${(!isFormValid || !areAllInputsFilled) &&
-                                "opacity-50 cursor-not-allowed"
+                              className={`bg-red-500 h-8 px-3 place-items-center rounded flex items-center font-semibold text-white transition-all duration-300 ease-in-out  ${(!isFormValid || !areAllInputsFilled) &&
+                                "opacity-30 cursor-not-allowed"
                                 }`}
                               disabled={!isFormValid || !areAllInputsFilled}
                             >
