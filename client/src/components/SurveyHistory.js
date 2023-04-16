@@ -16,7 +16,16 @@ function SurveyHistory() {
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
   const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
+  const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
+  useEffect(() => {
+    if(expandedSurveyId) {
+      const timer = setTimeout(() => {
+        setIsDetailsVisible(true);
+      }, 100 );
+      return () => clearTimeout(timer);
+    }
+  }, [expandedSurveyId]);
 
   function removeItems() {
     localStorage.removeItem('token');
@@ -76,14 +85,14 @@ function SurveyHistory() {
   }
 
   const toggleSurvey = (id) => {
+    setIsDetailsVisible(false);
     if (expandedSurveyId === id) {
       setExpandedSurveyId(null);
     } else {
       setExpandedSurveyId(id);
+
     }
   };
-
-
 
   const daysRemaining = (endDate) => {
     const now = new Date();
@@ -153,37 +162,36 @@ function SurveyHistory() {
   };
 
 
+
   const renderSurveyQuestions = () => {
     const survey = surveys.find(s => s._id === expandedSurveyId);
-    if (!survey) {
-      return <div className="text-center text-white">Select a survey to view its questions.</div>;
-    }
-
-    return (
-      <div className="border border-red-500  rounded p-4 h-full overflow-y-auto w-full">
-        <div className='flex  justify-between'>
-
-          <h3 className="text-xl font-semibold mb-4 text-red-500">{survey.title}</h3>
-          <button
-            type="button"
-            onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-            className={`bg-slate-900 rounded font-semibold text-white h-8 w-12 bottom-0 ${isSurveyEditable(survey) ? "" : "hidden"}`}
-          >
-            Edit
-          </button>
-        </div>
-        <div className="space-y-4">
-          {survey.questions.map((question, index) => (
-            <div key={question._id} className="  rounded w-full min-w-[450px] overflow-y-auto">
-              <p className="font-semibold">{question.text}</p>
-              <div className="mr-3 mt-2 text-slate-300 ">
-                {renderAnswerStats(survey, index)}
+    if (survey && isDetailsVisible) {
+      return (
+        <div className={`ring-2 ring-red-500 rounded p-4 h-full overflow-y-auto w-full transition-all duration-100 ease-in-out`}>
+          <div className='flex  justify-between'>
+            <h3 className="text-xl font-semibold mb-4 text-red-500">{survey.title}</h3>
+            <button
+              type="button"
+              onClick={() => history.push(`/surveys/${survey._id}/edit`)}
+              className={`bg-slate-900 rounded font-semibold text-white h-8 w-12 bottom-0 ${isSurveyEditable(survey) ? "" : "hidden"}`}
+            >
+              Edit
+            </button>
+          </div>
+          <div className="space-y-4">
+            {survey.questions.map((question, index) => (
+              <div key={question._id} className="rounded w-full min-w-[450px] overflow-y-auto">
+                <p className="font-semibold">{question.text}</p>
+                <div className="mr-3 mt-2 text-slate-300 ">
+                  {renderAnswerStats(survey, index)}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    return <div></div>
   };
 
   const getFilteredSurveys = () => {
@@ -283,11 +291,11 @@ function SurveyHistory() {
               <div className='flex h-full w-3/4  '>
                 <div className='flex w-full  justify-between '>
                   <div className='h-full w-full overflow-y-auto'>
-                    <ul className=" flex w-full flex-col space-y-4">
+                    <ul className=" flex w-full flex-col space-y-4 p-1">
                       {surveys && getFilteredSurveys().map((survey) => (
                         <li
                           key={survey._id}
-                          className={`select-none flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded cursor-pointer transition-all ease-linear duration-50  ${expandedSurveyId === survey._id ? " bg-slate-800 border border-red-500" : "  bg-slate-700 text-slate-400"
+                          className={`select-none flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded cursor-pointer transition-all ease-in-out duration-300  ${expandedSurveyId === survey._id ? " bg-slate-800 ring-2 ring-red-500" : "  bg-slate-700 text-slate-400"
                             }`}
                           onClick={() => toggleSurvey(survey._id)}
                         >
@@ -338,8 +346,18 @@ function SurveyHistory() {
                       ))}
                     </ul>
                   </div>
-                  <div className='h-[720px] w-full ml-3 flex '>
-                    {expandedSurveyId && renderSurveyQuestions()}
+                  <div className={`h-[720px] w-full flex`}>
+                    {!expandedSurveyId && (
+                      <div className={`absolute p-4 h-24 w-1/3 flex justify-center items-center`}>
+                        <div className="text-center text-slate-400">
+                          Select a survey to view its details.
+                        </div>
+                      </div>
+                    )}
+                    <div className={`h-FULL w-full ml-1 flex p-1 transition-opacity duration-200 ease-in-out ${isDetailsVisible ? "opacity-100" : "opacity-0"}`}>
+                      {renderSurveyQuestions()}
+                    </div>
+
                   </div>
                 </div>
               </div>
