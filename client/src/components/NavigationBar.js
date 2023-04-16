@@ -13,14 +13,6 @@ function NavigationBar() {
     const provider = useContext(CasperWalletContext);
     const currentPath = history.location.pathname
 
-    const isActive = (path) => {
-        return currentPath === path ? 'bg-slate-700' : 'bg-slate-800 ';
-    };
-    const isCreateActive = (path) => {
-        return currentPath === path ? 'bg-red-500 text-white ' : 'bg-slate-800 border-solid border-2 border-red-500 text-red-500';
-    };
-
-
     function removeItems() {
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
@@ -97,15 +89,14 @@ function NavigationBar() {
                     </Link>
                 </div>
                 <div name="menu" className="flex flex-col">
-                    <div
-                        className={`h-16 rounded items-center  ${isCreateActive('/surveys/new')}`}>
+                    <div className={`h-16 rounded items-center ${currentPath === "/surveys/new" ? "bg-red-500 text-white" : "bg-slate-800 border-solid border-2 border-red-500 text-red-500" }`}>
                         <Link to="/surveys/new">
                             <div className="h-full flex items-center ml-8 ">
                                 Create +
                             </div>
                         </Link>
                     </div>
-                    <div className={`h-16 rounded items-center ${isActive('/surveys')}`}>
+                    <div className={`h-16 rounded items-center ${currentPath === "/surveys" ? "bg-slate-700" : "bg-slate-800 "}`}>
                         <Link to="/surveys">
                             <div className={`h-full flex items-center ml-8 `}>
                                 History
