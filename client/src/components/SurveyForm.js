@@ -21,7 +21,7 @@ function SurveyForm() {
   const [reward, setReward] = useState(0);
   const [plimit, setPlimit] = useState(0);
   const [pminbalance, setPminBalance] = useState(10);
-  const [pminstake, setPminStake] = useState(1);
+  const [pminstake, setPminStake] = useState(500);
   const [paccage, setPaccAge] = useState(1);
   const [pvalidator, setPValidator] = useState(false);
 
@@ -34,6 +34,11 @@ function SurveyForm() {
     localStorage.removeItem('x_casper_provided_signature');
     localStorage.removeItem('user_is_activated');
   }
+
+  function formatDateToDateTimeLocal(date) {
+    const pad = (num) => num.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }  
 
   useEffect(() => {
     const loadSurvey = async () => {
@@ -94,9 +99,15 @@ function SurveyForm() {
   }, [title, questions, activeQuestionIndex]);
 
   useEffect(() => {
+    (reward && reward < 1) && setReward(1);
+    (plimit && plimit < 1) && setPlimit(1);
+    (pminbalance && pminbalance < 1) && setPminBalance(1);
+    (pminstake && pminstake < 500) && setPminStake(500);
+    (paccage && paccage < 1) && setPaccAge(1);
+  
     setAreAllInputsFilled(Boolean(reward) && Boolean(plimit) && Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage));
   }, [endDate, reward, plimit, pminbalance, pminstake, paccage, pvalidator]);
-
+  
   useEffect(() => {
     if (!isWalletConnected) {
       history.push('/');
@@ -162,7 +173,7 @@ function SurveyForm() {
       }
     }
   };
-
+  
   const handleInput = () => {
     if (timer) {
       clearTimeout(timer);
@@ -233,6 +244,17 @@ function SurveyForm() {
       createNewSurvey();
     } else {
       updateExistingSurvey();
+    }
+  };
+
+  const handleEndDateChange = (date) => {
+    const selectedDate = new Date(date);
+    const now = new Date();
+    const minEndDate = new Date(now.getTime() + 12 * 60 * 60 * 1000);
+    if (selectedDate.getTime() < minEndDate.getTime()) {
+      setEndDate(formatDateToDateTimeLocal(minEndDate));
+    } else {
+      setEndDate(date);
     }
   };
 
@@ -320,7 +342,7 @@ function SurveyForm() {
                           id="title"
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
-                          className="p-2 h-8 rounded drop-shadow-lg mt-1 w-full text-white bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
+                          className="p-2 h-10 rounded drop-shadow-lg mt-1 w-full text-white bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                           placeholder='A relevant title of the survey'
                           onInput={handleInput}
                           onBlur={handleBlur}
@@ -363,7 +385,7 @@ function SurveyForm() {
                                   id={`question-${questionIndex}`}
                                   value={question.text}
                                   onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                                  className="p-2 h-8 bg-slate-700 rounded drop-shadow-lg mb-5 text-white font-medium flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
+                                  className="p-2 h-10 bg-slate-700 rounded drop-shadow-lg mb-3 text-white font-medium flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                                   placeholder='Which one is your favorite?'
                                   onInput={handleInput}
                                   onBlur={handleBlur}
@@ -373,7 +395,7 @@ function SurveyForm() {
                                   <button
                                     type="button"
                                     onClick={() => removeQuestion(questionIndex)}
-                                    className="absolute right-0 top-8 ml-2 bg-slate-700 px-2 text-slate-300 rounded text-xl"
+                                    className="absolute right-0 top-9 ml-2 bg-slate-700 px-2 text-slate-300 rounded text-xl"
                                   >
                                     x
                                   </button>
@@ -406,7 +428,7 @@ function SurveyForm() {
                                 </div>
                               </div>
                             ))}
-                            <div className="flex items-center mt-4 h-8">
+                            <div className="flex items-center mt-2 h-8">
                               <button
                                 type="button"
                                 onClick={() => addAnswer(questionIndex)}
@@ -471,11 +493,12 @@ function SurveyForm() {
                           </div>
                           <div className="flex items-center justify-end">
                             <input
-                              type="date"
+                              type="datetime-local"
                               id="endDate"
                               value={endDate}
-                              onChange={(e) => setEndDate(e.target.value)}
-                              className={`p-2 h-8 rounded drop-shadow-lg text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
+                              min={formatDateToDateTimeLocal(new Date())}
+                              onChange={(e) => handleEndDateChange(e.target.value)}
+                              className={`py-2 px-1 right-2 h-8 w-40 rounded drop-shadow-lg text-slate-300 bg-slate-700 font-normal text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                               onInput={handleInput}
                               onBlur={handleBlur}
                               ref={endDateRef}
@@ -493,7 +516,7 @@ function SurveyForm() {
                                 onChange={(e) => setPminBalance(e.target.value)}
                                 className={`p-2 h-8 rounded drop-shadow-lg w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
                                 placeholder="Balance"
-
+                                onBlur={handleBlur}
                               />
 
                             </div>
@@ -506,6 +529,7 @@ function SurveyForm() {
                                 onChange={(e) => setPminStake(e.target.value)}
                                 className={`p-2 h-8 rounded drop-shadow-lg w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                                 placeholder="Stake"
+                                onBlur={handleBlur}
                               />
 
                             </div>
@@ -518,6 +542,7 @@ function SurveyForm() {
                                 onChange={(e) => setPaccAge(e.target.value)}
                                 className={`p-2 h-8 rounded drop-shadow-lg w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                                 placeholder="Age" // in days
+                                onBlur={handleBlur}
                               />
 
                             </div>
@@ -528,6 +553,7 @@ function SurveyForm() {
                                 value={pvalidator}
                                 onChange={(e) => setPValidator(e.target.value)}
                                 className={`px-1 h-8 rounded drop-shadow-lg w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
+                                onBlur={handleBlur}
                               >
                                 <option value="true">True</option>
                                 <option value="false">False</option>
@@ -547,7 +573,6 @@ function SurveyForm() {
                           </div>
                         </div>
                       </div>
-
                     </form>
                   </div>
                 </div>
