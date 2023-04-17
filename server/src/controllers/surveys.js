@@ -1,12 +1,13 @@
 const Survey = require('../models/Survey');
+const mongoose = require('mongoose');
 
 exports.createSurvey = async (req, res) => {
   try {
     const questions = req.body.questions.map((q) => {
       const answers = q.answers.map((a) => {
         return {
-          _id: mongoose.Types.ObjectId(),
-          text: a,
+          _id: new mongoose.Types.ObjectId(),
+          text: a.text,
         };
       });
 
