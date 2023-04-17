@@ -144,20 +144,18 @@ function SurveyHistory() {
       return (
         <div
           key={answer._id}
-          className={` ml-3 mt-3 mb-3 rounded text-sm flex justify-between items-center bg-slate-700 `}
-        >
+          className={`relative ml-3 mt-3 mb-3 rounded flex justify-between items-center bg-slate-700`}>
           <div
             style={{ width: `${answerPercentage < 1 ? 100 : answerPercentage}%` }}
-            className={`block rounded h-full py-2 top-0 left-0 ${isMyAnswer(survey, answer) ? "bg-red-400" : (answerPercentage < 1) ? "bg-slate-700" : "bg-slate-600"}`}>
+            className={`absolute rounded h-full top-0 left-0 ${isMyAnswer(survey, answer) ? "bg-red-400" : (answerPercentage < 1) ? "" : "bg-slate-600"}`}>
+          </div>
+          <div className={`relative w-full flex justify-between items-center`}>
             <div
-              className={`ml-3 mr-12 break-all ${isMyAnswer(survey, answer) ? "text-slate-800 font-semibold" : ""
-                }`}
-            >
+              className={`p-2 break-word text-sm ${isMyAnswer(survey, answer) ? "text-slate-900 font-bold" : "text-slate-300"}`}>
               {answer.text}
             </div>
           </div>
-          <div className='text-slate-500 p-2 w-20 text-end'>{answerPercentage}%</div>
-
+          <div className="relative text-sm text-slate-100 p-2 w-20 text-end font-medium">{answerPercentage}%</div>
         </div>
       );
     });
@@ -169,9 +167,9 @@ function SurveyHistory() {
     const survey = surveys.find(s => s._id === expandedSurveyId);
     if (survey && isDetailsVisible) {
       return (
-        <div className={`shrink ring-2 ring-red-500 rounded group drop-shadow-lg p-3 h-full w-full overflow-y-auto transition-all duration-100 ease-in-out`}>
+        <div className={`shrink ring-2 ring-red-500 rounded group p-3 h-full w-full overflow-y-auto transition-all duration-100 ease-in-out overflow-hidden`}>
           <div className='flex  justify-between'>
-            <h3 className="text-xl font-semibold m-3 text-red-500 break-all">
+            <h3 className="text-xl font-semibold m-3 text-red-500 break-word">
               {survey.title}
             </h3>
             <button
@@ -186,7 +184,7 @@ function SurveyHistory() {
             {survey.questions.map((question, index) => (
               <div key={question._id} className="rounded w-full overflow-y-auto">
                 {/* DONT CHANGE THESE mr-3 clases AND DONT ASK ABOUT IT*/}
-                <p className="ml-3 mr-3 font-semibold break-all">{question.text}</p>
+                <p className="ml-3 mr-3 font-semibold break-word text-slate-200">{question.text}</p>
                 <div className="mr-3 mt-2 text-slate-300">
                   {renderAnswerStats(survey, index)}
                 </div>
@@ -296,19 +294,16 @@ function SurveyHistory() {
               <div className='flex h-full w-3/4  '>
                 <div className='flex  w-full content-start '>
                   <div className='h-full shrink-0 w-1/2 overflow-y-auto '>
-                    <ul className="flex flex-col space-y-4 p-1 ">
+                    <ul className="flex flex-col space-y-4 p-1 overflow-hidden ">
                       {surveys && getFilteredSurveys().map((survey) => (
                         <li
                           key={survey._id}
-                          className={`select-none flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded drop-shadow-lg cursor-pointer transition-all ease-in-out duration-300  ${expandedSurveyId === survey._id ? " bg-slate-800 ring-2 ring-red-500" : "  bg-slate-700 text-slate-400"
-                            }`}
-                          onClick={() => toggleSurvey(survey._id)}
-                        >
-                          <div className="flex justify-between break-all">
-                            <h3 className={` text-xl font-medium  ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""
-                              }`}>
-                              {survey.title}</h3>
-
+                          className={`select-none flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded drop-shadow-lg cursor-pointer transition-all ease-in-out duration-300  ${expandedSurveyId === survey._id ? " bg-slate-800 ring-2 ring-red-500" : "  bg-slate-700 text-slate-400"}`}
+                          onClick={() => toggleSurvey(survey._id)}>
+                          <div className="flex justify-between break-word">
+                            <h3 className={` text-xl font-medium  ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""}`}>
+                              {survey.title}
+                            </h3>
                           </div>
                           <div className="flex justify-between w-full">
                             <div className='flex items-center space-x-8'>
