@@ -89,31 +89,31 @@ function NavigationBar() {
                     </Link>
                 </div>
                 <div name="menu" className="flex flex-col  space-y-3 translate-x-8 w-32">
-                    <div className={`h-16 text-xl rounded drop-shadow-lg items-center outline-none ${currentPath === "/surveys/new" ? "bg-slate-900 text-red-500 " : " text-red-500" }`}>
+                    <div className={`h-16 text-xl rounded drop-shadow-lg outline-none ${currentPath === "/surveys/new" ? "bg-slate-900 text-red-500 " : " text-red-500" }`}>
                         <Link to="/surveys/new">
-                            <div className="h-full flex items-center justify-center ">
+                            <div className="h-full flex items-center justify-start ml-6">
                                 Create +
                             </div>
                         </Link>
                     </div>
-                    <div className={`h-16 text-xl rounded drop-shadow-lg items-center outline-none ${currentPath === "/surveys" ? "bg-slate-900 text-white " : " text-slate-300"}`}>
+                    <div className={`h-16 text-xl rounded drop-shadow-lg outline-none ${currentPath === "/surveys" ? "bg-slate-900 text-white " : " text-slate-300"}`}>
                         <Link to="/surveys">
-                            <div className={`h-full flex items-center justify-center`}>
+                            <div className={`h-full flex items-center justify-start ml-6`}>
                                 History
                             </div>
                         </Link>
                     </div>
                 </div>
                 <div className="card absolute right-3  p-8 justify-end">
-                    <div className="grid grid-rows-3 grid-flow-col gap-2">
+                    <div className="rounded h-20 grid grid-rows-3 grid-flow-col gap-2 bg-slate-900 p-2 drop-shadow-lg">
                         
-                        <div className="rounded drop-shadow-lg col-span-2 flex justify-center px-1 items-center break-all text-slate-300 text-sm font-normal">
+                        <div className="rounded drop-shadow-lg bg-slate-800 col-span-2 flex justify-center px-1 items-center break-all text-slate-300 text-sm font-normal">
                             {formattedAddress}
                         </div>
-                        <button onClick={handleLogout} className="rounded mb-4 drop-shadow-lg row-span-2 col-span-2 text-red-500 bg-slate-900 flex justify-center font-semibold items-center">
+                        <button onClick={handleLogout} className="rounded drop-shadow-lg row-span-2 col-span-2 text-white bg-red-500 flex justify-center font-semibold items-center">
                             Logout
                         </button>
-                        <div className=" mb-4 rounded drop-shadow-lg row-span-3 bg-slate-200 flex justify-center items-center">
+                        <div className="rounded  drop-shadow-lg row-span-3 bg-slate-200 flex justify-center items-center">
                             <Identicon string={walletAddress} size={50} />
                         </div>
                     </div>
