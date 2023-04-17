@@ -79,9 +79,23 @@ exports.updateSurvey = async (req, res) => {
     if (req.user._id != survey.createdBy.toString()) {
       return res.status(401).json({ message: 'Not authorized' });
     }
+    const questions = req.body.questions.map((q) => {
+      const answers = q.answers.map((a) => {
+        return {
+          _id: a._id ? a._id : new mongoose.Types.ObjectId(),
+          text: a.text,
+        };
+      });
+
+      return {
+        text: q.text,
+        answers: answers,
+      };
+    });
+
     survey.title = req.body.title;
     survey.description = req.body.description;
-    survey.questions = req.body.questions;
+    survey.questions = questions;
     survey.reward = req.body.reward;
     survey.endDate = req.body.endDate;
     survey.minimumRequiredBalance = req.body.pminbalance,
@@ -89,7 +103,7 @@ exports.updateSurvey = async (req, res) => {
     survey.minimumAgeInDays = req.body.paccage,
     survey.validatorStatus = req.body.pvalidator,
 
-      await survey.save();
+    await survey.save();
 
     res.status(200).json(survey);
   } catch (err) {
