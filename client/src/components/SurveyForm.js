@@ -16,7 +16,7 @@ function SurveyForm() {
 
   const [title, setTitle] = useState('');
   const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
-  const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
+  const [startDate, setStartDate] = useState(formatDateToDateTimeLocal(new Date()));
   const [endDate, setEndDate] = useState('');
   const [reward, setReward] = useState(0);
   const [plimit, setPlimit] = useState(0);
@@ -38,14 +38,14 @@ function SurveyForm() {
   function formatDateToDateTimeLocal(date) {
     const pad = (num) => num.toString().padStart(2, '0');
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-  }  
+  }
 
   useEffect(() => {
     const loadSurvey = async () => {
       if (!id) {
         setTitle('');
         setQuestions([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
-        setStartDate(new Date().toISOString().slice(0, 10));
+        setStartDate(formatDateToDateTimeLocal(new Date()));
         setEndDate('');
         setReward('');
         setPlimit('');
@@ -53,11 +53,10 @@ function SurveyForm() {
       }
       else {
         const data = await fetchSurvey(id);
-
         setTitle(data.title);
         setQuestions(data.questions);
         setStartDate(data.startDate);
-        setEndDate(new Date(data.endDate).toISOString().slice(0, 10));
+        setEndDate(new Date(data.endDate).toISOString().slice(0, 16));
         setReward(data.rewardPerResponse);
         setPlimit(data.participantsLimit);
         setPminBalance(data.minimumRequiredBalance);
@@ -104,10 +103,10 @@ function SurveyForm() {
     (pminbalance && pminbalance < 1) && setPminBalance(1);
     (pminstake && pminstake < 500) && setPminStake(500);
     (paccage && paccage < 1) && setPaccAge(1);
-  
+
     setAreAllInputsFilled(Boolean(reward) && Boolean(plimit) && Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage));
   }, [endDate, reward, plimit, pminbalance, pminstake, paccage, pvalidator]);
-  
+
   useEffect(() => {
     if (!isWalletConnected) {
       history.push('/');
@@ -173,7 +172,7 @@ function SurveyForm() {
       }
     }
   };
-  
+
   const handleInput = () => {
     if (timer) {
       clearTimeout(timer);
