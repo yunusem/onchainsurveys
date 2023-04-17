@@ -12,11 +12,11 @@ function SurveyQuestion({ question, onChange }) {
     <div className="flex flex-col space-y-4">
       <h1 className='text-xl font-bold '>{question.text}</h1>
       {question.answers.map((answer, index) => (
-        <div className='flex  items-center '>
+        <div className='flex  items-center break-all'>
           <label
           htmlFor={`answer-${question._id}-${index}`}
           key={`answer-${index}`}
-          className={`flex rounded drop-shadow-lg items-center w-full h-8 cursor-pointer ${selectedAnswerIndex === index ? 'bg-red-400' : 'bg-slate-700'}`}
+          className={`flex rounded drop-shadow-lg items-center w-full cursor-pointer ${selectedAnswerIndex === index ? 'bg-red-400' : 'bg-slate-700'}`}
         >
           <input
             type="radio"

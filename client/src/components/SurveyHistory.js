@@ -141,25 +141,25 @@ function SurveyHistory() {
         ? ((answerCount / totalResponses) * 100).toFixed(2)
         : 0;
 
-        return (
+      return (
+        <div
+          key={answer._id}
+          className={` ml-3 mt-3 mb-3 rounded text-sm flex justify-between items-center bg-slate-700 `}
+        >
           <div
-            key={answer._id}
-            className={`relative ml-3 mt-3 mb-3 rounded text-sm flex justify-between items-center bg-slate-700 `}
-          >
+            style={{ width: `${answerPercentage < 1 ? 100 : answerPercentage}%` }}
+            className={`block rounded h-full py-2 top-0 left-0 ${isMyAnswer(survey, answer) ? "bg-red-400" : (answerPercentage < 1) ? "bg-slate-700" : "bg-slate-600"}`}>
             <div
-              style={{ width: `${answerPercentage}%` }}
-              className={`flex rounded py-5 top-0 left-0 ${isMyAnswer(survey, answer) ? "bg-red-400" : "bg-slate-600 "}`}
-            >
-            </div>
-            <div className='text-slate-500 p-2'>{answerPercentage}%</div>
-            <div
-              className={`absolute ml-3 mr-12 break-all ${isMyAnswer(survey, answer) ? "text-slate-800 font-semibold" : ""
+              className={`ml-3 mr-12 break-all ${isMyAnswer(survey, answer) ? "text-slate-800 font-semibold" : ""
                 }`}
             >
               {answer.text}
             </div>
           </div>
-        );
+          <div className='text-slate-500 p-2 w-20 text-end'>{answerPercentage}%</div>
+
+        </div>
+      );
     });
   };
 
