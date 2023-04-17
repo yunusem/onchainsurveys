@@ -113,7 +113,6 @@ function SurveyHistory() {
   }
 
   const isMyAnswer = (survey, answer) => {
-    console.log(survey.title, survey.responses, answer)
     return survey.responses.some(
       (response) =>
         response.user === userId &&
@@ -134,7 +133,6 @@ function SurveyHistory() {
 
   const renderAnswerStats = (survey, questionIndex) => {
     const totalResponses = survey.responses.length;
-
     return survey.questions[questionIndex].answers.map((answer) => {
       const answerCount = survey.responses.filter((response) => {
         return response.answers.includes(answer._id);
@@ -143,25 +141,25 @@ function SurveyHistory() {
         ? ((answerCount / totalResponses) * 100).toFixed(2)
         : 0;
 
-      return (
-        <div
-          key={answer._id}
-          className={`relative ml-3 mt-3 mb-3 rounded text-sm flex justify-between items-center bg-slate-700 `}
-        >
+        return (
           <div
-            style={{ width: `${answerPercentage}%` }}
-            className={` rounded shadow-md py-4 mr-2 top-0 left-0 ${isMyAnswer(survey, answer) ? "bg-red-400" : "bg-slate-600 "}`}
+            key={answer._id}
+            className={`relative ml-3 mt-3 mb-3 rounded text-sm flex justify-between items-center bg-slate-700 `}
           >
+            <div
+              style={{ width: `${answerPercentage}%` }}
+              className={`flex rounded py-5 top-0 left-0 ${isMyAnswer(survey, answer) ? "bg-red-400" : "bg-slate-600 "}`}
+            >
+            </div>
+            <div className='text-slate-500 p-2'>{answerPercentage}%</div>
+            <div
+              className={`absolute ml-3 mr-12 break-all ${isMyAnswer(survey, answer) ? "text-slate-800 font-semibold" : ""
+                }`}
+            >
+              {answer.text}
+            </div>
           </div>
-          <div className='text-slate-500 mr-2'>{answerPercentage}%</div>
-          <div
-            className={`absolute ml-3 mr-12 break-all ${isMyAnswer(survey, answer) ? "text-slate-800 font-semibold" : ""
-              }`}
-          >
-            {answer.text}
-          </div>
-        </div>
-      );
+        );
     });
   };
 

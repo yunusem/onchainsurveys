@@ -122,7 +122,7 @@ function Survey() {
                 {survey.questions.map((question, index) => (
                   <div
                     key={question._id}
-                    className={`bg-slate-800 rounded mb-6 transition-opacity duration-300 ${index === currentPage ? 'opacity-100' : 'opacity-0 hidden'
+                    className={`bg-slate-800 rounded mb-6 transition-all ease-in-out duration-300 ${index === currentPage ? 'opacity-100' : 'opacity-0 hidden'
                       }`}
                   >
                     <SurveyQuestion
@@ -133,31 +133,30 @@ function Survey() {
                   </div>
                 ))}
                 <div className="flex justify-between">
-                  {(currentPage < survey.questions.length - 1) && (
+                  {
                     <button
                       type="button"
                       onClick={() => setCurrentPage(currentPage + 1)}
-                      className="bg-slate-900  px-4 h-8 rounded drop-shadow-lg font-semibold text-red-500"
+                      className={`bg-slate-900  px-4 h-8 rounded drop-shadow-lg font-semibold text-red-500 transition-all ease-in-out duration-300 ${(currentPage < survey.questions.length - 1) ? 'opacity-100' : 'opacity-0'}`}
                     >
                       Next
                     </button>
-                  )}
-                  {allQuestionsAnswered && (
-
+                  }
+                  {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      className="bg-red-500 px-4 h-8 rounded drop-shadow-lg font-semibold text-white"
+                      className={`bg-red-500 px-4 h-8 rounded drop-shadow-lg font-semibold text-white transition-all ease-in-out duration-300 ${allQuestionsAnswered ? "opacity-100" : "opacity-0"}`}
                     >
                       Submit
                     </button>
 
-                  )}
+                  }
                   <button
                     type="button"
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 0}
-                    className={`bg-slate-900  px-4 h-8 rounded drop-shadow-lg font-semibold text-red-500 ${currentPage !== 0 ? 'opacity-100' : 'opacity-0 hidden'}`}
+                    className={`bg-slate-900  px-4 h-8 rounded drop-shadow-lg font-semibold text-red-500 transition-all ease-in-out duration-300  ${currentPage !== 0 ? 'opacity-100' : 'opacity-0'}`}
                   >
                     Previous
                   </button>
