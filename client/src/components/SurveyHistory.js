@@ -167,7 +167,7 @@ function SurveyHistory() {
     const survey = surveys.find(s => s._id === expandedSurveyId);
     if (survey && isDetailsVisible) {
       return (
-        <div className={`shrink ring-2 ring-red-500 rounded group p-3 h-full w-full overflow-y-auto transition-all duration-100 ease-in-out overflow-hidden`}>
+        <div className={`relative shrink ring-2 ring-red-500 rounded group p-3 h-full w-full overflow-y-auto transition-all duration-100 ease-in-out overflow-hidden`}>
           <div className='flex  justify-between'>
             <h3 className="text-xl font-semibold m-3 text-red-500 break-word">
               {survey.title}
@@ -175,7 +175,7 @@ function SurveyHistory() {
             <button
               type="button"
               onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-              className={`bg-slate-900 absolute rounded drop-shadow-lg font-semibold text-white px-4 h-8 top-6 right-6 transition-all ease-in-out duration-300 ${isSurveyEditable(survey) ? "" : "hidden"} opacity-30 group-hover:opacity-100`}
+              className={`bg-slate-900 absolute rounded drop-shadow-lg font-semibold text-white px-4 h-10 top-6 right-6 transition-all ease-in-out duration-300 ${isSurveyEditable(survey) ? "" : "hidden"} opacity-20 group-hover:opacity-100`}
             >
               Edit
             </button>
