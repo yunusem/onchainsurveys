@@ -58,8 +58,8 @@ function NavigationBar() {
     }
 
     const walletAddress = localStorage.getItem('active_public_key');
-    const start = walletAddress.substring(0, 4);
-    const end = walletAddress.substring(walletAddress.length - 4);
+    const start = walletAddress.substring(0, 6);
+    const end = walletAddress.substring(walletAddress.length - 7);
     const formattedAddress = `${start}...${end}`;
 
     const handleLogout = async () => {
@@ -104,17 +104,16 @@ function NavigationBar() {
                         </Link>
                     </div>
                 </div>
-                <div className="card absolute right-3  p-8 justify-end">
-                    <div className="rounded h-20 grid grid-rows-3 grid-flow-col gap-2 bg-slate-900 p-2 drop-shadow-lg">
-                        
-                        <div className="rounded drop-shadow-lg bg-slate-800 col-span-2 flex justify-center px-1 items-center break-all text-slate-300 text-sm font-normal">
-                            {formattedAddress}
-                        </div>
-                        <button onClick={handleLogout} className="rounded drop-shadow-lg row-span-2 col-span-2 text-white bg-red-500 flex justify-center font-semibold items-center">
+                <div className="card absolute top-0 right-0 p-8 justify-end">
+                    <div className="rounded h-16 grid grid-rows-3 grid-cols-5 grid-flow-col gap-y-1 gap-x-2 drop-shadow-lg">
+                        <button onClick={handleLogout} className="rounded drop-shadow-lg row-span-2 col-span-3 text-white bg-slate-900 flex justify-center font-semibold items-center">
                             Logout
                         </button>
-                        <div className="rounded  drop-shadow-lg row-span-3 bg-slate-200 flex justify-center items-center">
-                            <Identicon string={walletAddress} size={50} />
+                        <div className="rounded drop-shadow-lg bg-slate-900 col-span-5 flex justify-center p-1 items-center text-red-500 text-sm font-normal">
+                            {formattedAddress}
+                        </div>
+                        <div className="rounded drop-shadow-lg px-1 col-span-2 row-span-2 bg-slate-200 flex justify-center items-center ">
+                            <Identicon className="-translate-y-1" string={walletAddress} size={42} />
                         </div>
                     </div>
                 </div>
