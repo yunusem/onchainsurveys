@@ -171,7 +171,7 @@ function Home() {
                         className="select-none bg-slate-700 rounded drop-shadow-lg w-full col-span-1 flex items-center space-x-2 group "
                       >
                         <div className=" flex w-full flex-col space-y-2 h-full p-3 justify-between rounded">
-                          <div className="col-span-2 text-xl font-semibold text-start break-all">
+                          <div className="col-span-2 text-xl font-semibold text-start break-word">
                             {survey.title}
                           </div>
                           <div className="flex justify-between w-full">
