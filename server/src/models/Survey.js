@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const AnswerSchema = new mongoose.Schema({
   _id: {
-    type: [mongoose.Schema.Types.ObjectId],
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   text: {
