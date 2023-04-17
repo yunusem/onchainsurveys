@@ -10,9 +10,9 @@ function SurveyQuestion({ question, onChange }) {
 
   return (
     <div className="flex flex-col space-y-4">
-      <h1 className='text-xl font-bold '>{question.text}</h1>
+      <h1 className="text-xl font-bold break-word">{question.text}</h1>
       {question.answers.map((answer, index) => (
-        <div className='flex  items-center break-all'>
+        <div className='flex  items-center break-word'>
           <label
           htmlFor={`answer-${question._id}-${index}`}
           key={`answer-${index}`}

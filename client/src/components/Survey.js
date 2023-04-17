@@ -116,8 +116,7 @@ function Survey() {
         <div className='flex flex-col w-full items-center justify-center'>
           <div className="flex w-3/4 h-screen items-center text-white">
             <div className="w-4/6">
-              <h2 className="text-2xl font-semibold mb-6 text-red-500">{survey.title}</h2>
-
+              <h2 className="text-2xl font-semibold mb-6 break-word text-red-500">{survey.title}</h2>
               <form onSubmit={handleSubmit} className="w-full">
                 {survey.questions.map((question, index) => (
                   <div
@@ -137,7 +136,7 @@ function Survey() {
                     <button
                       type="button"
                       onClick={() => setCurrentPage(currentPage + 1)}
-                      className={`bg-slate-900  px-4 h-8 rounded drop-shadow-lg font-semibold text-red-500 transition-all ease-in-out duration-300 ${(currentPage < survey.questions.length - 1) ? 'opacity-100' : 'opacity-0'}`}
+                      className={`bg-slate-900  px-4 h-10 rounded drop-shadow-lg font-semibold text-red-500 transition-all ease-in-out duration-300 ${(currentPage < survey.questions.length - 1) ? 'opacity-100' : 'opacity-0'}`}
                     >
                       Next
                     </button>
@@ -146,7 +145,7 @@ function Survey() {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      className={`bg-red-500 px-4 h-8 rounded drop-shadow-lg font-semibold text-white transition-all ease-in-out duration-300 ${allQuestionsAnswered ? "opacity-100" : "opacity-0"}`}
+                      className={`bg-red-500 px-4 h-10 rounded drop-shadow-lg font-semibold text-white transition-all ease-in-out duration-300 ${allQuestionsAnswered ? "opacity-100" : "opacity-0"}`}
                     >
                       Submit
                     </button>
@@ -156,7 +155,7 @@ function Survey() {
                     type="button"
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 0}
-                    className={`bg-slate-900  px-4 h-8 rounded drop-shadow-lg font-semibold text-red-500 transition-all ease-in-out duration-300  ${currentPage !== 0 ? 'opacity-100' : 'opacity-0'}`}
+                    className={`bg-slate-900  px-4 h-10 rounded drop-shadow-lg font-semibold text-red-500 transition-all ease-in-out duration-300  ${currentPage !== 0 ? 'opacity-100' : 'opacity-0'}`}
                   >
                     Previous
                   </button>
