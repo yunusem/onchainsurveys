@@ -19,10 +19,10 @@ function SurveyHistory() {
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
   useEffect(() => {
-    if(expandedSurveyId) {
+    if (expandedSurveyId) {
       const timer = setTimeout(() => {
         setIsDetailsVisible(true);
-      }, 100 );
+      }, 100);
       return () => clearTimeout(timer);
     }
   }, [expandedSurveyId]);
@@ -113,6 +113,7 @@ function SurveyHistory() {
   }
 
   const isMyAnswer = (survey, answer) => {
+    console.log(survey.title, survey.responses, answer)
     return survey.responses.some(
       (response) =>
         response.user === userId &&
@@ -145,17 +146,20 @@ function SurveyHistory() {
       return (
         <div
           key={answer._id}
-          className="relative  mb-2 rounded text-sm flex justify-between items-center bg-slate-700 "
+          className={`relative ml-3 mt-3 mb-3 rounded text-sm flex justify-between items-center bg-slate-700 `}
         >
           <div
             style={{ width: `${answerPercentage}%` }}
-            className={`rounded shadow-md py-4  mr-2 ${isMyAnswer(survey, answer) ? "bg-red-400" : "bg-slate-600 "}`}
+            className={` rounded shadow-md py-4 mr-2 top-0 left-0 ${isMyAnswer(survey, answer) ? "bg-red-400" : "bg-slate-600 "}`}
           >
           </div>
           <div className='text-slate-500 mr-2'>{answerPercentage}%</div>
-          <div className={`absolute ml-3 w-full ${isMyAnswer(survey, answer) ? "text-slate-800 font-semibold" : ""}`}
-          >{answer.text}</div>
-
+          <div
+            className={`absolute ml-3 mr-12 break-all ${isMyAnswer(survey, answer) ? "text-slate-800 font-semibold" : ""
+              }`}
+          >
+            {answer.text}
+          </div>
         </div>
       );
     });
@@ -167,22 +171,25 @@ function SurveyHistory() {
     const survey = surveys.find(s => s._id === expandedSurveyId);
     if (survey && isDetailsVisible) {
       return (
-        <div className={`ring-2 ring-red-500 rounded drop-shadow-lg p-4 h-full overflow-y-auto w-full transition-all duration-100 ease-in-out`}>
+        <div className={`shrink ring-2 ring-red-500 rounded group drop-shadow-lg p-3 h-full w-full overflow-y-auto transition-all duration-100 ease-in-out`}>
           <div className='flex  justify-between'>
-            <h3 className="text-xl font-semibold mb-4 text-red-500">{survey.title}</h3>
+            <h3 className="text-xl font-semibold m-3 text-red-500 break-all">
+              {survey.title}
+            </h3>
             <button
               type="button"
               onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-              className={`bg-red-500 rounded drop-shadow-lg font-semibold text-white px-4 h-8 bottom-0 ${isSurveyEditable(survey) ? "" : "hidden"}`}
+              className={`bg-slate-900 absolute rounded drop-shadow-lg font-semibold text-white px-4 h-8 top-6 right-6 transition-all ease-in-out duration-300 ${isSurveyEditable(survey) ? "" : "hidden"} opacity-30 group-hover:opacity-100`}
             >
               Edit
             </button>
           </div>
           <div className="space-y-4">
             {survey.questions.map((question, index) => (
-              <div key={question._id} className="rounded w-full min-w-[450px] overflow-y-auto">
-                <p className="font-semibold">{question.text}</p>
-                <div className="mr-3 mt-2 text-slate-300 ">
+              <div key={question._id} className="rounded w-full overflow-y-auto">
+                {/* DONT CHANGE THESE mr-3 clases AND DONT ASK ABOUT IT*/}
+                <p className="ml-3 mr-3 font-semibold break-all">{question.text}</p>
+                <div className="mr-3 mt-2 text-slate-300">
                   {renderAnswerStats(survey, index)}
                 </div>
               </div>
@@ -289,9 +296,9 @@ function SurveyHistory() {
           ) : (
             <div className="flex flex-col h-[720px]  w-full items-center ">
               <div className='flex h-full w-3/4  '>
-                <div className='flex w-full  justify-between '>
-                  <div className='h-full w-full overflow-y-auto'>
-                    <ul className=" flex w-full flex-col space-y-4 p-1">
+                <div className='flex  w-full content-start '>
+                  <div className='h-full shrink-0 w-1/2 overflow-y-auto '>
+                    <ul className="flex flex-col space-y-4 p-1 ">
                       {surveys && getFilteredSurveys().map((survey) => (
                         <li
                           key={survey._id}
@@ -299,8 +306,8 @@ function SurveyHistory() {
                             }`}
                           onClick={() => toggleSurvey(survey._id)}
                         >
-                          <div className="flex justify-between ">
-                            <h3 className={` text-xl font-semibold  ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""
+                          <div className="flex justify-between break-all">
+                            <h3 className={` text-xl font-medium  ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""
                               }`}>
                               {survey.title}</h3>
 
@@ -346,7 +353,7 @@ function SurveyHistory() {
                       ))}
                     </ul>
                   </div>
-                  <div className={`h-[720px] w-full flex`}>
+                  <div className={`h-[720px] shrink w-full flex`}>
                     {!expandedSurveyId && (
                       <div className={`absolute p-4 h-24 w-1/3 flex justify-center items-center`}>
                         <div className="text-center text-slate-500">

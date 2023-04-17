@@ -331,7 +331,7 @@ function SurveyForm() {
                     <form onSubmit={handleSubmit} className="w-full ">
                       <div className="flex justify-between items-center">
                         <div >
-                          <label htmlFor="title" className="font-medium bg-slate ">
+                          <label htmlFor="title" className="font-medium">
                             Title
                           </label>
                         </div>

@@ -83,37 +83,37 @@ function NavigationBar() {
     return (
         <div className="select-none font-bold">
             <div className="h-screen flex-col flex justify-between">
-                <div name="logo" className=" h-36 w-44 flex justify-center items-center p-8">
+                <div name="logo" className="w-44 flex justify-center items-center p-8 ">
                     <Link to="/">
                         <img src={Logo} alt="logo" width="512px" />
                     </Link>
                 </div>
-                <div name="menu" className="flex flex-col  space-y-3 translate-x-8">
-                    <div className={`h-16 text-xl rounded drop-shadow-lg items-center outline-none ${currentPath === "/surveys/new" ? "bg-slate-800 text-red-400 outline-red-500" : "bg-slate-700 text-slate-300" }`}>
+                <div name="menu" className="flex flex-col  space-y-3 translate-x-8 w-32">
+                    <div className={`h-16 text-xl rounded drop-shadow-lg items-center outline-none ${currentPath === "/surveys/new" ? "bg-slate-900 text-red-500 " : " text-red-500" }`}>
                         <Link to="/surveys/new">
-                            <div className="h-full flex items-center ml-8 ">
+                            <div className="h-full flex items-center justify-center ">
                                 Create +
                             </div>
                         </Link>
                     </div>
-                    <div className={`h-16 text-xl rounded drop-shadow-lg items-center outline-none ${currentPath === "/surveys" ? "bg-slate-800 text-white outline-red-500" : "bg-slate-700 text-slate-300"}`}>
+                    <div className={`h-16 text-xl rounded drop-shadow-lg items-center outline-none ${currentPath === "/surveys" ? "bg-slate-900 text-white " : " text-slate-300"}`}>
                         <Link to="/surveys">
-                            <div className={`h-full flex items-center ml-8 `}>
+                            <div className={`h-full flex items-center justify-center`}>
                                 History
                             </div>
                         </Link>
                     </div>
                 </div>
-                <div className="card absolute right-3 top-7 p-2 h-24 justify-end">
+                <div className="card absolute right-3  p-8 justify-end">
                     <div className="grid grid-rows-3 grid-flow-col gap-2">
                         
-                        <div className="rounded drop-shadow-lg col-span-2 bg-slate-600 flex justify-center px-1 items-center break-all text-slate-300 text-sm font-normal">
+                        <div className="rounded drop-shadow-lg col-span-2 flex justify-center px-1 items-center break-all text-slate-300 text-sm font-normal">
                             {formattedAddress}
                         </div>
-                        <button onClick={handleLogout} className="rounded drop-shadow-lg row-span-2 col-span-2 text-red-500 bg-slate-900 flex justify-center font-semibold items-center">
+                        <button onClick={handleLogout} className="rounded mb-4 drop-shadow-lg row-span-2 col-span-2 text-red-500 bg-slate-900 flex justify-center font-semibold items-center">
                             Logout
                         </button>
-                        <div className=" rounded drop-shadow-lg row-span-3 bg-slate-200 flex justify-center items-center">
+                        <div className=" mb-4 rounded drop-shadow-lg row-span-3 bg-slate-200 flex justify-center items-center">
                             <Identicon string={walletAddress} size={50} />
                         </div>
                     </div>
