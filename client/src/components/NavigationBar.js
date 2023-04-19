@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/onchain-surveys-logo.svg";
 import Identicon from 'react-hooks-identicons';
-import CasperWalletContext from './CasperWalletContext';
+import CasperWalletContext from '../contexts/CasperWalletContext';
 
 
 

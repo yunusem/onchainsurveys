@@ -1,5 +1,5 @@
 import { useEffect, useContext } from 'react';
-import CasperWalletContext from './CasperWalletContext';
+import CasperWalletContext from '../contexts/CasperWalletContext';
 
 const CasperWalletEvents = (handleEvent, handleEventKeyChanged) => {
   const provider = useContext(CasperWalletContext);
