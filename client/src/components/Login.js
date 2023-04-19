@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/onchain-surveys-logo.svg";
 import { registerUser, loginWithWallet, checkUserActive } from '../api';
 import CasperWalletEvents from './CasperWalletEvents';
-import { useUserActivation } from '../components/UserActivationContext';
+import { useUserActivation } from '../contexts/UserActivationContext';
 import { CLPublicKey, verifyMessageSignature } from 'casper-js-sdk';
+import AlertContext from '../contexts/AlertContext';
 
 function Login() {
   // Define state variables and hooks
@@ -15,6 +16,7 @@ function Login() {
   const [activePublicKey, setActivePublicKey] = useState(localStorage.getItem('active_public_key'));
   const [, setUserIsActivated] = useUserActivation();
   const history = useHistory();
+  const { showAlert } = useContext(AlertContext);
 
   // Define a function to remove all items from localStorage
   function removeItems() {
@@ -69,7 +71,7 @@ function Login() {
       .signMessage(message, signingPublicKeyHex)
       .then(async (res) => {
         if (res.cancelled) {
-          alert('Sign cancelled');
+          showAlert('error', 'Sign cancelled' );
         } else {
           setIsVerifying(true);
           const publicKey = CLPublicKey.fromHex(signingPublicKeyHex, true);
@@ -84,30 +86,32 @@ function Login() {
                 history.push('/');
               } else {
                 localStorage.removeItem('x_casper_provided_signature');
-                alert(activationResponse.message);
+                showAlert('error', activationResponse.message );
               }
               setIsVerifying(false);
             } else {
-              alert(response.message);
+              showAlert('error', response.message );
             }
           } else {
             localStorage.removeItem('x_casper_provided_signature');
-            alert('Error: Could not verify the signature');
+            showAlert( 'error', "Could not verify the signature" );
           }
         }
       })
       .catch((err) => {
-        console.error(err);
+        showAlert('error','Error: Could not verify the signature');
       });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const currentDate = new Date().toLocaleString();
-
-    signMessage(isUserAlreadySigned ? `Please verify with your signature. \nDate: ${currentDate}` : email, activePublicKey);
+    signMessage(isUserAlreadySigned ? `Please verify with your signature. \nDate: ${currentDate}` : email, activePublicKey)
+      .catch((err) => {
+        console.error(err);
+        showAlert('error', 'An error occurred while signing the message.');
+      });
   };
-
   return (
     <div className="select-none flex bg-slate-800 text-center h-screen w-full text-white items-center justify-center">
       <div className="relative flex flex-col items-center justify-between">
