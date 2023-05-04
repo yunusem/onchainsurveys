@@ -168,7 +168,7 @@ function Home() {
                     {availabeSurveys && availabeSurveys.map((survey) => (
                       <li
                         key={survey._id}
-                        className="select-none bg-slate-700 rounded drop-shadow-lg w-full col-span-1 flex items-center space-x-2 group "
+                        className="select-none bg-slate-700 rounded   w-full col-span-1 flex items-center space-x-2 group "
                       >
                         <div className=" flex w-full flex-col space-y-2 h-full p-3 justify-between rounded">
                           <div className="col-span-2 text-xl font-semibold text-start break-word">
@@ -214,7 +214,7 @@ function Home() {
                         </div>
                         <div className="flex justify-center items-start h-full px-3 py-4">
                           <button
-                            className="bg-red-500  px-4 flex h-full items-center rounded drop-shadow-lg font-semibold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                            className="bg-red-500  px-4 flex h-full items-center rounded   font-semibold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                             onClick={() => handleTakeSurvey(survey._id)}
                           >
                             Vote

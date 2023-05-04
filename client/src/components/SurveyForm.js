@@ -4,6 +4,7 @@ import { createSurvey, fetchSurvey, updateSurvey } from '../api';
 import NavigationBar from './NavigationBar';
 import CoinLogo from "../assets/caspercoin-logo.svg";
 
+
 function SurveyForm() {
   const { id } = useParams();
   const history = useHistory();
@@ -13,6 +14,9 @@ function SurveyForm() {
   const [isCurrentQuestionValidForNewAnswer, setIsCurrentQuestionValidForNewAnswer] = useState(false);
   const [areAllInputsFilled, setAreAllInputsFilled] = useState(false);
   const [timer, setTimer] = useState(null);
+  const [showSummary, setShowSummary] = useState(false);
+
+
 
   const [title, setTitle] = useState('');
   const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
@@ -113,7 +117,6 @@ function SurveyForm() {
     }
   }, [isWalletConnected, history]);
 
-
   useEffect(() => {
     const handleDisconnect = (event) => {
       try {
@@ -136,7 +139,6 @@ function SurveyForm() {
       window.removeEventListener(CasperWalletEventTypes.ActiveKeyChanged, handleDisconnect);
     };
   }, [history]);
-
   const titleRef = useRef(null);
   const questionRef = useRef(null);
   const answerRefs = useRef([]);
@@ -246,6 +248,12 @@ function SurveyForm() {
     }
   };
 
+  const forwardReceipt = async (e) => {
+    e.preventDefault();
+
+    setShowSummary(true);
+  };
+
   const handleEndDateChange = (date) => {
     const selectedDate = new Date(date);
     const now = new Date();
@@ -275,7 +283,6 @@ function SurveyForm() {
     setQuestions([...questions, { text: '', answers: ['', ''] }]);
     setActiveQuestionIndex(questions.length);
   };
-
   const removeQuestion = (questionIndex) => {
     const updatedQuestions = [...questions];
     updatedQuestions.splice(questionIndex, 1);
@@ -308,13 +315,37 @@ function SurveyForm() {
       setActiveQuestionIndex(activeQuestionIndex + 1);
     }
   };
+  const renderPreview = () => {
+    return questions.map((question, index) => (
+      <div key={index} className="rounded w-full overflow-y-auto ">
+        <p className="font-semibold break-word text-slate-200">
+          {question.text}
+        </p>
+        <div className="mt-2  text-slate-300">
+          {question.answers.map((answer) => (
+            answer.text !== '' && (
+              <div
+                key={answer._id}
+                className="relative  mb-3 rounded flex justify-between items-center bg-slate-600"
+              >
+                <div className="relative w-full flex justify-between items-center">
+                  <div className="p-2 break-word text-sm text-slate-300">
+                    {answer.text !== '' && answer.text}
+                  </div>
+                </div>
+              </div>)
+          ))}
+        </div>
+      </div>
+    ));
+  };
 
   return (
     <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
       <div className="flex h-screen w-full">
         <NavigationBar />
         <div className="select-none flex flex-col h-screen w-full">
-          <div className='flex flex-col w-full items-center justify-center space-y-12'>
+          <div className='flex flex-col w-full items-center justify-center space-y-12 '>
             <div className=' mt-7 w-3/4 flex flex-col text-white'>
               <div className='w-1/2'>
                 <h1 className=" text-3xl font-bold  text-white   text-left">
@@ -327,7 +358,8 @@ function SurveyForm() {
               <div className="min-w-[50%]">
                 <div className="flex justify-center mt-3  h-full">
                   <div className="text-white justify-center  w-full p-1 ">
-                    <form onSubmit={handleSubmit} className="w-full ">
+                    <form onSubmit={forwardReceipt} className={`w-full transition-all ease-in-out duration-300 ${showSummary === true ? "opacity-20 pointer-events-none" : ""}`}>
+
                       <div className="flex justify-between items-center">
                         <div >
                           <label htmlFor="title" className="font-medium">
@@ -341,7 +373,7 @@ function SurveyForm() {
                           id="title"
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
-                          className="p-2 h-10 rounded drop-shadow-lg mt-1 w-full text-white bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
+                          className="p-2 h-10 rounded  mt-1 w-full text-white bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                           placeholder='A relevant title of the survey'
                           onInput={handleInput}
                           onBlur={handleBlur}
@@ -363,7 +395,7 @@ function SurveyForm() {
                                   {activeQuestionIndex > 0 && (
                                     <button
                                       onClick={goToPreviousQuestion}
-                                      className="w-6 h-6 flex rounded drop-shadow-lg bg-red-500 text-white items-start justify-center"
+                                      className="w-6 h-6 flex rounded   bg-red-500 text-white items-start justify-center"
                                     >
                                       <div className="flex h-4 items-center justify-center mt-[3px] font-semibold">{`<`}</div>
                                     </button>
@@ -371,7 +403,7 @@ function SurveyForm() {
                                   {questions.length > 0 && activeQuestionIndex !== questions.length - 1 && (
                                     <button
                                       onClick={goToNextQuestion}
-                                      className="w-6 h-6 flex rounded drop-shadow-lg bg-red-500 text-white items-start justify-center"
+                                      className="w-6 h-6 flex rounded   bg-red-500 text-white items-start justify-center"
                                     >
                                       <div className="flex h-4 items-center justify-center mt-[3px] font-semibold">{`>`}</div>
                                     </button>
@@ -384,7 +416,7 @@ function SurveyForm() {
                                   id={`question-${questionIndex}`}
                                   value={question.text}
                                   onChange={(e) => handleQuestionChange(questionIndex, e.target.value)}
-                                  className="p-2 h-10 bg-slate-700 rounded drop-shadow-lg mb-3 text-white font-medium flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
+                                  className="p-2 h-10 bg-slate-700 rounded   mb-3 text-white font-medium flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                                   placeholder='Which one is your favorite?'
                                   onInput={handleInput}
                                   onBlur={handleBlur}
@@ -410,7 +442,7 @@ function SurveyForm() {
                                     value={answer.text}
                                     placeholder={`Option ${answerIndex + 1}`}
                                     onChange={(e) => handleAnswerChange(questionIndex, answerIndex, e.target.value)}
-                                    className="p-2 h-8 bg-slate-600 rounded drop-shadow-lg mt-1 text-slate-200 font-normal flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
+                                    className="p-2 h-8 bg-slate-600 rounded   mt-1 text-slate-200 font-normal flex flex-grow transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 focus:scale-105 "
                                     onInput={handleInput}
                                     onBlur={handleBlur}
                                     ref={(el) => (answerRefs.current[`question-${questionIndex}-answer-${answerIndex}`] = el)}
@@ -431,7 +463,7 @@ function SurveyForm() {
                               <button
                                 type="button"
                                 onClick={() => addAnswer(questionIndex)}
-                                className={`bg-red-500 h-8 rounded drop-shadow-lg font-semibold whitespace-nowrap text-white mr-2 px-3 ${!isCurrentQuestionValidForNewAnswer && 'opacity-30 cursor-not-allowed'}`}
+                                className={`bg-red-500 h-8 rounded   font-semibold whitespace-nowrap text-white mr-2 px-3 ${!isCurrentQuestionValidForNewAnswer && 'opacity-30 cursor-not-allowed'}`}
                                 disabled={!isCurrentQuestionValidForNewAnswer}
                               >
                                 Add Answer
@@ -463,7 +495,7 @@ function SurveyForm() {
                               id="reward"
                               value={reward}
                               onChange={(e) => setReward(e.target.value)}
-                              className={`p-2 h-8 rounded drop-shadow-lg w-24 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
+                              className={`p-2 h-8 rounded   w-24 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                               placeholder="Reward"
                               disabled={Boolean(id)}
                               onInput={handleInput}
@@ -481,7 +513,7 @@ function SurveyForm() {
                               id="participants"
                               value={plimit}
                               onChange={(e) => setPlimit(e.target.value)}
-                              className={`p-2 h-8 ml-2 rounded drop-shadow-lg w-20 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
+                              className={`p-2 h-8 ml-2 rounded  w-20 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                               placeholder="# of "
                               disabled={Boolean(id)}
                               onInput={handleInput}
@@ -497,7 +529,7 @@ function SurveyForm() {
                               value={endDate}
                               min={formatDateToDateTimeLocal(new Date())}
                               onChange={(e) => handleEndDateChange(e.target.value)}
-                              className={`py-2 px-1 right-2 h-8 w-40 rounded drop-shadow-lg text-slate-300 bg-slate-700 font-normal text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
+                              className={`py-2 px-1 right-2 h-8 w-40 rounded  text-slate-300 bg-slate-700 font-normal text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                               onInput={handleInput}
                               onBlur={handleBlur}
                               ref={endDateRef}
@@ -513,7 +545,7 @@ function SurveyForm() {
                                 id="minbalance"
                                 value={pminbalance}
                                 onChange={(e) => setPminBalance(e.target.value)}
-                                className={`p-2 h-8 rounded drop-shadow-lg w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded  w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
                                 placeholder="Balance"
                                 onBlur={handleBlur}
                               />
@@ -526,7 +558,7 @@ function SurveyForm() {
                                 id="minstake"
                                 value={pminstake}
                                 onChange={(e) => setPminStake(e.target.value)}
-                                className={`p-2 h-8 rounded drop-shadow-lg w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded  w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                                 placeholder="Stake"
                                 onBlur={handleBlur}
                               />
@@ -539,7 +571,7 @@ function SurveyForm() {
                                 id="age"
                                 value={paccage}
                                 onChange={(e) => setPaccAge(e.target.value)}
-                                className={`p-2 h-8 rounded drop-shadow-lg w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
+                                className={`p-2 h-8 rounded  w-24 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out  outline-none focus:outline-red-500`}
                                 placeholder="Age" // in days
                                 onBlur={handleBlur}
                               />
@@ -551,7 +583,7 @@ function SurveyForm() {
                                 id="validator"
                                 value={pvalidator}
                                 onChange={(e) => setPValidator(e.target.value)}
-                                className={`px-1 h-8 rounded drop-shadow-lg w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
+                                className={`px-1 h-8 rounded  w-20 text-slate-300 bg-slate-700 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-red-500`}
                                 onBlur={handleBlur}
                               >
                                 <option value="true">True</option>
@@ -562,7 +594,7 @@ function SurveyForm() {
                           <div className='items-center'>
                             <button
                               type="submit"
-                              className={`bg-red-500 h-8 px-3 place-items-center rounded drop-shadow-lg flex items-center font-semibold text-white transition-all duration-300 ease-in-out  ${(!isFormValid || !areAllInputsFilled) &&
+                              className={`bg-red-500 h-8 px-3 place-items-center rounded  flex items-center font-semibold text-white transition-all duration-300 ease-in-out ${showSummary === true ? "opacity-0" : ""}  ${(!isFormValid || !areAllInputsFilled) &&
                                 "opacity-30 cursor-not-allowed"
                                 }`}
                               disabled={!isFormValid || !areAllInputsFilled}
@@ -573,6 +605,82 @@ function SurveyForm() {
                         </div>
                       </div>
                     </form>
+                  </div>
+                </div>
+              </div>
+              <div className='relative flex w-[90%] max-w-[90%] h-[720px] ml-12 overflow-y-auto '>
+                <div className={`absolute w-full transition-all ease-in-out duration-300 opacity-50  ${showSummary === true ? "blur-lg " : ""}`}>
+                  <div className="flex justify-between break-word">
+                    <h3 className={` text-xl font-medium text-red-500 `}>
+                      {title}
+                    </h3>
+                  </div>
+                  {renderPreview()}</div>
+                <div className={`absolute sm:ml-32 px-6 transition-all ease-in-out duration-300 ${showSummary === true ? "opacity-100" : "opacity-0 pointer-events-none"}`}  >
+                  <div className=" ring-2 rounded ring-red-500 px-10 ">
+                    <h2 className="sr-only">Order summary</h2>
+                    <div className="flow-root">
+                      <dl className="-my-4 divide-y divide-gray-200 text-sm">
+                        <div className="flex items-center justify-between py-6">
+                          <dt className="text-white">Reward</dt>
+                          <dd className="font-medium text-white">$99.00</dd>
+                        </div>
+                        <div className="flex items-center justify-between py-6">
+                          <dt className="text-white">Fee</dt>
+                          <dd className="font-medium text-white">$5.00</dd>
+                        </div>
+                        <div className="flex items-center justify-between py-6">
+                          <dt className="text-white">Tax</dt>
+                          <dd className="font-medium text-white">$8.32</dd>
+                        </div>
+                        <div className="flex items-center justify-between py-6 px-10">
+                          <dt className="text-white  ">Tax</dt>
+                          <dd className="font-medium text-white">$8.32</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </div>
+                  <div className="flex mt-10 space-x-3 justify-between  ">
+                    <div className='group rounded w-16 '>
+                      <button onClick={() => setShowSummary(false)}>
+                        <svg
+                          className="w-full h-full p-2 transition-all ease-in-out duration-300 text-slate-500 group-hover:text-white group-hover:scale-[1.4]"
+                          viewBox="0 0 256 256"
+                          fill="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2">
+                          <rect
+                            x="36.21"
+                            y="99.07"
+                            width="187.7"
+                            height="76.1"
+                            rx="8.78"
+                            ry="8.78"
+                            transform="translate(-58.87 132.13) rotate(-45)"
+                          />
+                          <rect
+                            x="198.82"
+                            y="11.64"
+                            width="37.35"
+                            height="76.1"
+                            rx="8.78"
+                            ry="8.78"
+                            transform="translate(28.56 168.35) rotate(-45)"
+                          />
+                          <path
+                            d="M59.79,207.41l24,24c2.24,2.24,1.22,6.07-1.85,6.89l-32.78,8.78-32.78,8.78c-3.06,.82-5.86-1.98-5.04-5.04l8.78-32.78,8.78-32.78c.82-3.06,4.65-4.09,6.89-1.85l24,24Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    <button
+                    onClick={handleSubmit}
+                      type="submit"
+                      className="w-full rounded-md border border-transparent bg-red-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                    >
+                      Checkout
+                    </button>
                   </div>
                 </div>
               </div>

@@ -82,21 +82,22 @@ function NavigationBar() {
 
     return (
         <div className="select-none font-bold">
-            <div className="h-screen flex-col flex justify-between">
+            <div className="h-screen flex-col flex content-start">
                 <div name="logo" className="w-44 flex justify-center items-center p-8 ">
                     <Link to="/">
                         <img src={Logo} alt="logo" width="512px" />
                     </Link>
                 </div>
-                <div name="menu" className="flex flex-col  space-y-3 translate-x-8 w-32">
-                    <div className={`h-16 text-xl rounded drop-shadow-lg outline-none ${currentPath === "/surveys/new" ? "bg-slate-900 text-red-500 " : " text-red-500" }`}>
+
+                <div name="menu" className="flex flex-col  space-y-3 translate-x-8 w-32 mt-72">
+                    <div className={`h-16 text-xl rounded   items-center outline-none ${currentPath === "/surveys/new" ? "bg-slate-900 text-red-500 " : " text-red-500" }`}>
                         <Link to="/surveys/new">
                             <div className="h-full flex items-center justify-start ml-6">
                                 Create +
                             </div>
                         </Link>
                     </div>
-                    <div className={`h-16 text-xl rounded drop-shadow-lg outline-none ${currentPath === "/surveys" ? "bg-slate-900 text-white " : " text-slate-300"}`}>
+                    <div className={`h-16 text-xl rounded   outline-none ${currentPath === "/surveys" ? "bg-slate-900 text-white " : " text-slate-300"}`}>
                         <Link to="/surveys">
                             <div className={`h-full flex items-center justify-start ml-6`}>
                                 History
@@ -105,14 +106,14 @@ function NavigationBar() {
                     </div>
                 </div>
                 <div className="card absolute top-0 right-0 p-8 justify-end">
-                    <div className="rounded h-16 grid grid-rows-3 grid-cols-5 grid-flow-col gap-y-1 gap-x-2 drop-shadow-lg">
-                        <button onClick={handleLogout} className="rounded drop-shadow-lg row-span-2 col-span-3 text-white bg-slate-900 flex justify-center font-semibold items-center">
+                    <div className="rounded h-16 grid grid-rows-3 grid-cols-5 grid-flow-col gap-y-1 gap-x-2  ">
+                        <button onClick={handleLogout} className="rounded   row-span-2 col-span-3 text-white bg-slate-900 flex justify-center font-semibold items-center">
                             Logout
                         </button>
-                        <div className="rounded drop-shadow-lg bg-slate-900 col-span-5 flex justify-center p-1 items-center text-red-500 text-sm font-normal">
+                        <div className="rounded   bg-slate-900 col-span-5 flex justify-center p-1 items-center text-red-500 text-sm font-normal">
                             {formattedAddress}
                         </div>
-                        <div className="rounded drop-shadow-lg px-1 col-span-2 row-span-2 bg-slate-200 flex justify-center items-center ">
+                        <div className="rounded   px-1 col-span-2 row-span-2 bg-slate-200 flex justify-center items-center ">
                             <Identicon className="-translate-y-1" string={walletAddress} size={42} />
                         </div>
                     </div>

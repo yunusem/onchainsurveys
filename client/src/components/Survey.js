@@ -136,7 +136,7 @@ function Survey() {
                     <button
                       type="button"
                       onClick={() => setCurrentPage(currentPage + 1)}
-                      className={`bg-slate-900  px-4 h-10 rounded drop-shadow-lg font-semibold text-red-500 transition-all ease-in-out duration-300 ${(currentPage < survey.questions.length - 1) ? 'opacity-100' : 'opacity-0'}`}
+                      className={`bg-slate-900  px-4 h-10 rounded   font-semibold text-red-500 transition-all ease-in-out duration-300 ${(currentPage < survey.questions.length - 1) ? 'opacity-100' : 'opacity-0'}`}
                     >
                       Next
                     </button>
@@ -145,7 +145,7 @@ function Survey() {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      className={`bg-red-500 px-4 h-10 rounded drop-shadow-lg font-semibold text-white transition-all ease-in-out duration-300 ${allQuestionsAnswered ? "opacity-100" : "opacity-0"}`}
+                      className={`bg-red-500 px-4 h-10 rounded   font-semibold text-white transition-all ease-in-out duration-300 ${allQuestionsAnswered ? "opacity-100" : "opacity-0"}`}
                     >
                       Submit
                     </button>
@@ -155,7 +155,7 @@ function Survey() {
                     type="button"
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 0}
-                    className={`bg-slate-900  px-4 h-10 rounded drop-shadow-lg font-semibold text-red-500 transition-all ease-in-out duration-300  ${currentPage !== 0 ? 'opacity-100' : 'opacity-0'}`}
+                    className={`bg-slate-900  px-4 h-10 rounded   font-semibold text-red-500 transition-all ease-in-out duration-300  ${currentPage !== 0 ? 'opacity-100' : 'opacity-0'}`}
                   >
                     Previous
                   </button>

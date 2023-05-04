@@ -175,7 +175,7 @@ function SurveyHistory() {
             <button
               type="button"
               onClick={() => history.push(`/surveys/${survey._id}/edit`)}
-              className={`bg-slate-900 absolute rounded drop-shadow-lg font-semibold text-white px-4 h-10 top-6 right-6 transition-all ease-in-out duration-300 ${isSurveyEditable(survey) ? "" : "hidden"} opacity-20 group-hover:opacity-100`}
+              className={`bg-slate-900 absolute rounded  font-semibold text-white px-4 h-10 top-6 right-6 transition-all ease-in-out duration-300 ${isSurveyEditable(survey) ? "" : "hidden"} opacity-20 group-hover:opacity-100`}
             >
               Edit
             </button>
@@ -298,7 +298,7 @@ function SurveyHistory() {
                       {surveys && getFilteredSurveys().map((survey) => (
                         <li
                           key={survey._id}
-                          className={`select-none flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded drop-shadow-lg cursor-pointer transition-all ease-in-out duration-300  ${expandedSurveyId === survey._id ? " bg-slate-800 ring-2 ring-red-500" : "  bg-slate-700 text-slate-400"}`}
+                          className={`select-none flex w-full flex-col space-y-2 h-fit justify-between p-3 rounded   cursor-pointer transition-all ease-in-out duration-300  ${expandedSurveyId === survey._id ? " bg-slate-800 ring-2 ring-red-500" : "  bg-slate-700 text-slate-400"}`}
                           onClick={() => toggleSurvey(survey._id)}>
                           <div className="flex justify-between break-word">
                             <h3 className={` text-xl font-medium  ${isSurveyEnded(survey.endDate) === 0 ? "line-through" : ""}`}>
@@ -306,38 +306,38 @@ function SurveyHistory() {
                             </h3>
                           </div>
                           <div className="flex justify-between w-full">
-                            <div className='flex items-center space-x-8'>
-                              <div className='flex w-8 space-x-1'>
+                            <div className='flex flex-row items-center space-x-8'>
+                              <div className='flex items-center  space-x-2'>
                                 <img
                                   src={CoinLogo}
                                   alt="Casper Coin Logo"
-                                  className="h-5 w-5 "
+                                  className="h-4 w-4"
                                 />
-                                <p> {survey.rewardPerResponse} </p>
+                                <div className='text-xl'>{survey.rewardPerResponse}</div>
                               </div>
-                              <div className='flex w-8 space-x-1'>
+                              <div className='flex h-fit w-fit items-center space-x-2'>
                                 <img
                                   src={QuestionIcon}
                                   alt="Question Icon"
-                                  className=" h-5 w-5"
+                                  className="w-4"
                                 />
-                                <p> {survey.questions.length}</p>
+                                <div className='text-xl'> {survey.questions.length}</div>
                               </div>
-                              <div className='flex w-8 space-x-1'>
+                              <div className='flex items-center space-x-2'>
                                 <img
                                   src={!isParticipated(survey) ? VolunteerIcon : VolunteerRedIcon}
                                   alt="Volunteer Icon"
-                                  className="h-5 w-5"
+                                  className="w-4"
                                 />
-                                <p> {survey.responses.length}</p>
+                                <div  className='text-xl'> {survey.responses.length}</div>
                               </div>
-                              <div className='flex w-8 space-x-1'>
+                              <div className='flex items-center space-x-2'>
                                 <img
                                   src={CalendarIcon}
                                   alt="Calendar Icon"
-                                  className="h-5 w-5"
+                                  className="w-4"
                                 />
-                                <p> {daysRemaining(survey.endDate)}</p>
+                                <div  className='text-xl'>{daysRemaining(survey.endDate)}</div>
                               </div>
                             </div>
 
