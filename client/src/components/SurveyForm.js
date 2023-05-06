@@ -616,30 +616,64 @@ function SurveyForm() {
                     </h3>
                   </div>
                   {renderPreview()}</div>
-                <div className={`absolute sm:ml-32 px-6 transition-all ease-in-out duration-300 ${showSummary === true ? "opacity-100" : "opacity-0 pointer-events-none"}`}  >
-                  <div className=" ring-2 rounded ring-red-500 px-10 ">
-                    <h2 className="sr-only">Order summary</h2>
-                    <div className="flow-root">
-                      <dl className="-my-4 divide-y divide-gray-200 text-sm">
-                        <div className="flex items-center justify-between py-6">
-                          <dt className="text-white">Reward</dt>
-                          <dd className="font-medium text-white">$99.00</dd>
+                <div className={`absolute sm:ml-32 px-6 mt-8 transition-all ease-in-out duration-300  w-72 ${showSummary === true ? "opacity-100" : "opacity-0 pointer-events-none"}`}  >
+                  <div className=" ring-2 rounded ring-slate-500 p-4 "> {/**inside padding */}
+                    <div className=" space-y-10 text-slate-500">
+                      <ul className="space-y-10 text-sm">
+                        <div className="flex items-start justify-between ">
+                          <div className="flex flex-col">
+                            <div className="text-white">Storage</div>
+                            <p className='text-xs '> Fee x Per question</p>
+                          </div>
+                          <div>
+                            <div className="font-medium text-white text-end">{questions.length * 10}</div>
+                            <p className='text-xs text-end'> CSPR</p>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between py-6">
-                          <dt className="text-white">Fee</dt>
-                          <dd className="font-medium text-white">$5.00</dd>
+                        <div className="flex items-start justify-between ">
+                          <div className="flex flex-col">
+                            <div className="text-white">Transfer</div>
+                            <p className='text-xs'> Fee x Per Reward Transfer</p>
+                          </div>
+                          <div>
+                            <div className="font-medium text-white text-end">{plimit * 3.5}</div>
+                            <p className='text-xs text-end'> CSPR</p>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between py-6">
-                          <dt className="text-white">Tax</dt>
-                          <dd className="font-medium text-white">$8.32</dd>
+                        <div className="flex items-start justify-between">
+                          <div className="flex flex-col">
+                            <div className="text-white">Publication</div>
+                            <p className='text-xs'> The Cost of Deployment</p>
+                          </div>
+                          <div>
+                            <div className="font-medium text-white text-end">{5}</div>
+                            <p className='text-xs text-end'> CSPR</p>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between py-6 px-10">
-                          <dt className="text-white  ">Tax</dt>
-                          <dd className="font-medium text-white">$8.32</dd>
+                        <div className="flex items-start justify-between ">
+                          <div className="flex flex-col">
+                            <div className="text-white">Service</div>
+                            <p className='text-xs'> The Cost of Our Services</p>
+                          </div>
+                          <div>
+                            <div className="font-medium text-white text-end">{5}</div>
+                            <p className='text-xs text-end'> CSPR</p>
+                          </div>
                         </div>
-                      </dl>
+                      </ul>
+                      <hr className='border-slate-500'></hr>
+                      <div className="flex items-start justify-between">
+                          <div className="flex flex-col ">
+                            <div className="text-white font-bold">Total</div>
+                          </div>
+                          <div>
+                            <div className="font-bold text-white text-end">{5453.5}</div>
+                            <p className='text-xs text-slate-500 text-end'> CSPR</p>
+                          </div>
+                        </div>
                     </div>
                   </div>
+
                   <div className="flex mt-10 space-x-3 justify-between  ">
                     <div className='group rounded w-16 '>
                       <button onClick={() => setShowSummary(false)}>
@@ -675,9 +709,9 @@ function SurveyForm() {
                       </button>
                     </div>
                     <button
-                    onClick={handleSubmit}
+                      onClick={handleSubmit}
                       type="submit"
-                      className="w-full rounded-md border border-transparent bg-red-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                      className="w-full rounded-md border border-transparent bg-slate-700 px-4 py-3 text-base font-medium text-white shadow-sm transition-all ease-in-out duration-300 hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                     >
                       Checkout
                     </button>
