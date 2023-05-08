@@ -113,7 +113,7 @@ function Login() {
       });
   };
   return (
-    <div className="select-none flex bg-slate-800 text-center h-screen w-full text-white items-center justify-center">
+    <div className="select-none flex bg-slate-900 text-center h-screen w-full text-white items-center justify-center">
       <div className="relative flex flex-col items-center justify-between">
         <div className="mb-24">
           <Link to="/">

@@ -151,7 +151,7 @@ function Home() {
   return (
     <div className="select-none flex bg-slate-900 text-center w-full text-slate-400 items-center justify-center h-screen">
       {isAuthenticated ? (
-        <div className="flex h-full w-full">
+        <div className="flex h-full w-full bg-slate-800">
           
             <NavigationBar />
           
@@ -215,9 +215,9 @@ function Home() {
 
                             </div>
                           </div>
-                          <div className="flex justify-center items-start h-full px-3 py-4">
+                          <div className="flex justify-center items-start px-3">
                             <button
-                              className="bg-red-500  px-4 flex h-full items-center rounded   font-semibold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                              className="bg-red-500  p-4 flex  items-center rounded   font-semibold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                               onClick={() => handleTakeSurvey(survey._id)}
                             >
                               Vote

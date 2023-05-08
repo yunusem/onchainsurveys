@@ -208,13 +208,13 @@ function SurveyHistory() {
   };
 
   return (
-    <div className="flex bg-slate-800  w-full text-white items-center justify-center mt-14">
-      <NavigationBar />
-      <div className="select-none flex flex-col  w-full">
+    <div className="flex bg-slate-800  w-full h-screen text-white items-start">
+      <NavigationBar/>
+      <div className="mt-24 select-none flex flex-col  w-full">
         <div className=" flex flex-col overflow-y-auto h-full ">
           <div className='flex flex-col '>
             <div className='flex w-full  justify-center'>
-              <div className='flex  mt-7 w-3/4 items-center '>
+              <div className='flex w-3/4 items-center '>
                 <h1 className=" text-3xl font-bold  text-white">
                   History
                 </h1>

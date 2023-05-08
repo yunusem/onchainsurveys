@@ -96,19 +96,19 @@ function Survey() {
 
   if (!survey) {
     return (
-      <div className="bg-slate-800 text-center h-screen w-screen text-white flex items-center flex-col  justify-center ">
+      <div className="bg-slate-900 text-center h-screen w-screen text-white flex items-center flex-col  justify-center ">
         <div>Loading...</div>
       </div>);
   }
 
   return (
-    <div className="select-none flex bg-slate-800 h-screen w-full text-white items-center justify-center">
+    <div className="select-none flex bg-slate-900 h-screen w-full text-white items-center justify-center">
       <div className=' w-44 h-screen'>
 
       </div>
-      <div name="logo" className="absolute left-0 top-0 w-44 h-36 flex justify-center items-center p-8">
+      <div name="logo" className="absolute left-0 top-0 flex justify-center items-center px-12 py-3">
         <Link to="/">
-          <img src={Logo} alt="logo" width="512px" />
+          <img src={Logo} alt="logo" width="96" />
         </Link>
       </div>
 
@@ -121,7 +121,7 @@ function Survey() {
                 {survey.questions.map((question, index) => (
                   <div
                     key={question._id}
-                    className={`bg-slate-800 rounded mb-6 transition-all ease-in-out duration-300 ${index === currentPage ? 'opacity-100' : 'opacity-0 hidden'
+                    className={`rounded mb-6 transition-all ease-in-out duration-300 ${index === currentPage ? 'opacity-100' : 'opacity-0 hidden'
                       }`}
                   >
                     <SurveyQuestion
@@ -136,7 +136,7 @@ function Survey() {
                     <button
                       type="button"
                       onClick={() => setCurrentPage(currentPage + 1)}
-                      className={`bg-slate-900  px-4 h-10 rounded   font-semibold text-red-500 transition-all ease-in-out duration-300 ${(currentPage < survey.questions.length - 1) ? 'opacity-100' : 'opacity-0'}`}
+                      className={`bg-slate-800  px-4 h-10 rounded   font-semibold text-red-400 transition-all ease-in-out duration-300 ${(currentPage < survey.questions.length - 1) ? 'opacity-100' : 'opacity-0'}`}
                     >
                       Next
                     </button>
@@ -155,7 +155,7 @@ function Survey() {
                     type="button"
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 0}
-                    className={`bg-slate-900  px-4 h-10 rounded   font-semibold text-red-500 transition-all ease-in-out duration-300  ${currentPage !== 0 ? 'opacity-100' : 'opacity-0'}`}
+                    className={`bg-slate-800  px-4 h-10 rounded   font-semibold text-red-400 transition-all ease-in-out duration-300  ${currentPage !== 0 ? 'opacity-100' : 'opacity-0'}`}
                   >
                     Previous
                   </button>

@@ -122,7 +122,7 @@ function NavigationBar() {
                         <div className={`absolute right-0 w-40 text-white transition-all duration-500 ease-in-out  opacity-0 group-hover:opacity-100 }`}>
                             <button
                                 onClick={handleLogout}
-                                className="select-none w-full rounded py-5 bg-slate-900 text-semibold"
+                                className="select-none w-full rounded py-1 bg-slate-800 text-semibold"
                             >
                                 Disconnect
                             </button>
