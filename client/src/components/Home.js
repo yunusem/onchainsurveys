@@ -149,12 +149,12 @@ function Home() {
 
   // Render the Home component
   return (
-    <div className="select-none flex bg-slate-800 text-center w-full text-slate-400 items-center justify-center">
+    <div className="select-none flex bg-slate-900 text-center w-full text-slate-400 items-center justify-center h-screen">
       {isAuthenticated ? (
         <div className="flex h-full w-full">
-          <div className="fixed top-0 left-0 w-full bg-slate-900 p-2 z-10">
+          
             <NavigationBar />
-          </div>
+          
           <div className="pt-16 w-full">
             <div className="flex flex-col h-full w-full">
               <div className="flex flex-col overflow-y-auto h-full ">
@@ -234,7 +234,7 @@ function Home() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col w-full items-center justify-center">
+        <div className="flex flex-col w-full items-center justify-center ">
           <div className="mb-20">
             <Link to="/">
               <img src={Logo} alt="logo" width="256px" />

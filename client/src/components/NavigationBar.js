@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useEffect, useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/onchain-surveys-logo.svg";
 import Identicon from 'react-hooks-identicons';
@@ -10,7 +10,6 @@ function NavigationBar() {
     const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
     const provider = useContext(CasperWalletContext);
     const currentPath = history.location.pathname;
-    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     function removeItems() {
         localStorage.removeItem('token');
@@ -61,11 +60,8 @@ function NavigationBar() {
     const end = walletAddress.substring(walletAddress.length - 7);
     const formattedAddress = `${start}...${end}`;
 
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
-    };
-
     const handleLogout = async () => {
+        console.log("handle logout tıklandı")
         try {
             const isConnected = await provider.isConnected();
             if (isConnected) {
@@ -83,74 +79,59 @@ function NavigationBar() {
     };
 
     return (
+        <div className="fixed top-0 left-0 w-full bg-slate-900 ">
+            <div className="flex justify-between items-center px-12 py-3 ">
+            
+                <div>
+                    <Link to="/">
+                        <img src={Logo} alt="logo" width="96" />
+                    </Link>
+                </div>
+                <div className="relative flex space-x-4">
+               
+                    <Link
+                        to="/surveys/new"
+                        className={`text-semibold rounded px-4 py-2 hover:scale-125 transition-all duration-200 ease-in-out ${currentPath === "/surveys/new"
+                            ? " text-red-500"
+                            : "text-red-900"
+                            }`}
+                    >
+                        Create +
+                    </Link>
+                    <Link
+                        to="/surveys"
+                        className={`text-semibold rounded px-4 py-2 hover:scale-125 transition-all duration-200 ease-in-out ${currentPath === "/surveys"
+                            ? " text-white"
+                            : "text-slate-600"
+                            }`}
+                    >
+                        History
+                    </Link>
 
-        <div className="fixed top-0 left-0 w-full bg-slate-900 p-2">
-            <div className="container mx-auto">
-                <div className="flex justify-between items-center">
-                    <div name="logo">
-                        <Link to="/">
-                            <img src={Logo} alt="logo" width="96" />
-                        </Link>
-                    </div>
-                    <div name="menu" className="flex space-x-4">
-                        {/* ... */}
-                        <Link
-                            to="/surveys/new"
-                            className={`text-ml rounded px-4 py-2 ${currentPath === "/surveys/new"
-                                ? " text-red-500"
-                                : "text-red-900"
-                                }`}
-                        >
-                            Create +
-                        </Link>
-                        <Link
-                            to="/surveys"
-                            className={`text-ml rounded px-4 py-2 ${currentPath === "/surveys"
-                                ? " text-white"
-                                : "text-slate-600"
-                                }`}
-                        >
-                            History
-                        </Link>
 
-
-                        <div
-                            className="relative flex items-center space-x-2 group cursor-pointer"
-                            onClick={toggleDropdown}
-                        >
-                            <div className="rounded">
-                                <Identicon className="-translate-y-1" string={walletAddress} size={20} />
-                            </div>
-                            <div className="text-slate-600 text-sm font-normal group-hover:text-white">
-                                {formattedAddress}
-                            </div>
-                            <div className="text-slate-600 group-hover:text-white">
-                                <svg
-                                    className="w-5 h-5"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M6 9l6 6 6-6" />
-                                </svg>
-                            </div>
-                            {dropdownOpen && (
-                                <div className="absolute right-0 top-10 w-48 rounded-lg bg-white">
-                                    <button
-                                        onClick={handleLogout}
-                                        className="block w-full text-left rounded px-4 py-2 text-white bg-slate-900 font-semibold"
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            )}
+                    <div
+                        className=" flex text-slate-600 items-center space-x-2 group cursor-pointer"
+                    >
+                       
+                        <div className="select-none block text-sm font-normal transition-all duration-100 ease-in-out text-slate-200 opacity-80">
+                            {formattedAddress}
                         </div>
+                        <div className="rounded transition-all duration-200 ease-in-out opacity-80 ">
+                            <Identicon className="-translate-y-1 mt-2 bg-slate-200 rounded p-1" string={walletAddress} size={28} />
+                        </div>
+                        <div className={`absolute right-0 w-40 text-white transition-all duration-500 ease-in-out  opacity-0 group-hover:opacity-100 }`}>
+                            <button
+                                onClick={handleLogout}
+                                className="select-none w-full rounded py-5 bg-slate-900 text-semibold"
+                            >
+                                Disconnect
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </div>
+
         </div>
     );
 }
