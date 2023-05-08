@@ -208,9 +208,9 @@ function SurveyHistory() {
   };
 
   return (
-    <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
+    <div className="flex bg-slate-800  w-full text-white items-center justify-center mt-14">
       <NavigationBar />
-      <div className="select-none flex flex-col h-screen w-full">
+      <div className="select-none flex flex-col  w-full">
         <div className=" flex flex-col overflow-y-auto h-full ">
           <div className='flex flex-col '>
             <div className='flex w-full  justify-center'>

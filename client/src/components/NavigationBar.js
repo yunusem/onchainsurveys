@@ -1,17 +1,16 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/onchain-surveys-logo.svg";
 import Identicon from 'react-hooks-identicons';
 import CasperWalletContext from '../contexts/CasperWalletContext';
-
-
 
 function NavigationBar() {
     const history = useHistory();
     const token = localStorage.getItem('token');
     const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
     const provider = useContext(CasperWalletContext);
-    const currentPath = history.location.pathname
+    const currentPath = history.location.pathname;
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     function removeItems() {
         localStorage.removeItem('token');
@@ -62,11 +61,14 @@ function NavigationBar() {
     const end = walletAddress.substring(walletAddress.length - 7);
     const formattedAddress = `${start}...${end}`;
 
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
+
     const handleLogout = async () => {
         try {
             const isConnected = await provider.isConnected();
             if (isConnected) {
-                // Attempt to disconnect from the wallet
                 const isDisconnected = await provider.disconnectFromSite();
                 if (isDisconnected) {
                     removeItems();
@@ -81,45 +83,72 @@ function NavigationBar() {
     };
 
     return (
-        <div className="select-none font-bold">
-            <div className="h-screen flex-col flex content-start">
-                <div name="logo" className="w-44 flex justify-center items-center p-8 ">
-                    <Link to="/">
-                        <img src={Logo} alt="logo" width="512px" />
-                    </Link>
-                </div>
 
-                <div name="menu" className="flex flex-col  space-y-3 translate-x-8 w-32 mt-72">
-                    <div className={`h-16 text-xl rounded   items-center outline-none ${currentPath === "/surveys/new" ? "bg-slate-900 text-red-500 " : " text-red-500" }`}>
-                        <Link to="/surveys/new">
-                            <div className="h-full flex items-center justify-start ml-6">
-                                Create +
-                            </div>
+        <div className="fixed top-0 left-0 w-full bg-slate-900 p-2">
+            <div className="container mx-auto">
+                <div className="flex justify-between items-center">
+                    <div name="logo">
+                        <Link to="/">
+                            <img src={Logo} alt="logo" width="96" />
                         </Link>
                     </div>
-                    <div className={`h-16 text-xl rounded   outline-none ${currentPath === "/surveys" ? "bg-slate-900 text-white " : " text-slate-300"}`}>
-                        <Link to="/surveys">
-                            <div className={`h-full flex items-center justify-start ml-6`}>
-                                History
-                            </div>
+                    <div name="menu" className="flex space-x-4">
+                        {/* ... */}
+                        <Link
+                            to="/surveys/new"
+                            className={`text-ml rounded px-4 py-2 ${currentPath === "/surveys/new"
+                                ? " text-red-500"
+                                : "text-red-900"
+                                }`}
+                        >
+                            Create +
                         </Link>
-                    </div>
-                </div>
-                <div className="card absolute top-0 right-0 p-8 justify-end">
-                    <div className="rounded h-16 grid grid-rows-3 grid-cols-5 grid-flow-col gap-y-1 gap-x-2  ">
-                        <button onClick={handleLogout} className="rounded   row-span-2 col-span-3 text-white bg-slate-900 flex justify-center font-semibold items-center">
-                            Logout
-                        </button>
-                        <div className="rounded   bg-slate-900 col-span-5 flex justify-center p-1 items-center text-red-500 text-sm font-normal">
-                            {formattedAddress}
-                        </div>
-                        <div className="rounded   px-1 col-span-2 row-span-2 bg-slate-200 flex justify-center items-center ">
-                            <Identicon className="-translate-y-1" string={walletAddress} size={42} />
-                        </div>
-                    </div>
-                </div>
-                <div className="h-2 w-full">
+                        <Link
+                            to="/surveys"
+                            className={`text-ml rounded px-4 py-2 ${currentPath === "/surveys"
+                                ? " text-white"
+                                : "text-slate-600"
+                                }`}
+                        >
+                            History
+                        </Link>
 
+
+                        <div
+                            className="relative flex items-center space-x-2 group cursor-pointer"
+                            onClick={toggleDropdown}
+                        >
+                            <div className="rounded">
+                                <Identicon className="-translate-y-1" string={walletAddress} size={20} />
+                            </div>
+                            <div className="text-slate-600 text-sm font-normal group-hover:text-white">
+                                {formattedAddress}
+                            </div>
+                            <div className="text-slate-600 group-hover:text-white">
+                                <svg
+                                    className="w-5 h-5"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M6 9l6 6 6-6" />
+                                </svg>
+                            </div>
+                            {dropdownOpen && (
+                                <div className="absolute right-0 top-10 w-48 rounded-lg bg-white">
+                                    <button
+                                        onClick={handleLogout}
+                                        className="block w-full text-left rounded px-4 py-2 text-white bg-slate-900 font-semibold"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

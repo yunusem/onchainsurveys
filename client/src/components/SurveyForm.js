@@ -341,23 +341,30 @@ function SurveyForm() {
   };
 
   return (
-    <div className="flex bg-slate-800 h-screen w-full text-white items-center justify-center">
-      <div className="flex h-screen w-full">
+    <div className="select-none flex bg-slate-800 min-h-screen w-full text-white">
+    <div className="fixed top-0 left-0 w-full bg-slate-900 p-2 z-10">
         <NavigationBar />
-        <div className="select-none flex flex-col h-screen w-full">
-          <div className='flex flex-col w-full items-center justify-center space-y-12 '>
-            <div className=' mt-7 w-3/4 flex flex-col text-white'>
-              <div className='w-1/2'>
-                <h1 className=" text-3xl font-bold  text-white   text-left">
-                  {id ? 'Edit Survey' : 'Create Survey'}
-                </h1>
-                <p className='text-slate-300 text-sm mt-2' >You can create surveys where the organizers will distribute rewards to participants using <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer"> <span className='text-red-500'>Casper</span> </a> Blockchain Technology.</p>
-              </div>
+    </div>
+
+    <div className="pt-16 w-full">
+        <div className="flex flex-col min-h-screen w-full bg-slate-800 items-center justify-center space-y-12">
+            <div className='mt-7 w-3/4 flex flex-col text-white'>
+                <div className='w-1/2'>
+                    <h1 className="text-3xl font-bold text-white text-left">
+                        {id ? 'Edit Survey' : 'Create Survey'}
+                    </h1>
+                    <p className='text-slate-300 text-sm mt-2'>
+                        You can create surveys where the organizers will distribute rewards to participants using
+                        <a href="https://cspr.live/" target="_blank" rel="noopener noreferrer">
+                            <span className='text-red-500'>Casper</span>
+                        </a> Blockchain Technology.
+                    </p>
+                </div>
             </div>
             <div className="flex w-3/4">
-              <div className="min-w-[50%]">
-                <div className="flex justify-center mt-3  h-full">
-                  <div className="text-white justify-center  w-full p-1 ">
+                <div className="min-w-[50%]">
+                    <div className="flex justify-center mt-3 h-full">
+                        <div className="text-white justify-center w-full p-1">
                     <form onSubmit={forwardReceipt} className={`w-full transition-all ease-in-out duration-300 ${showSummary === true ? "opacity-20 pointer-events-none" : ""}`}>
 
                       <div className="flex justify-between items-center">
@@ -617,9 +624,9 @@ function SurveyForm() {
                   </div>
                   {renderPreview()}</div>
                 <div className={`absolute sm:ml-32 px-6 mt-8 transition-all ease-in-out duration-300  w-72 ${showSummary === true ? "opacity-100" : "opacity-0 pointer-events-none"}`}  >
-                  <div className=" ring-2 rounded ring-slate-500 p-4 "> {/**inside padding */}
-                    <div className=" space-y-10 text-slate-500">
-                      <ul className="space-y-10 text-sm">
+                  <div className=" ring-2  ring-slate-600 rounded p-4 ">
+                    <div className=" space-y-10 ">
+                      <ul className="space-y-10 text-sm text-slate-500">
                         <div className="flex items-start justify-between ">
                           <div className="flex flex-col">
                             <div className="text-white">Storage</div>
@@ -721,7 +728,6 @@ function SurveyForm() {
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 }

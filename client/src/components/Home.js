@@ -149,81 +149,85 @@ function Home() {
 
   // Render the Home component
   return (
-    <div className="select-none flex bg-slate-800 text-center h-screen w-full text-slate-400 items-center justify-center">
+    <div className="select-none flex bg-slate-800 text-center w-full text-slate-400 items-center justify-center">
       {isAuthenticated ? (
-        <div className="flex h-screen w-full">
-          <NavigationBar />
-          <div className="flex flex-col h-screen w-full">
-            <div className="flex flex-col overflow-y-auto h-full ">
-              <div className=' flex flex-col space-y-16'>
-                <div className='flex w-full  justify-center'>
-                  <div className='flex  mt-7 w-3/4 items-center '>
-                    <h1 className=" text-3xl font-bold  text-white">
-                      Available Surveys
-                    </h1>
+        <div className="flex h-full w-full">
+          <div className="fixed top-0 left-0 w-full bg-slate-900 p-2 z-10">
+            <NavigationBar />
+          </div>
+          <div className="pt-16 w-full">
+            <div className="flex flex-col h-full w-full">
+              <div className="flex flex-col overflow-y-auto h-full ">
+                <div className=' flex flex-col space-y-16'>
+                  <div className='flex w-full  justify-center'>
+                    <div className='flex  mt-7 w-3/4 items-center '>
+                      <h1 className=" text-3xl font-bold  text-white">
+                        Available Surveys
+                      </h1>
+                    </div>
                   </div>
-                </div>
-                <div className="w-full flex justify-center h-[720px]">
-                  <ul className="w-3/4 grid grid-cols-2 grid-rows-7 overflow-y-auto gap-3 gap-y-4 content-start">
-                    {availabeSurveys && availabeSurveys.map((survey) => (
-                      <li
-                        key={survey._id}
-                        className="select-none bg-slate-700 rounded   w-full col-span-1 flex items-center space-x-2 group "
-                      >
-                        <div className=" flex w-full flex-col space-y-2 h-full p-3 justify-between rounded">
-                          <div className="col-span-2 text-xl font-semibold text-start break-word">
-                            {survey.title}
-                          </div>
-                          <div className="flex justify-between w-full">
-                            <div className='flex items-center space-x-8'>
-                              <div className='flex w-8 space-x-1 '>
-                                <img
-                                  src={CoinLogo}
-                                  alt="Casper Coin Logo"
-                                  className="h-5 w-5 "
-                                />
-                                <p> {survey.rewardPerResponse} </p>
-                              </div>
-                              <div className='flex w-8 space-x-1'>
-                                <img
-                                  src={QuestionIcon}
-                                  alt="Question Icon"
-                                  className=" h-5 w-5"
-                                />
-                                <p> {survey.questions.length}</p>
-                              </div>
-                              <div className='flex w-8 space-x-1'>
-                                <img
-                                  src={VolunteerIcon}
-                                  alt="Volunteer Icon"
-                                  className="h-5 w-5"
-                                />
-                                <p> {survey.responses.length}</p>
-                              </div>
-                              <div className='flex space-x-1'>
-                                <img
-                                  src={CalendarIcon}
-                                  alt="Calendar Icon"
-                                  className="h-5 w-5"
-                                />
-                                <p> {remainingTime(survey.endDate)}</p>
-                              </div>
+                  <div className="w-full flex justify-center h-[720px]">
+                    <ul className="w-3/4 grid grid-cols-2 grid-rows-7 overflow-y-auto gap-3 gap-y-4 content-start">
+                      {availabeSurveys && availabeSurveys.map((survey) => (
+                        <li
+                          key={survey._id}
+                          className="select-none bg-slate-700 rounded   w-full col-span-1 flex items-center space-x-2 group "
+                        >
+                          <div className=" flex w-full flex-col space-y-2 h-full p-3 justify-between rounded">
+                            <div className="col-span-2 text-xl font-semibold text-start break-word">
+                              {survey.title}
                             </div>
+                            <div className="flex justify-between w-full">
+                              <div className='flex items-center space-x-8'>
+                                <div className='flex w-8 space-x-1 '>
+                                  <img
+                                    src={CoinLogo}
+                                    alt="Casper Coin Logo"
+                                    className="h-5 w-5 "
+                                  />
+                                  <p> {survey.rewardPerResponse} </p>
+                                </div>
+                                <div className='flex w-8 space-x-1'>
+                                  <img
+                                    src={QuestionIcon}
+                                    alt="Question Icon"
+                                    className=" h-5 w-5"
+                                  />
+                                  <p> {survey.questions.length}</p>
+                                </div>
+                                <div className='flex w-8 space-x-1'>
+                                  <img
+                                    src={VolunteerIcon}
+                                    alt="Volunteer Icon"
+                                    className="h-5 w-5"
+                                  />
+                                  <p> {survey.responses.length}</p>
+                                </div>
+                                <div className='flex space-x-1'>
+                                  <img
+                                    src={CalendarIcon}
+                                    alt="Calendar Icon"
+                                    className="h-5 w-5"
+                                  />
+                                  <p> {remainingTime(survey.endDate)}</p>
+                                </div>
+                              </div>
 
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex justify-center items-start h-full px-3 py-4">
-                          <button
-                            className="bg-red-500  px-4 flex h-full items-center rounded   font-semibold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                            onClick={() => handleTakeSurvey(survey._id)}
-                          >
-                            Vote
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                      
-                  </ul>
+                          <div className="flex justify-center items-start h-full px-3 py-4">
+                            <button
+                              className="bg-red-500  px-4 flex h-full items-center rounded   font-semibold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                              onClick={() => handleTakeSurvey(survey._id)}
+                            >
+                              Vote
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
