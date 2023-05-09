@@ -17,6 +17,17 @@ function SurveyHistory() {
   const userId = localStorage.getItem('userId');
   const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
+  const [animatePercent, setAnimatePercent] = useState(false);
+
+  useEffect(() => {
+    if (isDetailsVisible) {
+      const timer = setTimeout(() => {
+        setAnimatePercent(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isDetailsVisible]);
+
 
   useEffect(() => {
     if (expandedSurveyId) {
@@ -86,6 +97,7 @@ function SurveyHistory() {
 
   const toggleSurvey = (id) => {
     setIsDetailsVisible(false);
+    setAnimatePercent(false);
     if (expandedSurveyId === id) {
       setExpandedSurveyId(null);
     } else {
@@ -146,8 +158,8 @@ function SurveyHistory() {
           key={answer._id}
           className={`relative ml-3 mt-3 mb-3 rounded flex justify-between items-center bg-slate-700`}>
           <div
-            style={{ width: `${answerPercentage < 1 ? 100 : answerPercentage}%` }}
-            className={`absolute rounded h-full top-0 left-0 ${isMyAnswer(survey, answer) ? "bg-red-400" : (answerPercentage < 1) ? "" : "bg-slate-600"}`}>
+            style={{ width: `${answerPercentage < 0.01 ? 100 : (animatePercent ? answerPercentage : 1)}%` }}
+            className={`absolute rounded h-full top-0 left-0 transition-all delay-400 duration-500 ease-in-out ${isMyAnswer(survey, answer) ? "bg-red-400" : (answerPercentage < 1) ? "" : "bg-slate-600"}`}>
           </div>
           <div className={`relative w-full flex justify-between items-center`}>
             <div
@@ -167,7 +179,7 @@ function SurveyHistory() {
     const survey = surveys.find(s => s._id === expandedSurveyId);
     if (survey && isDetailsVisible) {
       return (
-        <div className={`relative shrink ring-2 ring-red-500 rounded group p-3 h-full w-full overflow-y-auto transition-all duration-100 ease-in-out overflow-hidden`}>
+        <div className={`relative block shrink ring-2 ring-red-500 rounded group p-3 h-fit w-full transition-all duration-100 ease-in-out`}>
           <div className='flex  justify-between'>
             <h3 className="text-xl font-semibold m-3 text-red-500 break-word">
               {survey.title}
@@ -182,7 +194,7 @@ function SurveyHistory() {
           </div>
           <div className="space-y-4">
             {survey.questions.map((question, index) => (
-              <div key={question._id} className="rounded w-full overflow-y-auto">
+              <div key={question._id} className="rounded w-full">
                 {/* DONT CHANGE THESE mr-3 clases AND DONT ASK ABOUT IT*/}
                 <p className="ml-3 mr-3 font-semibold break-word text-slate-200">{question.text}</p>
                 <div className="mr-3 mt-2 text-slate-300">
@@ -208,10 +220,9 @@ function SurveyHistory() {
   };
 
   return (
-    <div className="flex bg-slate-800  w-full h-screen text-white items-start">
-      <NavigationBar/>
-      <div className="mt-24 select-none flex flex-col  w-full">
-        <div className=" flex flex-col overflow-y-auto h-full ">
+    <div className="flex bg-slate-800  w-full h-screen text-white items-start overflow-hidden">
+      <div className="select-none h-full w-full overflow-y-auto">
+        <div className="mt-24 flex flex-col">
           <div className='flex flex-col '>
             <div className='flex w-full  justify-center'>
               <div className='flex w-3/4 items-center '>
@@ -290,11 +301,11 @@ function SurveyHistory() {
               </div>
             )
           ) : (
-            <div className="flex flex-col h-[720px]  w-full items-center ">
-              <div className='flex h-full w-3/4  '>
+            <div className="flex flex-col w-full items-center ">
+              <div className='flex w-3/4  '>
                 <div className='flex  w-full content-start '>
-                  <div className='h-full shrink-0 w-1/2 overflow-y-auto '>
-                    <ul className="flex flex-col space-y-4 p-1 overflow-hidden ">
+                  <div className='shrink-0 w-1/2 '>
+                    <ul className="flex flex-col space-y-4 p-1 ">
                       {surveys && getFilteredSurveys().map((survey) => (
                         <li
                           key={survey._id}
@@ -346,7 +357,7 @@ function SurveyHistory() {
                       ))}
                     </ul>
                   </div>
-                  <div className={`h-[720px] shrink w-full flex`}>
+                  <div className={`shrink w-full flex`}>
                     {!expandedSurveyId && (
                       <div className={`absolute p-4 h-24 w-1/3 flex justify-center items-center`}>
                         <div className="text-center text-slate-500">
@@ -365,6 +376,7 @@ function SurveyHistory() {
           )}
         </div>
       </div>
+      <NavigationBar/>
     </div>
   );
 }
