@@ -15,7 +15,7 @@ function SurveyQuestion({ question, onChange }) {
         <div className='flex  items-center break-word'>
           <label
           htmlFor={`answer-${question._id}-${index}`}
-          key={`answer-${index}`}
+          key={answer._id || `answer-${new Date().getTime()}-${Math.random()}`}
           className={`flex rounded  items-center w-full cursor-pointer ${selectedAnswerIndex === index ? 'bg-red-400' : 'bg-slate-800'}`}
         >
           <input

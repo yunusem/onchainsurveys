@@ -280,7 +280,7 @@ function SurveyForm() {
 
 
   const addQuestion = () => {
-    setQuestions([...questions, { text: '', answers: ['', ''] }]);
+    setQuestions([...questions, { text: '', answers:[{text: ''}, {text:''}]}]);
     setActiveQuestionIndex(questions.length);
   };
   const removeQuestion = (questionIndex) => {
@@ -323,9 +323,9 @@ function SurveyForm() {
         </p>
         <div className="mt-2  text-slate-300">
           {question.answers.map((answer) => (
-            answer.text !== '' && (
+            (answer.text !== undefined && answer.text !== '') && (
               <div
-                key={answer._id}
+                key={answer._id || `answer-${new Date().getTime()}-${Math.random()}`}
                 className="relative  mb-3 rounded flex justify-between items-center bg-slate-600"
               >
                 <div className="relative w-full flex justify-between items-center">
@@ -342,7 +342,6 @@ function SurveyForm() {
 
   return (
     <div className="select-none flex bg-slate-800 h-screen w-full text-white">
-      <NavigationBar />
       <div className="h-full w-full overflow-y-auto">
         <div className="mt-24 flex flex-col w-full items-center justify-start ">
           <div className="w-3/4 flex flex-col text-white ">
@@ -359,7 +358,7 @@ function SurveyForm() {
               </p>
             </div>
           </div>
-          <div className="mt-7 flex w-3/4 h-[720px]">
+          <div className="mt-7 flex w-3/4 h-max-[720px]">
             <div className="min-w-[50%] pr-3 ">
               <div className="flex justify-center h-full ">
                 <div className="text-white justify-center w-full">
@@ -727,6 +726,7 @@ function SurveyForm() {
           </div>
         </div>
       </div>
+      <NavigationBar />
     </div>
   );
 }

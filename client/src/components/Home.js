@@ -152,9 +152,6 @@ function Home() {
     <div className="select-none flex bg-slate-900 text-center w-full text-slate-400 items-center justify-center h-screen">
       {isAuthenticated ? (
         <div className="flex h-full w-full bg-slate-800">
-          
-            <NavigationBar />
-          
           <div className="pt-16 w-full">
             <div className="flex flex-col h-full w-full">
               <div className="flex flex-col overflow-y-auto h-full ">
@@ -166,7 +163,7 @@ function Home() {
                       </h1>
                     </div>
                   </div>
-                  <div className="w-full flex justify-center h-[720px]">
+                  <div className="w-full flex justify-center">
                     <ul className="w-3/4 grid grid-cols-2 grid-rows-7 overflow-y-auto gap-3 gap-y-4 content-start">
                       {availabeSurveys && availabeSurveys.map((survey) => (
                         <li
@@ -232,6 +229,7 @@ function Home() {
               </div>
             </div>
           </div>
+          <NavigationBar />
         </div>
       ) : (
         <div className="flex flex-col w-full items-center justify-center ">
