@@ -71,7 +71,7 @@ function Login() {
       .signMessage(message, signingPublicKeyHex)
       .then(async (res) => {
         if (res.cancelled) {
-          showAlert('error', 'Sign cancelled' );
+          showAlert('error', 'Signing cancelled!' );
         } else {
           setIsVerifying(true);
           const publicKey = CLPublicKey.fromHex(signingPublicKeyHex, true);

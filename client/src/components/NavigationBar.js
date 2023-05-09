@@ -3,6 +3,7 @@ import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/onchain-surveys-logo.svg";
 import Identicon from 'react-hooks-identicons';
 import CasperWalletContext from '../contexts/CasperWalletContext';
+import AlertContext from '../contexts/AlertContext';
 
 function NavigationBar() {
     const history = useHistory();
@@ -10,6 +11,7 @@ function NavigationBar() {
     const isWalletConnected = Boolean(localStorage.getItem('active_public_key'));
     const provider = useContext(CasperWalletContext);
     const currentPath = history.location.pathname;
+    const { showAlert } = useContext(AlertContext);
 
     function removeItems() {
         localStorage.removeItem('token');
@@ -61,7 +63,6 @@ function NavigationBar() {
     const formattedAddress = `${start}...${end}`;
 
     const handleLogout = async () => {
-        console.log("handle logout tıklandı")
         try {
             const isConnected = await provider.isConnected();
             if (isConnected) {
@@ -74,20 +75,19 @@ function NavigationBar() {
                 removeItems();
             }
         } catch (error) {
-            console.error("Error disconnecting wallet: " + error.message);
+            showAlert("error","Error disconnecting wallet: " + error.message);
         }
     };
 
     return (
         <div className="fixed top-0 left-0 w-full bg-slate-900 ">
             <div className="flex justify-between items-center px-12 py-3 ">
-            
                 <div>
                     <Link to="/">
                         <img src={Logo} alt="logo" width="96" />
                     </Link>
                 </div>
-                <div className="relative flex space-x-4">
+                <div className="flex space-x-4">
                
                     <Link
                         to="/surveys/new"
@@ -119,7 +119,7 @@ function NavigationBar() {
                         <div className="rounded transition-all duration-200 ease-in-out opacity-80 ">
                             <Identicon className="-translate-y-1 mt-2 bg-slate-200 rounded p-1" string={walletAddress} size={28} />
                         </div>
-                        <div className={`absolute right-0 w-40 text-white transition-all duration-500 ease-in-out  opacity-0 group-hover:opacity-100 }`}>
+                        <div className={`absolute right-12 w-40 text-white transition-all duration-500 ease-in-out  opacity-0 group-hover:opacity-100 }`}>
                             <button
                                 onClick={handleLogout}
                                 className="select-none w-full rounded py-1 bg-slate-800 text-semibold"
