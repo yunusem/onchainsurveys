@@ -158,8 +158,8 @@ function SurveyHistory() {
           key={answer._id}
           className={`relative ml-3 mt-3 mb-3 rounded flex justify-between items-center bg-slate-700`}>
           <div
-            style={{ width: `${answerPercentage < 0.01 ? 100 : (animatePercent ? answerPercentage : 1)}%` }}
-            className={`absolute rounded h-full top-0 left-0 transition-all delay-400 duration-500 ease-in-out ${isMyAnswer(survey, answer) ? "bg-red-400" : (answerPercentage < 1) ? "" : "bg-slate-600"}`}>
+            style={{ width: `${answerPercentage < 0.01 ? 100 : (animatePercent ? answerPercentage : 0)}%` }}
+            className={`absolute rounded h-full top-0 left-0 transition-all delay-100 duration-500 ease-in-out ${isMyAnswer(survey, answer) ? "bg-red-400" : (answerPercentage < 1) ? "" : "bg-slate-600"}`}>
           </div>
           <div className={`relative w-full flex justify-between items-center`}>
             <div

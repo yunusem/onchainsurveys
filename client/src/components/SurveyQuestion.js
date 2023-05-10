@@ -16,7 +16,7 @@ function SurveyQuestion({ question, onChange }) {
           <label
           htmlFor={`answer-${question._id}-${index}`}
           key={answer._id || `answer-${new Date().getTime()}-${Math.random()}`}
-          className={`flex rounded  items-center w-full cursor-pointer ${selectedAnswerIndex === index ? 'bg-red-400' : 'bg-slate-800'}`}
+          className={`flex rounded  items-center w-full cursor-pointer transition-all duration-300 ease-in-out  ${selectedAnswerIndex === index ? 'bg-red-400' : 'bg-slate-800'}`}
         >
           <input
             type="radio"
@@ -26,7 +26,7 @@ function SurveyQuestion({ question, onChange }) {
             className="hidden"
             onChange={(e) => handleInputChange(e, index)}
           />
-          <div className={`m-2 ${selectedAnswerIndex === index ? 'text-slate-900 font-medium' : 'text-slate-300' }`}>
+          <div className={`m-2 transition-all duration-300 ease-in-out ${selectedAnswerIndex === index ? "text-slate-900 font-medium" : "text-slate-300" }`}>
             {answer.text}
           </div>
         </label>

@@ -17,6 +17,8 @@ function Login() {
   const [, setUserIsActivated] = useUserActivation();
   const history = useHistory();
   const { showAlert } = useContext(AlertContext);
+  const [connectedVisible, setConnectedVisible] = useState(false);
+  
 
   // Define a function to remove all items from localStorage
   function removeItems() {
@@ -28,6 +30,14 @@ function Login() {
     localStorage.removeItem('x_casper_provided_signature');
     localStorage.removeItem('user_is_activated');
   }
+
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setConnectedVisible(true);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!isWalletConnected) {
@@ -67,13 +77,15 @@ function Login() {
   const provider = CasperWalletEvents(handleEvent, handleEventKeyChanged);
 
   const signMessage = async (message, signingPublicKeyHex) => {
+
+    setIsVerifying(true);
     provider
       .signMessage(message, signingPublicKeyHex)
       .then(async (res) => {
         if (res.cancelled) {
+          setIsVerifying(false);
           showAlert('error', 'Signing cancelled!' );
         } else {
-          setIsVerifying(true);
           const publicKey = CLPublicKey.fromHex(signingPublicKeyHex, true);
           const result = verifyMessageSignature(publicKey, message, res.signature);
           if (result) {
@@ -88,7 +100,7 @@ function Login() {
                 localStorage.removeItem('x_casper_provided_signature');
                 showAlert('error', activationResponse.message );
               }
-              setIsVerifying(false);
+              
             } else {
               showAlert('error', response.message );
             }
@@ -96,6 +108,7 @@ function Login() {
             localStorage.removeItem('x_casper_provided_signature');
             showAlert( 'error', "Could not verify the signature" );
           }
+          setIsVerifying(false);
         }
       })
       .catch((err) => {
@@ -113,19 +126,19 @@ function Login() {
       });
   };
   return (
-    <div className="select-none flex bg-slate-900 text-center h-screen w-full text-white items-center justify-center">
-      <div className="relative flex flex-col items-center justify-between">
-        <div className="mb-24">
+    <div className="select-none flex bg-slate-900 text-center h-screen w-full text-white items-start justify-center">
+      <div className="relative mt-48 flex flex-col items-center justify-between">
+        <div className="mb-20">
           <Link to="/">
             <img src={Logo} alt="logo" width="256px" />
           </Link>
         </div>
-        <h1 className="w-fit font-medium text-4xl mt-4 p-6 text-slate-300">
-          Wallet <span className="text-red-500">Connected!</span>
+        <h1 className={`w-fit font-medium text-4xl p-6 text-slate-200 transition-all duration-700 ease-in-out ${connectedVisible ? "opacity-100 scale-100":"opacity-0 scale-0"}`}>
+          Wallet <span className="text-red-500 ">Connected!</span>
         </h1>
-        <form onSubmit={handleSubmit} className="w-72">
+        <form onSubmit={handleSubmit} className={`w-72 transition-all delay-300 duration-1000 ease-in-out ${connectedVisible ? "opacity-100":"opacity-0"}`}>
           <div className="flex flex-col">
-            {isUserAlreadySigned ? (<br></br>) : (
+            {isUserAlreadySigned ? (<div className="h-11 w-20"></div>) : (
               <input
                 type="email"
                 id="email"
@@ -140,11 +153,11 @@ function Login() {
           <br />
           <button
             type="submit"
-            className="bg-red-500  py-3 rounded font-semibold px-5 text-white w-72">
+            className={`bg-red-500  py-3 rounded font-semibold px-5 text-white w-72 ${isVerifying && "animate-pulse"}`}>
             {isVerifying ? ("Verifying ...") : (isUserAlreadySigned ? "Verify" : "Verify Email")}
           </button>
         </form>
-        <p className="mt-4 w-fit text-slate-300 font-medium text-sm">
+        <p className={`mt-4 w-fit text-slate-400 font-medium text-sm transition-all delay-500 duration-1000 ease-in-out ${connectedVisible ? "opacity-100":"opacity-0"}`}>
 
           Activity problem ? Checkout
           <a href="https://www.casperwallet.io/download">

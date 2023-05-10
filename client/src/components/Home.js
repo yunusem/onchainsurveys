@@ -149,7 +149,7 @@ function Home() {
 
   // Render the Home component
   return (
-    <div className="select-none flex bg-slate-900 text-center w-full text-slate-400 items-center justify-center h-screen">
+    <div className="select-none flex bg-slate-900 text-center w-full text-slate-400 items-start justify-center h-screen">
       {isAuthenticated ? (
         <div className="flex h-full w-full bg-slate-800">
           <div className="pt-16 w-full">
@@ -232,17 +232,17 @@ function Home() {
           <NavigationBar />
         </div>
       ) : (
-        <div className="flex flex-col w-full items-center justify-center ">
-          <div className="mb-20">
+        <div className="flex flex-col mt-48 w-full items-center justify-between">
+          <div className="mb-20 ">
             <Link to="/">
               <img src={Logo} alt="logo" width="256px" />
             </Link>
           </div>
-          <h1 className="w-[720px] text-4xl mt-4 p-6 break-normal text-slate-300">
+          <h1 className="w-[720px] text-4xl p-6 break-normal text-slate-300">
             Create<span className="text-red-500">/Vote</span> on Casper-based surveys using coins and get rewarded automatically
           </h1>
           <button
-            className="bg-red-500 py-3 rounded font-semibold px-5 text-white w-72"
+            className="bg-red-500 px-5 py-3 mt-7 rounded font-semibold text-white w-72"
             onClick={handleWalletLogin}
           >
             Connect Wallet
