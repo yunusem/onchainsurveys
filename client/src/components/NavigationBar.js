@@ -44,10 +44,8 @@ function NavigationBar() {
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
-            if (disc < 100) {
+            if (disc <= 100) {
                 setDisc(0);
-            } else {
-                handleLogout();
             }
         }
     };
@@ -93,20 +91,24 @@ function NavigationBar() {
     const formattedAddress = `${start}...${end}`;
 
     const handleLogout = async () => {
-        try {
-            setDisc(0);
-            const isConnected = await provider.isConnected();
-            if (isConnected) {
-                const isDisconnected = await provider.disconnectFromSite();
-                if (isDisconnected) {
+        if (disc === 100) {
+            stopCounter();
+            try {
+                const isConnected = await provider.isConnected();
+                if (isConnected) {
+                    const isDisconnected = await provider.disconnectFromSite();
+                    if (isDisconnected) {
+                        removeItems();
+                        history.push('/');
+                    }
+                } else {
                     removeItems();
-                    history.push('/');
                 }
-            } else {
-                removeItems();
+            } catch (error) {
+                showAlert("error", "Error disconnecting wallet: " + error.message);
             }
-        } catch (error) {
-            showAlert("error", "Error disconnecting wallet: " + error.message);
+        } else {
+            stopCounter();
         }
     };
 
@@ -152,7 +154,7 @@ function NavigationBar() {
                         <div className={`absolute right-12 w-40 text-white transition-all duration-500 ease-in-out  opacity-0 group-hover:opacity-100 }`}>
                             <div
                                 onMouseDown={startCounter}
-                                onMouseUp={stopCounter}
+                                onMouseUp={handleLogout}
                                 onMouseLeave={stopCounter}
                                 className={`relative w-full h-8 rounded bg-slate-800`}>
                                 <div
