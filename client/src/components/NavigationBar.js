@@ -1,4 +1,4 @@
-import React, {useEffect, useContext } from 'react';
+import { useEffect, useContext, useRef, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/onchain-surveys-logo.svg";
 import Identicon from 'react-hooks-identicons';
@@ -12,6 +12,9 @@ function NavigationBar() {
     const provider = useContext(CasperWalletContext);
     const currentPath = history.location.pathname;
     const { showAlert } = useContext(AlertContext);
+    const [disc, setDisc] = useState(0);
+    const discRef = useRef(disc);
+    const intervalRef = useRef(null);
 
     function removeItems() {
         localStorage.removeItem('token');
@@ -21,6 +24,33 @@ function NavigationBar() {
         localStorage.removeItem('x_casper_provided_signature');
         localStorage.removeItem('user_is_activated');
     }
+
+    const startCounter = () => {
+        if (intervalRef.current) return;
+
+        intervalRef.current = setInterval(() => {
+            setDisc((prevCounter) => {
+                const updatedDisc = prevCounter + 1;
+                discRef.current = updatedDisc;
+                if (updatedDisc >= 100) {
+                    return 100;
+                }
+                return updatedDisc;
+            });
+        }, 20);
+    };
+
+    const stopCounter = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+            if (disc < 100) {
+                setDisc(0);
+            } else {
+                handleLogout();
+            }
+        }
+    };
 
     useEffect(() => {
         if (!isWalletConnected) {
@@ -64,6 +94,7 @@ function NavigationBar() {
 
     const handleLogout = async () => {
         try {
+            setDisc(0);
             const isConnected = await provider.isConnected();
             if (isConnected) {
                 const isDisconnected = await provider.disconnectFromSite();
@@ -75,7 +106,7 @@ function NavigationBar() {
                 removeItems();
             }
         } catch (error) {
-            showAlert("error","Error disconnecting wallet: " + error.message);
+            showAlert("error", "Error disconnecting wallet: " + error.message);
         }
     };
 
@@ -88,7 +119,6 @@ function NavigationBar() {
                     </Link>
                 </div>
                 <div className="flex space-x-4">
-               
                     <Link
                         to="/surveys/new"
                         className={`text-semibold rounded px-4 py-2 hover:scale-125 transition-all duration-200 ease-in-out ${currentPath === "/surveys/new"
@@ -110,22 +140,29 @@ function NavigationBar() {
 
 
                     <div
-                        className=" flex text-slate-600 items-center space-x-2 group cursor-pointer"
+                        className="select-none flex text-slate-600 items-center space-x-2 group cursor-pointer"
                     >
-                       
-                        <div className="select-none block text-sm font-normal transition-all duration-100 ease-in-out text-slate-200 opacity-80">
+
+                        <div className="block text-sm font-normal transition-all duration-100 ease-in-out text-slate-200 opacity-80">
                             {formattedAddress}
                         </div>
                         <div className="rounded transition-all duration-200 ease-in-out opacity-80 ">
                             <Identicon className="-translate-y-1 mt-2 bg-slate-200 rounded p-1" string={walletAddress} size={28} />
                         </div>
                         <div className={`absolute right-12 w-40 text-white transition-all duration-500 ease-in-out  opacity-0 group-hover:opacity-100 }`}>
-                            <button
-                                onClick={handleLogout}
-                                className="select-none w-full rounded py-1 bg-slate-800 text-semibold"
-                            >
-                                Disconnect
-                            </button>
+                            <div
+                                onMouseDown={startCounter}
+                                onMouseUp={stopCounter}
+                                onMouseLeave={stopCounter}
+                                className={`relative w-full h-8 rounded bg-slate-800`}>
+                                <div
+                                    style={{ width: `${disc}%`, opacity: `${disc / 100.0}` }}
+                                    className={`absolute h-8 rounded bg-red-500 `}>
+                                </div>
+                                <div className="relative h-8 w-full">
+                                    <div className="w-full h-full text-semibold flex items-center justify-center ">Disconnect</div>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
