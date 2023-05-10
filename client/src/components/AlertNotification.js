@@ -21,7 +21,7 @@ const AlertNotification = () => {
     }, [alert.type]);
 
     return (
-        <div className={`absolute z-[100] top-20 right-2 p-3 h-16 min-w-48 rounded flex items-center space-x-4 text-slate-200 bg-slate-900 border-2 transition-all duration-500 ease-in-out ${letItShow ? "opacity-100" : "opacity-0"} ${alert.type === "success" ? "border-green-500" : "border-red-500"} `}>
+        <div className={`absolute z-[100] top-20 right-2 p-3 min-w-48 rounded flex items-center space-x-4 text-slate-200 bg-slate-900 border-2 transition-all delay-500 duration-500 ease-in-out ${letItShow ? "opacity-100" : "opacity-0"} ${alert.type === "success" ? "border-green-500" : "border-red-500"} `}>
                 <svg
                     className={`w-4 h-4 ${atype === "error" ? "text-red-500" : "text-green-500"}`}
                     fill="none"
