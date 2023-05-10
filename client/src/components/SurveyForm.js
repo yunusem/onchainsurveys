@@ -280,7 +280,7 @@ function SurveyForm() {
 
 
   const addQuestion = () => {
-    setQuestions([...questions, { text: '', answers:[{text: ''}, {text:''}]}]);
+    setQuestions([...questions, { text: '', answers: [{ text: '' }, { text: '' }] }]);
     setActiveQuestionIndex(questions.length);
   };
   const removeQuestion = (questionIndex) => {
@@ -638,10 +638,10 @@ function SurveyForm() {
                       <div className="flex items-start justify-between ">
                         <div className="flex flex-col">
                           <div className="text-white">Transfer</div>
-                          <p className='text-xs'> Fee x Per Reward Transfer</p>
+                          <p className='text-xs'> (Gas + Reward) x Per person</p>
                         </div>
                         <div>
-                          <div className="font-medium text-white text-end">{plimit * 3.5}</div>
+                          <div className="font-medium text-white text-end">{plimit * (3.5 + Number(reward))}</div>
                           <p className='text-xs text-end'> CSPR</p>
                         </div>
                       </div>
@@ -672,7 +672,7 @@ function SurveyForm() {
                         <div className="text-white font-bold">Total</div>
                       </div>
                       <div>
-                        <div className="font-bold text-white text-end">{5453.5}</div>
+                        <div className="font-bold text-white text-end">{5 + 5 + (questions.length * 10) + (plimit * (3.5 + Number(reward)))}</div>
                         <p className='text-xs text-slate-500 text-end'> CSPR</p>
                       </div>
                     </div>
