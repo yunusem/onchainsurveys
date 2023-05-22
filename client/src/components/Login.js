@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/onchain-surveys-logo.svg";
-import { registerUser, loginWithWallet, checkUserActive } from '../api';
+import { registerUser, loginWithWallet, checkUserActive, syncUserDetail } from '../api';
 import CasperWalletEvents from './CasperWalletEvents';
 import { useUserActivation } from '../contexts/UserActivationContext';
 import { CLPublicKey, verifyMessageSignature } from 'casper-js-sdk';
@@ -18,7 +18,7 @@ function Login() {
   const history = useHistory();
   const { showAlert } = useContext(AlertContext);
   const [connectedVisible, setConnectedVisible] = useState(false);
-  
+
 
   // Define a function to remove all items from localStorage
   function removeItems() {
@@ -77,42 +77,45 @@ function Login() {
   const provider = CasperWalletEvents(handleEvent, handleEventKeyChanged);
 
   const signMessage = async (message, signingPublicKeyHex) => {
-
-    setIsVerifying(true);
+    const userId = localStorage.getItem('userId');
     provider
       .signMessage(message, signingPublicKeyHex)
       .then(async (res) => {
         if (res.cancelled) {
           setIsVerifying(false);
-          showAlert('error', 'Signing cancelled!' );
+          showAlert('error', 'Signing cancelled!');
         } else {
           const publicKey = CLPublicKey.fromHex(signingPublicKeyHex, true);
           const result = verifyMessageSignature(publicKey, message, res.signature);
           if (result) {
             const response = await registerUser({ publicAddress: signingPublicKeyHex, email: message });
             if (response.success) {
-              const userId = localStorage.getItem('userId');
               const activationResponse = await checkUserActive(userId, setUserIsActivated);
+              setIsVerifying(true);
               if (activationResponse.success) {
-                localStorage.setItem('x_casper_provided_signature', JSON.stringify(res.signature));
-                history.push('/');
+                const userHandled = await syncUserDetail(userId, signingPublicKeyHex);
+                if (userHandled.success) {
+                  localStorage.setItem('x_casper_provided_signature', JSON.stringify(res.signature));
+                  history.push('/');
+                } else {
+                  showAlert('error', "Could not fetch user account details from the chain!");
+                }
               } else {
                 localStorage.removeItem('x_casper_provided_signature');
-                showAlert('error', activationResponse.message );
+                showAlert('error', activationResponse.message);
               }
-              
             } else {
-              showAlert('error', response.message );
+              showAlert('error', response.message);
             }
           } else {
             localStorage.removeItem('x_casper_provided_signature');
-            showAlert( 'error', "Could not verify the signature" );
+            showAlert('error', "Could not verify the signature");
           }
           setIsVerifying(false);
         }
       })
       .catch((err) => {
-        showAlert('error','Error: Could not verify the signature');
+        showAlert('error', 'Error: Could not verify the signature');
       });
   };
 
@@ -133,10 +136,10 @@ function Login() {
             <img src={Logo} alt="logo" width="256px" />
           </Link>
         </div>
-        <h1 className={`w-fit font-medium text-4xl p-6 text-slate-200 transition-all duration-700 ease-in-out ${connectedVisible ? "opacity-100 scale-100":"opacity-0 scale-0"}`}>
+        <h1 className={`w-fit font-medium text-4xl p-6 text-slate-200 transition-all duration-700 ease-in-out ${connectedVisible ? "opacity-100 scale-100" : "opacity-0 scale-0"}`}>
           Wallet <span className="text-red-500 ">Connected!</span>
         </h1>
-        <form onSubmit={handleSubmit} className={`w-72 transition-all delay-300 duration-1000 ease-in-out ${connectedVisible ? "opacity-100":"opacity-0"}`}>
+        <form onSubmit={handleSubmit} className={`w-72 transition-all delay-300 duration-1000 ease-in-out ${connectedVisible ? "opacity-100" : "opacity-0"}`}>
           <div className="flex flex-col">
             {isUserAlreadySigned ? (<div className="h-11 w-20"></div>) : (
               <input
@@ -153,11 +156,11 @@ function Login() {
           <br />
           <button
             type="submit"
-            className={`bg-red-500  py-3 rounded font-semibold px-5 text-white w-72 ${isVerifying && "animate-pulse"}`}>
-            {isVerifying ? ("Verifying ...") : (isUserAlreadySigned ? "Verify" : "Verify Email")}
+            className={`bg-red-500  py-3 rounded font-semibold px-5 text-white w-72 ${isVerifying && "animate-pulse pointer-events-none cursor-not-allowed"}`}>
+            {isVerifying ? ("Syncing ...") : (isUserAlreadySigned ? "Verify" : "Verify Email")}
           </button>
         </form>
-        <p className={`mt-4 w-fit text-slate-400 font-medium text-sm transition-all delay-500 duration-1000 ease-in-out ${connectedVisible ? "opacity-100":"opacity-0"}`}>
+        <p className={`mt-4 w-fit text-slate-400 font-medium text-sm transition-all delay-500 duration-1000 ease-in-out ${connectedVisible ? "opacity-100" : "opacity-0"}`}>
 
           Activity problem ? Checkout
           <a href="https://www.casperwallet.io/download">

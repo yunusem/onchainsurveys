@@ -26,6 +26,24 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  balance: {
+    type: String,
+    required: false,
+  },
+  isValidator: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  accountAgeInHours: {
+    type: Number,
+    default: 0,
+    required: false,
+  },
+  stakedAmount: {
+    type: String,
+    required: false,
+  },
 });
 
 UserSchema.index({ email: 1 }, { unique: true, partialFilterExpression: { email: { $ne: null } } });

@@ -45,7 +45,7 @@ exports.loginWithWallet = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '3h',
+      expiresIn: '72h',
     });
 
     res.status(200).json({ message: 'Authentication with wallet was successful', token, userId: user._id , alreadySigned});

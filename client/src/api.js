@@ -31,6 +31,29 @@ export async function registerUser(user) {
   return response.json();
 }
 
+export async function syncUserDetail(userId, publicKey) {
+  const headers = getHeaders();
+  headers['x-casper-public-key'] = publicKey;
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/sync`, {
+    method: 'POST',
+    headers,
+  });
+
+  const data = await response.json();
+  return { success: data.success, message: data.message };
+}
+
+export async function getUser(userId) {
+  const headers = getHeaders();
+  const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+    method: 'POST',
+    headers,
+  });
+
+  const data = await response.json();
+  return data;
+}
+
 // This function sends a POST request to check if a user is active
 // It takes a userId and a callback function as parameters to set the user activation status
 // It also stores the user activation status in local storage

@@ -3,7 +3,8 @@ const router = express.Router();
 
 const usersController = require('../controllers/users');
 
-router.get('/', usersController.getUsers);
+router.post('/:userId', usersController.getUser);
 router.post('/:userId/activate', usersController.activateUser);
+router.post('/:userId/sync', usersController.syncUserDetail);
 
 module.exports = router;

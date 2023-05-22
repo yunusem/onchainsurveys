@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Logo from "../assets/onchain-surveys-logo.svg";
-import { fetchSurveys, loginWithWallet } from '../api';
+import { fetchSurveys, loginWithWallet, getUser } from '../api';
 import CasperWalletContext from '../contexts/CasperWalletContext';
 import { useUserActivation } from '../contexts/UserActivationContext';
 import NavigationBar from './NavigationBar';
@@ -17,6 +17,7 @@ function Home() {
   const [userIsActivated] = useUserActivation();
   const history = useHistory();
   const provider = useContext(CasperWalletContext);
+  const [userDetails, setUserDetails] = useState(null);
 
   // Retrieve user signature and ID from localStorage
   const signature = localStorage.getItem('x_casper_provided_signature');
@@ -51,6 +52,15 @@ function Home() {
       console.error('Login failed:', error);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const userData = await getUser(localStorage.getItem("userId"));
+      setUserDetails(userData);
+    };
+
+    fetchData();
+  }, []);
 
   // Define an effect hook to check if the user is authenticated
   useEffect(() => {
@@ -113,26 +123,51 @@ function Home() {
 
   // Filter out the surveys to fit the available requirement
   const availabeSurveys = surveys.filter(survey => {
+    // Destructure required user properties for clarity
+    const { accountAgeInHours, balance, isValidator, stakedAmount } = userDetails.user;
+
+    // Convert user account age to days
+    const accountAgeInDays = accountAgeInHours / 24;
+
     if (!survey.createdBy) {
       return false;
     }
-    if (survey.responses.length > 0) {
-      if (survey.responses.find((response) => response.user === userId)) {
-        return false;
-      } else if (new Date(survey.endDate) > new Date()) {
-        return survey.createdBy._id !== userId;
 
-      }
+    // Check if user has responded to the survey
+    if (survey.responses.length > 0 && survey.responses.find((response) => response.user === userId)) {
+      return false;
     }
-    return survey.createdBy._id !== userId && new Date(survey.endDate) > new Date();
+
+    // Check if the survey's end date has passed
+    if (new Date(survey.endDate) <= new Date()) {
+      return false;
+    }
+
+    // Check if user created the survey
+    if (survey.createdBy._id === userId) {
+      return false;
+    }
+
+    // Check survey requirements
+    if (balance < survey.minimumRequiredBalance || stakedAmount < survey.minimumRequiredStake || accountAgeInDays < survey.minimumAgeInDays) {
+      return false;
+    }
+
+    // If validator status is required, check if user is a validator
+    if (survey.validatorStatus && !isValidator) {
+      return false;
+    }
+
+    // If none of the conditions fail, include the survey
+    return true;
   });
+
 
   // Define a function to calculate remaining time
   const remainingTime = (endDate) => {
     const remainingMs = new Date(endDate) - new Date();
     const remainingDays = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
     const remainingHours = Math.floor((remainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    //const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
 
     // Calculate remaining time and return a string
     let timeString = '';
@@ -142,7 +177,6 @@ function Home() {
     if (remainingHours > 0) {
       timeString += `${remainingHours} hour${remainingHours > 1 ? 's' : ''} `;
     }
-    // timeString += `${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''}`;
 
     return timeString;
   };

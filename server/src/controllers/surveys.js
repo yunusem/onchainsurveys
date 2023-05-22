@@ -137,8 +137,6 @@ exports.updateSurvey = async (req, res) => {
   //   }
   // });
 
-
-
   try {
     const survey = await Survey.findById(req.params.id);
     if (!survey) {
@@ -167,11 +165,11 @@ exports.updateSurvey = async (req, res) => {
     survey.reward = req.body.reward;
     survey.endDate = req.body.endDate;
     survey.minimumRequiredBalance = req.body.pminbalance,
-      survey.minimumRequiredStake = req.body.pminstake,
-      survey.minimumAgeInDays = req.body.paccage,
-      survey.validatorStatus = req.body.pvalidator,
+    survey.minimumRequiredStake = req.body.pminstake,
+    survey.minimumAgeInDays = req.body.paccage,
+    survey.validatorStatus = req.body.pvalidator,
 
-      await survey.save();
+    await survey.save();
 
     res.status(200).json(survey);
   } catch (err) {

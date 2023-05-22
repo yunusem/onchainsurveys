@@ -1,99 +1,101 @@
 const User = require('../models/User');
 const axios = require('axios');
+const {
+  CasperServiceByJsonRPC,
+  CLPublicKey,
+} = require("casper-js-sdk");
 
-// TODO improve fetch account details 
+const clientService = new CasperServiceByJsonRPC("http://3.136.227.9:7777/rpc");
 
-// async function getAccountCreationTimestamp(clientService, publicKey) {
-//   try {
-//     const clPublicKey = CLPublicKey.fromHex(publicKey);
-//     const accountKey = clPublicKey.toAccountHashStr();
-//     let blockHeight = 1;
-//     let creationTimestamp = null;
+async function getAccountCreationTimestamp(clientService, publicKey) {
+  try {
+    const clPublicKey = CLPublicKey.fromHex(publicKey);
+    const accountKey = clPublicKey.toAccountHashStr();
+    let blockHeight = 1;
+    let creationTimestamp = null;
 
-//     while (!creationTimestamp) {
-//       const blockInfo = await clientService.getBlockInfoByHeight(blockHeight);
+    while (!creationTimestamp) {
+      const blockInfo = await clientService.getBlockInfoByHeight(blockHeight);
 
-//       if (!blockInfo) {
-//         throw new Error('Account not found');
-//       }
+      if (!blockInfo) {
+        throw new Error('Account not found');
+      }
+      const blockRoot = await clientService.getStateRootHash(blockInfo.block.hash);
+      const accountInfo = await clientService.getBlockState(blockRoot, accountKey, []);
 
-//       const blockRoot = await clientService.getStateRootHash(blockInfo.block.hash);
-//       const accountInfo = await clientService.getBlockState(blockRoot, accountKey, []);
+      if (accountInfo && accountInfo.Account) {
+        creationTimestamp = blockInfo.block.header.timestamp;
+      } else {
+        blockHeight++;
+      }
+    }
+    return creationTimestamp;
+  } catch (error) {
+    console.error(`Error while fetching account creation timestamp: ${error.message}`);
+    throw error;
+  }
+}
 
-//       if (accountInfo && accountInfo.Account) {
-//         creationTimestamp = blockInfo.block.header.timestamp;
-//       } else {
-//         blockHeight++;
-//       }
-//     }
+function calculateAccountAgeInHours(creationTimestamp) {
+  const currentTime = Date.now();
+  const creationTime = new Date(creationTimestamp).getTime();
+  const ageInMilliseconds = currentTime - creationTime;
+  const ageInHours = ageInMilliseconds / (1000 * 60 * 60);
 
-//     return creationTimestamp;
-//   } catch (error) {
-//     console.error(`Error while fetching account creation timestamp: ${error.message}`);
-//     throw error;
-//   }
-// }
-// function calculateAccountAgeInHours(creationTimestamp) {
-//   const currentTime = Date.now();
-//   const creationTime = new Date(creationTimestamp).getTime();
-//   const ageInMilliseconds = currentTime - creationTime;
-//   const ageInHours = ageInMilliseconds / (1000 * 60 * 60);
+  return ageInHours;
+}
 
-//   return ageInHours;
-// }
-// app.post('/accountInfo', async (req, res) => {
-//   let { publicKey } = req.body;
-//   console.log('pk is ', publicKey);
+exports.syncUserDetail = async (req, res) => {
+  const publicKey = req.headers['x-casper-public-key'];
 
-//   try {
-//     const latestBlock = await clientService.getLatestBlockInfo();
-//     const root = await clientService.getStateRootHash(latestBlock.block.hash);
+  try {
+    const user = await User.findById(req.params.userId);
+    const latestBlock = await clientService.getLatestBlockInfo();
+    const root = await clientService.getStateRootHash(latestBlock.block.hash);
 
-//     const balanceUref = await clientService.getAccountBalanceUrefByPublicKey(
-//       root,
-//       CLPublicKey.fromHex(publicKey)
-//     );
-//     const balance = await clientService.getAccountBalance(
-//       latestBlock.block.header.state_root_hash,
-//       balanceUref
-//     );
+    const balanceUref = await clientService.getAccountBalanceUrefByPublicKey(
+      root,
+      CLPublicKey.fromHex(publicKey)
+    );
+    const balance = await clientService.getAccountBalance(
+      latestBlock.block.header.state_root_hash,
+      balanceUref
+    );
 
-//     // Get account age
-//     const creationTimestamp = await getAccountCreationTimestamp(clientService, publicKey);
-//     const accountAgeInHours = calculateAccountAgeInHours(creationTimestamp);
+    const creationTimestamp = await getAccountCreationTimestamp(clientService, publicKey);
+    const accountAgeInHours = calculateAccountAgeInHours(creationTimestamp);
+    const validatorsInfo = await clientService.getValidatorsInfo();
+    const bidsList = validatorsInfo.auction_state.bids;
+    const isValidator = bidsList.some(validator => validator.public_key === publicKey);
 
-//     // Check if the account is a validator
-//     const validatorsInfo = await clientService.getValidatorsInfo();
-//     const bidsList = validatorsInfo.auction_state.bids;
-//     const isValidator = bidsList.some(validator => validator.public_key === publicKey);
+    let stakedAmount = 0;
 
-//     let stakedAmount = 0;
+    bidsList.forEach((iterator) => {
 
-//     bidsList.forEach((iterator) => {
+      const delegators = iterator.bid.delegators;
+      if (delegators) {
+        delegators.forEach((delegator) => {
 
-//       const delegators = iterator.bid.delegators;
-//       if (delegators) {
-//         delegators.forEach((delegator) => {
+          if (delegator.public_key === publicKey) {
+            stakedAmount += parseFloat(delegator.staked_amount);
+          }
+        });
+      }
+    });
 
-//           if (delegator.public_key === publicKey) {
-//             stakedAmount += parseFloat(delegator.staked_amount);
-//           }
-//         });
-//       }
-//     });
 
-//     res.status(200).send({
-//       balance: balance.toString(),
-//       accountAgeInHours,
-//       isValidator,
-//       stakedAmount: stakedAmount.toString(),
-//     });
-//   } catch (error) {
-//     console.error(`Error while fetching account info: ${error.message}`);
-//     res.status(500).send({ error: error.message });
-//   }
-// });
+    user.balance = balance.toString();
+    user.accountAgeInHours = accountAgeInHours;
+    user.isValidator = isValidator;
+    user.stakedAmount = stakedAmount.toString();
+    await user.save();
+    res.status(200).json({ success: true, message: 'User successfully synced' });
 
+  } catch (error) {
+    console.error(`Error while syncing account details: ${error.message}`);
+    res.status(500).send({ error: error.message });
+  }
+};
 
 const fetchCsprLiveAccountData = async (publicKey) => {
   const baseUrl = 'https://api.cspr.live/accounts/';
@@ -138,10 +140,10 @@ exports.activateUser = async (req, res) => {
   }
 };
 
-exports.getUsers = async (req, res) => {
+exports.getUser = async (req, res) => {
   try {
-    const users = await User.find({});
-    res.json({ users });
+    const user = await User.findById(req.params.userId);
+    res.json({ user });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
