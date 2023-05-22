@@ -16,6 +16,34 @@ exports.createSurvey = async (req, res) => {
         answers: answers,
       };
     });
+    // TODO:  implement wasm signed deploy
+    // const {
+    //   CasperServiceByJsonRPC,
+    //   DeployUtil,
+    //   CLPublicKey,
+    //   CasperClient,
+    //   Contracts,
+    //   RuntimeArgs,
+    //   Keys,
+    // } = require("casper-js-sdk");
+
+    // const clientService = new CasperServiceByJsonRPC("http://3.136.227.9:7777/rpc");
+    // const client = new CasperClient("http://3.136.227.9:7777/rpc");
+
+    // app.post("/", async (req, res) => {
+    //   let { signedDeployJSON } = req.body;
+    //   const signedDeploy = DeployUtil.deployFromJson(signedDeployJSON).unwrap();
+
+    //   try {
+    //     let deploy_hash = await client.putDeploy(signedDeploy);
+
+    //     console.log("deploy_hash is: ", deploy_hash);
+    //     res.status(200).send(deploy_hash);
+    //   } catch (error) {
+    //     console.error(`Error while deploying from root: ${error}`);
+    //     res.status(500).send({ error: error.message });
+    //   }
+    // });
 
     const survey = new Survey({
       title: req.body.title,
@@ -71,6 +99,46 @@ exports.getSurveys = async (req, res) => {
 };
 
 exports.updateSurvey = async (req, res) => {
+  //TODO implement core key signed deploys
+
+  // app.post("/deploy", async (req, res) => {
+  //   let { deployJSON } = req.body;
+  //   const deploy = DeployUtil.deployFromJson(deployJSON).unwrap();
+  //   const folder = path.join("./", "casper_keys");
+  //   const keyname = "onchainsurveys";
+  //   const keyPair = Keys.Ed25519.parseKeyFiles(folder + "/" + keyname + "_public.pem", folder + "/" + keyname + "_private.pem");
+
+  //   try {
+  //     const signedDeploy = DeployUtil.signDeploy(deploy, keyPair);
+
+  //     let deploy_hash = await client.speculativeDeploy(signedDeploy);
+
+  //     console.log("deploy_hash is: ", deploy_hash);
+  //     res.status(200).send(deploy_hash);
+  //   } catch (error) {
+  //     console.error(`Error while deploying from server: ${error}`);
+  //     res.status(500).send({ error: error.message });
+  //   }
+  // });
+
+  // app.post('/deployer', async (req, res) => {
+  //   let { publicKey } = req.body;
+  //   try {
+  //     const folder = path.join("./", "casper_keys");
+  //     const keyname = "onchainsurveys";
+  //     const keyPair = Keys.Ed25519.parseKeyFiles(folder + "/" + keyname + "_public.pem", folder + "/" + keyname + "_private.pem");
+
+  //     res.status(200).send({
+  //       deployer: keyPair.publicKey.toHex(),
+  //     });
+  //   } catch (error) {
+  //     console.error(`Error while getting deployer hash: ${error.message}`);
+  //     res.status(500).send({ error: error.message });
+  //   }
+  // });
+
+
+
   try {
     const survey = await Survey.findById(req.params.id);
     if (!survey) {
@@ -99,11 +167,11 @@ exports.updateSurvey = async (req, res) => {
     survey.reward = req.body.reward;
     survey.endDate = req.body.endDate;
     survey.minimumRequiredBalance = req.body.pminbalance,
-    survey.minimumRequiredStake = req.body.pminstake,
-    survey.minimumAgeInDays = req.body.paccage,
-    survey.validatorStatus = req.body.pvalidator,
+      survey.minimumRequiredStake = req.body.pminstake,
+      survey.minimumAgeInDays = req.body.paccage,
+      survey.validatorStatus = req.body.pvalidator,
 
-    await survey.save();
+      await survey.save();
 
     res.status(200).json(survey);
   } catch (err) {
@@ -130,6 +198,9 @@ exports.deleteSurvey = async (req, res) => {
 };
 
 exports.submitResponse = async (req, res) => {
+  // TODO handle update system with buffering as well as standard deploy and transfers
+
+
   try {
     const survey = await Survey.findById(req.params.id);
     if (!survey) {

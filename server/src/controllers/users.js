@@ -1,6 +1,100 @@
 const User = require('../models/User');
 const axios = require('axios');
 
+// TODO improve fetch account details 
+
+// async function getAccountCreationTimestamp(clientService, publicKey) {
+//   try {
+//     const clPublicKey = CLPublicKey.fromHex(publicKey);
+//     const accountKey = clPublicKey.toAccountHashStr();
+//     let blockHeight = 1;
+//     let creationTimestamp = null;
+
+//     while (!creationTimestamp) {
+//       const blockInfo = await clientService.getBlockInfoByHeight(blockHeight);
+
+//       if (!blockInfo) {
+//         throw new Error('Account not found');
+//       }
+
+//       const blockRoot = await clientService.getStateRootHash(blockInfo.block.hash);
+//       const accountInfo = await clientService.getBlockState(blockRoot, accountKey, []);
+
+//       if (accountInfo && accountInfo.Account) {
+//         creationTimestamp = blockInfo.block.header.timestamp;
+//       } else {
+//         blockHeight++;
+//       }
+//     }
+
+//     return creationTimestamp;
+//   } catch (error) {
+//     console.error(`Error while fetching account creation timestamp: ${error.message}`);
+//     throw error;
+//   }
+// }
+// function calculateAccountAgeInHours(creationTimestamp) {
+//   const currentTime = Date.now();
+//   const creationTime = new Date(creationTimestamp).getTime();
+//   const ageInMilliseconds = currentTime - creationTime;
+//   const ageInHours = ageInMilliseconds / (1000 * 60 * 60);
+
+//   return ageInHours;
+// }
+// app.post('/accountInfo', async (req, res) => {
+//   let { publicKey } = req.body;
+//   console.log('pk is ', publicKey);
+
+//   try {
+//     const latestBlock = await clientService.getLatestBlockInfo();
+//     const root = await clientService.getStateRootHash(latestBlock.block.hash);
+
+//     const balanceUref = await clientService.getAccountBalanceUrefByPublicKey(
+//       root,
+//       CLPublicKey.fromHex(publicKey)
+//     );
+//     const balance = await clientService.getAccountBalance(
+//       latestBlock.block.header.state_root_hash,
+//       balanceUref
+//     );
+
+//     // Get account age
+//     const creationTimestamp = await getAccountCreationTimestamp(clientService, publicKey);
+//     const accountAgeInHours = calculateAccountAgeInHours(creationTimestamp);
+
+//     // Check if the account is a validator
+//     const validatorsInfo = await clientService.getValidatorsInfo();
+//     const bidsList = validatorsInfo.auction_state.bids;
+//     const isValidator = bidsList.some(validator => validator.public_key === publicKey);
+
+//     let stakedAmount = 0;
+
+//     bidsList.forEach((iterator) => {
+
+//       const delegators = iterator.bid.delegators;
+//       if (delegators) {
+//         delegators.forEach((delegator) => {
+
+//           if (delegator.public_key === publicKey) {
+//             stakedAmount += parseFloat(delegator.staked_amount);
+//           }
+//         });
+//       }
+//     });
+
+//     res.status(200).send({
+//       balance: balance.toString(),
+//       accountAgeInHours,
+//       isValidator,
+//       stakedAmount: stakedAmount.toString(),
+//     });
+//   } catch (error) {
+//     console.error(`Error while fetching account info: ${error.message}`);
+//     res.status(500).send({ error: error.message });
+//   }
+// });
+
+
 const fetchCsprLiveAccountData = async (publicKey) => {
   const baseUrl = 'https://api.cspr.live/accounts/';
   const endpoint = '/extended-deploys?fields=entry_point,contract_package&limit=1';
