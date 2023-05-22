@@ -55,8 +55,11 @@ function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const userData = await getUser(localStorage.getItem("userId"));
-      setUserDetails(userData);
+      const uid = localStorage.getItem("userId");
+      if (uid){
+        const userData = await getUser(localStorage.getItem("userId"));
+        setUserDetails(userData);
+      }
     };
 
     fetchData();
@@ -124,6 +127,9 @@ function Home() {
   // Filter out the surveys to fit the available requirement
   const availabeSurveys = surveys.filter(survey => {
     // Destructure required user properties for clarity
+    if (!userDetails || !userDetails.user) {
+      return false;
+    }
     const { accountAgeInHours, balance, isValidator, stakedAmount } = userDetails.user;
 
     // Convert user account age to days

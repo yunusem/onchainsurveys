@@ -44,6 +44,7 @@ export async function syncUserDetail(userId, publicKey) {
 }
 
 export async function getUser(userId) {
+  console.log("api getuser")
   const headers = getHeaders();
   const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
     method: 'POST',
