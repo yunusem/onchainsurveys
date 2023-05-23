@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { createSurvey, fetchSurvey, updateSurvey } from '../api';
+import { createSurvey, fetchSurvey, updateSurvey, getUser, putDeploy } from '../api';
 import NavigationBar from './NavigationBar';
 import CoinLogo from "../assets/caspercoin-logo.svg";
-
+import AlertContext from '../contexts/AlertContext';
+import { CLPublicKey, DeployUtil, CLString, RuntimeArgs } from 'casper-js-sdk';
 
 function SurveyForm() {
   const { id } = useParams();
@@ -15,8 +16,10 @@ function SurveyForm() {
   const [areAllInputsFilled, setAreAllInputsFilled] = useState(false);
   const [timer, setTimer] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
-
-
+  const [isDeploying, setIsDeploying] = useState(false);
+  const { showAlert } = useContext(AlertContext);
+  const CasperWalletProvider = window.CasperWalletProvider;
+  const provider = CasperWalletProvider();
 
   const [title, setTitle] = useState('');
   const [questions, setQuestions] = useState([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
@@ -51,7 +54,7 @@ function SurveyForm() {
         setQuestions([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
         setStartDate(formatDateToDateTimeLocal(new Date()));
         setEndDate('');
-        setReward('');
+        setReward(0);
         setPlimit('');
         return;
       }
@@ -102,13 +105,14 @@ function SurveyForm() {
   }, [title, questions, activeQuestionIndex]);
 
   useEffect(() => {
-    (reward && reward < 1) && setReward(1);
+    (reward && reward < 0) && setReward(0);
     (plimit && plimit < 1) && setPlimit(1);
     (pminbalance && pminbalance < 1) && setPminBalance(1);
     (pminstake && pminstake < 500) && setPminStake(500);
     (paccage && paccage < 1) && setPaccAge(1);
 
-    setAreAllInputsFilled(Boolean(reward) && Boolean(plimit) && Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage));
+    //setAreAllInputsFilled(Boolean(reward) && Boolean(plimit) && Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage));
+    setAreAllInputsFilled(Boolean(plimit) && Boolean(endDate) && Boolean(pminbalance) && Boolean(pminstake) && Boolean(paccage));
   }, [endDate, reward, plimit, pminbalance, pminstake, paccage, pvalidator]);
 
   useEffect(() => {
@@ -212,6 +216,68 @@ function SurveyForm() {
     }
   };
 
+  const createModuleBytesDeploy = async (surveyId, publicKeyHex) => {
+    const userData = await getUser(localStorage.getItem("userId"));
+    const email = userData.user.email;
+    const publicKey = CLPublicKey.fromHex(publicKeyHex);
+
+    const deployParams = new DeployUtil.DeployParams(
+      publicKey,
+      "casper-test",
+      1,
+      1800000
+    );
+
+    let args = RuntimeArgs.fromMap({
+      email: new CLString(email),
+      surveyId: new CLString(surveyId),
+    });
+
+    let lock_cspr_moduleBytes;
+    await fetch("contract.wasm")
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => (lock_cspr_moduleBytes = new Uint8Array(bytes)));
+
+    const session = DeployUtil.ExecutableDeployItem.newModuleBytes(
+      lock_cspr_moduleBytes,
+      args
+    );
+
+    return DeployUtil.makeDeploy(
+      deployParams,
+      session,
+      DeployUtil.standardPayment(1000000000 * 45)
+    );
+  };
+
+  const signModuleBytesDeploy = async (surveyId) => {
+    setIsDeploying(true);
+    const walletAddress = localStorage.getItem('active_public_key');
+    let deploy, deployJSON;
+
+    deploy = await createModuleBytesDeploy(surveyId, walletAddress);
+    deployJSON = DeployUtil.deployToJson(deploy);
+    let signedDeploy;
+
+    try {
+      const res = await provider.sign(JSON.stringify(deployJSON), walletAddress);
+      if (res.cancelled) {
+        showAlert('error', 'Signing cancelled!');
+      } else {
+        signedDeploy = DeployUtil.setSignature(
+          deploy,
+          res.signature,
+          CLPublicKey.fromHex(walletAddress)
+        );
+        const signedDeployJSON = DeployUtil.deployToJson(signedDeploy);
+        const data = await putDeploy(signedDeployJSON);
+        return data;
+      }
+    } catch (err) {
+      showAlert('error', err);
+    }
+  };
+
   const createNewSurvey = async () => {
     try {
       const survey = {
@@ -228,71 +294,20 @@ function SurveyForm() {
         pvalidator
       };
 
-      // const createnewModuleBytesDeploy = async (publicKeyHex) => {
-      //   const publicKey = CLPublicKey.fromHex(publicKeyHex);
-    
-      //   const deployParams = new DeployUtil.DeployParams(
-      //     publicKey,
-      //     "casper-test",
-      //     1,
-      //     1800000
-      //   );
-    
-      //   let args = RuntimeArgs.fromMap({
-      //     email: new CLString("exampleemail@exmail.com"),
-      //     surveyId: new CLString("124jb12j45p2i35"),
-      //   });
-    
-      //   let lock_cspr_moduleBytes;
-      //   await fetch("contract.wasm")
-      //     .then((response) => response.arrayBuffer())
-      //     .then((bytes) => (lock_cspr_moduleBytes = new Uint8Array(bytes)));
-    
-      //   const session = DeployUtil.ExecutableDeployItem.newModuleBytes(
-      //     lock_cspr_moduleBytes,
-      //     args
-      //   );
-    
-      //   return DeployUtil.makeDeploy(
-      //     deployParams,
-      //     session,
-      //     DeployUtil.standardPayment(1000000000 * 50)
-      //   );
-      // };
-    
-      // const signnewModuleBytesDeploy = async () => {
-      //   let deploy, deployJSON;
-    
-      //   deploy = await createnewModuleBytesDeploy(activeKey);
-      //   deployJSON = DeployUtil.deployToJson(deploy);
-      //   let signedDeploy;
-    
-      //   try {
-      //     const res = await provider.sign(JSON.stringify(deployJSON), activeKey);
-      //     if (res.cancelled) {
-      //       alert("Sign cancelled");
-      //     } else {
-      //       signedDeploy = DeployUtil.setSignature(
-      //         deploy,
-      //         res.signature,
-      //         CLPublicKey.fromHex(activeKey)
-      //       );
-      //       // alert("Sign successful: " + JSON.stringify(signedDeploy, null, 2));
-      //       console.log(
-      //         "Sign successful: " + JSON.stringify(signedDeploy, null, 2)
-      //       );
-      //       const signedDeployJSON = DeployUtil.deployToJson(signedDeploy);
-      //       const { data } = await fetchDetail(signedDeployJSON);
-    
-      //       setDeployhashnewModuleBytesDeploy(data);
-      //     }
-      //   } catch (err) {
-      //     alert("Error: " + err);
-      //   }
-      // };
-
-      await createSurvey(survey);
-      history.push('/surveys');
+      const data = await createSurvey(survey);
+      const surveyId = data.surveyId;
+      const result = await signModuleBytesDeploy(surveyId);
+      const deployHash = result.deployHash;
+      showAlert("hash", deployHash);
+      setShowSummary(false);
+      setIsDeploying(false);
+      setTitle('');
+      setQuestions([{ text: '', answers: [{ text: '' }, { text: '' }] }]);
+      setStartDate(formatDateToDateTimeLocal(new Date()));
+      setEndDate('');
+      setReward(0);
+      setPlimit('');
+      //history.push('/surveys');
     } catch (error) {
       console.error('Failed to create survey:', error);
     }
@@ -560,12 +575,13 @@ function SurveyForm() {
                         <div className="flex items-center">
                           <input
                             type="number"
-                            id="reward"
+                            id="rewardinput"
                             value={reward}
                             onChange={(e) => setReward(e.target.value)}
-                            className={`p-2 h-8 rounded   w-24 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
+                            className={`p-2 h-8 rounded w-12 text-slate-300 bg-slate-700 font-medium transition-all duration-200 ease-in-out  outline-none focus:outline-red-500 ${id && "cursor-not-allowed"}`}
                             placeholder="Reward"
-                            disabled={Boolean(id)}
+                            // disabled={Boolean(id)}
+                            disabled={true}
                             onInput={handleInput}
                             onBlur={handleBlur}
                             ref={rewardRef}
@@ -736,7 +752,8 @@ function SurveyForm() {
                         <div className="text-white font-bold">Total</div>
                       </div>
                       <div>
-                        <div className="font-bold text-white text-end">{5 + 5 + (questions.length * 10) + (plimit * (3.5 + Number(reward)))}</div>
+                      {/* <div className="font-bold text-white text-end">{5 + 5 + (questions.length * 10) + (plimit * (3.5 + Number(reward)))}</div> */}
+                        <div className="font-bold text-white text-end">45</div>
                         <p className='text-xs text-slate-500 text-end'> CSPR</p>
                       </div>
                     </div>
@@ -780,9 +797,9 @@ function SurveyForm() {
                   <button
                     onClick={handleSubmit}
                     type="submit"
-                    className="w-full rounded-md border border-transparent bg-slate-700 px-4 py-3 text-base font-medium text-white shadow-sm transition-all ease-in-out duration-300 hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                    className={`w-full rounded-md border border-transparent bg-slate-700 px-4 py-3 text-base font-medium text-white shadow-sm transition-all ease-in-out duration-300 hover:bg-red-500 ${isDeploying && "animate-pulse  cursor-not-allowed pointer-events-none"}`}
                   >
-                    Checkout
+                    {isDeploying ? "Deploying ..." : "Checkout"}
                   </button>
                 </div>
               </div>

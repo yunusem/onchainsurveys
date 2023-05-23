@@ -163,7 +163,7 @@ function Login() {
         <p className={`mt-4 w-fit text-slate-400 font-medium text-sm transition-all delay-500 duration-1000 ease-in-out ${connectedVisible ? "opacity-100" : "opacity-0"}`}>
 
           Activity problem ? Checkout
-          <a href="https://www.casperwallet.io/download">
+          <a href="https://cspr.live/">
             <span className="text-red-500 font-semibold"> CSPR.live</span>
           </a>
 

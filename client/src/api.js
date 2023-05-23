@@ -31,6 +31,18 @@ export async function registerUser(user) {
   return response.json();
 }
 
+export async function putDeploy(signedDeployJSON) {
+  const headers = getHeaders();
+  const response = await fetch(`${API_BASE_URL}/deploy`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(signedDeployJSON),
+  });
+
+  const data = await response.json();
+  return data;
+}
+
 export async function syncUserDetail(userId, publicKey) {
   const headers = getHeaders();
   headers['x-casper-public-key'] = publicKey;

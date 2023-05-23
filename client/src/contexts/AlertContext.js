@@ -24,7 +24,7 @@ export const AlertProvider = ({ children }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       hideAlert();
-    }, 5000);
+    }, 13000);
 
     return () => clearTimeout(timer);
   }, [alert]);

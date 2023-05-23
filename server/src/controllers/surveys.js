@@ -16,34 +16,6 @@ exports.createSurvey = async (req, res) => {
         answers: answers,
       };
     });
-    // TODO:  implement wasm signed deploy
-    // const {
-    //   CasperServiceByJsonRPC,
-    //   DeployUtil,
-    //   CLPublicKey,
-    //   CasperClient,
-    //   Contracts,
-    //   RuntimeArgs,
-    //   Keys,
-    // } = require("casper-js-sdk");
-
-    // const clientService = new CasperServiceByJsonRPC("http://3.136.227.9:7777/rpc");
-    // const client = new CasperClient("http://3.136.227.9:7777/rpc");
-
-    // app.post("/", async (req, res) => {
-    //   let { signedDeployJSON } = req.body;
-    //   const signedDeploy = DeployUtil.deployFromJson(signedDeployJSON).unwrap();
-
-    //   try {
-    //     let deploy_hash = await client.putDeploy(signedDeploy);
-
-    //     console.log("deploy_hash is: ", deploy_hash);
-    //     res.status(200).send(deploy_hash);
-    //   } catch (error) {
-    //     console.error(`Error while deploying from root: ${error}`);
-    //     res.status(500).send({ error: error.message });
-    //   }
-    // });
 
     const survey = new Survey({
       title: req.body.title,
@@ -62,14 +34,14 @@ exports.createSurvey = async (req, res) => {
     });
 
     await survey.save();
-    res.status(201).json(survey);
+    res.status(201).json({
+      surveyId: survey._id
+    });
   } catch (err) {
     console.error('Error in createSurvey:', err);
     res.status(400).json({ message: err.message });
   }
 };
-
-
 
 exports.getSurvey = async (req, res) => {
   try {
@@ -165,11 +137,11 @@ exports.updateSurvey = async (req, res) => {
     survey.reward = req.body.reward;
     survey.endDate = req.body.endDate;
     survey.minimumRequiredBalance = req.body.pminbalance,
-    survey.minimumRequiredStake = req.body.pminstake,
-    survey.minimumAgeInDays = req.body.paccage,
-    survey.validatorStatus = req.body.pvalidator,
+      survey.minimumRequiredStake = req.body.pminstake,
+      survey.minimumAgeInDays = req.body.paccage,
+      survey.validatorStatus = req.body.pvalidator,
 
-    await survey.save();
+      await survey.save();
 
     res.status(200).json(survey);
   } catch (err) {

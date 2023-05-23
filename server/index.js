@@ -31,6 +31,7 @@ passport.use(new LocalStrategy(
 app.use('/auth', require('./src/routes/auth'));
 app.use('/users', require('./src/routes/users'));
 app.use('/surveys', require('./src/routes/surveys'));
+app.use('/deploy', require('./src/routes/deploy'));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
