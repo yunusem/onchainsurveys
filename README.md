@@ -49,6 +49,7 @@ Include the following variables in the .env file:
 MONGODB_URI=mongodb://localhost:27017/onchainsurveys
 JWT_SECRET=your_jwt_secret
 PORT=3001
+RPC=http://3.136.227.9:7777/rpc
 ```
 ### Launch a MongoDB
 #### Local MongoDB

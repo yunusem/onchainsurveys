@@ -5,7 +5,14 @@ const {
   CLPublicKey,
 } = require("casper-js-sdk");
 
-const clientService = new CasperServiceByJsonRPC("http://3.136.227.9:7777/rpc");
+let clientService;
+
+try {
+    clientService = new CasperServiceByJsonRPC(process.env.RPC);
+} catch (error) {
+    console.error('Error initializing CasperServiceByJsonRPC:', error);
+    process.exit(1);
+}
 
 async function getAccountCreationTimestamp(clientService, publicKey) {
   try {
