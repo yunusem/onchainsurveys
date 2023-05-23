@@ -227,6 +227,70 @@ function SurveyForm() {
         paccage,
         pvalidator
       };
+
+      // const createnewModuleBytesDeploy = async (publicKeyHex) => {
+      //   const publicKey = CLPublicKey.fromHex(publicKeyHex);
+    
+      //   const deployParams = new DeployUtil.DeployParams(
+      //     publicKey,
+      //     "casper-test",
+      //     1,
+      //     1800000
+      //   );
+    
+      //   let args = RuntimeArgs.fromMap({
+      //     email: new CLString("exampleemail@exmail.com"),
+      //     surveyId: new CLString("124jb12j45p2i35"),
+      //   });
+    
+      //   let lock_cspr_moduleBytes;
+      //   await fetch("contract.wasm")
+      //     .then((response) => response.arrayBuffer())
+      //     .then((bytes) => (lock_cspr_moduleBytes = new Uint8Array(bytes)));
+    
+      //   const session = DeployUtil.ExecutableDeployItem.newModuleBytes(
+      //     lock_cspr_moduleBytes,
+      //     args
+      //   );
+    
+      //   return DeployUtil.makeDeploy(
+      //     deployParams,
+      //     session,
+      //     DeployUtil.standardPayment(1000000000 * 50)
+      //   );
+      // };
+    
+      // const signnewModuleBytesDeploy = async () => {
+      //   let deploy, deployJSON;
+    
+      //   deploy = await createnewModuleBytesDeploy(activeKey);
+      //   deployJSON = DeployUtil.deployToJson(deploy);
+      //   let signedDeploy;
+    
+      //   try {
+      //     const res = await provider.sign(JSON.stringify(deployJSON), activeKey);
+      //     if (res.cancelled) {
+      //       alert("Sign cancelled");
+      //     } else {
+      //       signedDeploy = DeployUtil.setSignature(
+      //         deploy,
+      //         res.signature,
+      //         CLPublicKey.fromHex(activeKey)
+      //       );
+      //       // alert("Sign successful: " + JSON.stringify(signedDeploy, null, 2));
+      //       console.log(
+      //         "Sign successful: " + JSON.stringify(signedDeploy, null, 2)
+      //       );
+      //       const signedDeployJSON = DeployUtil.deployToJson(signedDeploy);
+      //       const { data } = await fetchDetail(signedDeployJSON);
+    
+      //       setDeployhashnewModuleBytesDeploy(data);
+      //     }
+      //   } catch (err) {
+      //     alert("Error: " + err);
+      //   }
+      // };
+
       await createSurvey(survey);
       history.push('/surveys');
     } catch (error) {
@@ -359,7 +423,7 @@ function SurveyForm() {
             </div>
           </div>
           <div className="mt-7 flex w-3/4 h-max-[720px]">
-            <div className="min-w-[50%] pr-3 ">
+            <div className="min-w-[50%] pr-3">
               <div className="flex justify-center h-full ">
                 <div className="text-white justify-center w-full">
                   <form onSubmit={forwardReceipt} className={`w-full transition-all ease-in-out duration-300 ${showSummary === true ? "opacity-20 pointer-events-none" : ""}`}>

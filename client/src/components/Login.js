@@ -156,7 +156,7 @@ function Login() {
           <br />
           <button
             type="submit"
-            className={`bg-red-500  py-3 rounded font-semibold px-5 text-white w-72 ${isVerifying && "animate-pulse pointer-events-none cursor-not-allowed"}`}>
+            className={`bg-red-500  py-3 rounded font-semibold px-5 text-white w-72 ${isVerifying && "animate-pulse  cursor-not-allowed pointer-events-none"}`}>
             {isVerifying ? ("Syncing ...") : (isUserAlreadySigned ? "Verify" : "Verify Email")}
           </button>
         </form>

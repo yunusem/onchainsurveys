@@ -27,7 +27,7 @@ function NavigationBar() {
 
     const startCounter = () => {
         if (intervalRef.current) return;
-
+        setDisc(33);
         intervalRef.current = setInterval(() => {
             setDisc((prevCounter) => {
                 const updatedDisc = prevCounter + 1;
@@ -37,7 +37,7 @@ function NavigationBar() {
                 }
                 return updatedDisc;
             });
-        }, 20);
+        }, 10);
     };
 
     const stopCounter = () => {
@@ -158,8 +158,8 @@ function NavigationBar() {
                                 onMouseLeave={stopCounter}
                                 className={`relative w-full h-8 rounded bg-slate-800`}>
                                 <div
-                                    style={{ width: `${disc}%`, opacity: `${disc / 100.0}` }}
-                                    className={`absolute h-8 rounded bg-red-500 `}>
+                                    style={{ width: `${disc}%`, opacity: `${disc / 50.0}` }}
+                                    className={`transition-all ease-linear duration-75 absolute h-8 rounded bg-red-500 `}>
                                 </div>
                                 <div className="relative h-8 w-full">
                                     <div className="w-full h-full text-semibold flex items-center justify-center ">Disconnect</div>

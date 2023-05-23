@@ -130,7 +130,11 @@ function Home() {
     if (!userDetails || !userDetails.user) {
       return false;
     }
-    const { accountAgeInHours, balance, isValidator, stakedAmount } = userDetails.user;
+    const { accountAgeInHours, balance, isValidator, stakedAmount, participantsLimit } = userDetails.user;
+
+    if(survey.responses.length >= participantsLimit){
+      return false;
+    }
 
     // Convert user account age to days
     const accountAgeInDays = accountAgeInHours / 24;
@@ -220,15 +224,15 @@ function Home() {
                                   <img
                                     src={CoinLogo}
                                     alt="Casper Coin Logo"
-                                    className="h-5 w-5 "
+                                    className="w-4"
                                   />
-                                  <p> {survey.rewardPerResponse} </p>
+                                  <div className="text-xl"> {survey.rewardPerResponse} </div>
                                 </div>
                                 <div className='flex w-8 space-x-1'>
                                   <img
                                     src={QuestionIcon}
                                     alt="Question Icon"
-                                    className=" h-5 w-5"
+                                    className="w-4"
                                   />
                                   <p> {survey.questions.length}</p>
                                 </div>
@@ -236,7 +240,7 @@ function Home() {
                                   <img
                                     src={VolunteerIcon}
                                     alt="Volunteer Icon"
-                                    className="h-5 w-5"
+                                    className="w-4"
                                   />
                                   <p> {survey.responses.length}</p>
                                 </div>
@@ -244,7 +248,7 @@ function Home() {
                                   <img
                                     src={CalendarIcon}
                                     alt="Calendar Icon"
-                                    className="h-5 w-5"
+                                    className="w-4"
                                   />
                                   <p> {remainingTime(survey.endDate)}</p>
                                 </div>

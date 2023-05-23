@@ -348,7 +348,7 @@ function SurveyHistory() {
                                   alt="Calendar Icon"
                                   className="w-4"
                                 />
-                                <div  className='text-xl'>{daysRemaining(survey.endDate)}</div>
+                                <div  className={`text-xl ${daysRemaining(survey.endDate) === 0 && "text-red-400"}`}>{daysRemaining(survey.endDate)}</div>
                               </div>
                             </div>
 
