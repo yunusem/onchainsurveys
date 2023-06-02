@@ -5,7 +5,7 @@ const authMiddleware = require('../middlewares/auth');
 const surveysController = require('../controllers/surveys');
 
 router.post('/', authMiddleware, surveysController.createSurvey);
-
+router.get('/costs', surveysController.getCosts);
 router.get('/:id', surveysController.getSurvey);
 router.post('/:id/response', authMiddleware, surveysController.submitResponse);
 

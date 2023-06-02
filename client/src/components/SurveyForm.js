@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { createSurvey, fetchSurvey, updateSurvey, getUser, putDeploy } from '../api';
+import { createSurvey, fetchSurvey, updateSurvey, getUser, putDeploy, getCosts } from '../api';
 import NavigationBar from './NavigationBar';
 import CoinLogo from "../assets/caspercoin-logo.svg";
 import AlertContext from '../contexts/AlertContext';
@@ -32,6 +32,9 @@ function SurveyForm() {
   const [paccage, setPaccAge] = useState(1);
   const [pvalidator, setPValidator] = useState(false);
 
+  const [feePerQuestion, setFeePerQuestion] = useState(0);
+  const [costOfService, setCostOfService] = useState(0);
+
 
   function removeItems() {
     localStorage.removeItem('token');
@@ -46,6 +49,22 @@ function SurveyForm() {
     const pad = (num) => num.toString().padStart(2, '0');
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   }
+
+  useEffect(() => {
+    const syncCosts = async () => {
+      const res = await getCosts();
+      setFeePerQuestion(Number(res.fee));
+      setCostOfService(Number(res.comm));
+    };
+
+    if(showSummary) {
+      syncCosts();
+    } else {
+      setFeePerQuestion(0);
+      setCostOfService(0);
+    }
+
+  }, [showSummary]);
 
   useEffect(() => {
     const loadSurvey = async () => {
@@ -329,7 +348,6 @@ function SurveyForm() {
 
   const forwardReceipt = async (e) => {
     e.preventDefault();
-
     setShowSummary(true);
   };
 
@@ -711,7 +729,7 @@ function SurveyForm() {
                           <p className='text-xs '> Fee x Per question</p>
                         </div>
                         <div>
-                          <div className="font-medium text-white text-end">{questions.length * 10}</div>
+                          <div className="font-medium text-white text-end">{questions.length * feePerQuestion}</div>
                           <p className='text-xs text-end'> CSPR</p>
                         </div>
                       </div>
@@ -721,7 +739,7 @@ function SurveyForm() {
                           <p className='text-xs'> (Gas + Reward) x Per person</p>
                         </div>
                         <div>
-                          <div className="font-medium text-white text-end">{plimit * (3.5 + Number(reward))}</div>
+                          <div className="font-medium text-white text-end">{Number(reward) === 0 ? 0 : plimit * (3.5 + Number(reward))}</div>
                           <p className='text-xs text-end'> CSPR</p>
                         </div>
                       </div>
@@ -731,7 +749,7 @@ function SurveyForm() {
                           <p className='text-xs'> The Cost of Deployment</p>
                         </div>
                         <div>
-                          <div className="font-medium text-white text-end">{5}</div>
+                          <div className="font-medium text-white text-end">{45}</div>
                           <p className='text-xs text-end'> CSPR</p>
                         </div>
                       </div>
@@ -741,7 +759,7 @@ function SurveyForm() {
                           <p className='text-xs'> The Cost of Our Services</p>
                         </div>
                         <div>
-                          <div className="font-medium text-white text-end">{5}</div>
+                          <div className="font-medium text-white text-end">{costOfService}</div>
                           <p className='text-xs text-end'> CSPR</p>
                         </div>
                       </div>
@@ -752,8 +770,7 @@ function SurveyForm() {
                         <div className="text-white font-bold">Total</div>
                       </div>
                       <div>
-                      {/* <div className="font-bold text-white text-end">{5 + 5 + (questions.length * 10) + (plimit * (3.5 + Number(reward)))}</div> */}
-                        <div className="font-bold text-white text-end">45</div>
+                        <div className="font-bold text-white text-end">{45 + costOfService + (questions.length * feePerQuestion) +  (Number(reward) === 0 ? 0 : (plimit * (3.5 + Number(reward))))}</div>
                         <p className='text-xs text-slate-500 text-end'> CSPR</p>
                       </div>
                     </div>

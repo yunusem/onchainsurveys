@@ -93,6 +93,11 @@ export async function checkUserActive(userId, setUserIsActivated) {
   return { success: data.success, message: data.message };
 }
 
+export async function getCosts() {
+  const response = await fetch(`${API_BASE_URL}/surveys/costs`);
+  return response.json();
+}
+
 // This function sends a GET request to fetch a survey by id
 // It includes the active public key in the request headers if it exists in local storage
 // It throws an error if the response is not ok

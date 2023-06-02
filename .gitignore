@@ -9,6 +9,7 @@ casper_keys
 Cargo.lock
 target
 .vscode
+.admin
 
 # testing
 /coverage

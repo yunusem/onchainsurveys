@@ -93,3 +93,14 @@ npm test
 ```
 
 for each module inside both `client` and `server` directories.
+
+## Admin configuration
+
+You can set fee amount per question storage and the commition rate under cost of the services. Simply update the .admin file under your server root:
+
+```
+FEE=10
+CRATE=9
+```
+
+the reading of the values is dynamic you can edit them in runtime.

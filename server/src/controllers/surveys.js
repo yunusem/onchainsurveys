@@ -1,5 +1,7 @@
 const Survey = require('../models/Survey');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
 exports.createSurvey = async (req, res) => {
   try {
@@ -68,6 +70,26 @@ exports.getSurveys = async (req, res) => {
     console.error('Error in getSurveys:', err);
     res.status(500).json({ message: err.message });
   }
+};
+
+exports.getCosts = async (req, res) => {
+  let f = 0;
+  let c = 0;
+  
+  try {
+    const data = fs.readFileSync(path.resolve(__dirname, '../../.admin'), 'utf8');
+    const lines = data.split('\n');
+    for (let line of lines) {
+      const [key, value] = line.split('=');
+      if (key === 'FEE') f = Number(value);
+      else if (key === 'CRATE') c = Number(value);
+    }
+  } catch (error) {
+    // If the file could not be read, log the error and keep f and c as 0
+    console.error('Error reading .admin file:', error);
+  }
+
+  res.status(200).json({ fee: f, comm: c });
 };
 
 exports.updateSurvey = async (req, res) => {
