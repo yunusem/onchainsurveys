@@ -46,7 +46,7 @@ describe('Surveys Controller', () => {
         await User.deleteMany();
     });
 
-    test('createSurvey should create a new survey and return it', async () => {
+    test('createSurvey should create a new survey and return surveyId', async () => {
         const req = {
             body: {
                 title: 'Test Survey',
@@ -65,6 +65,11 @@ describe('Surveys Controller', () => {
                 createdBy: userId,
                 creationFee: 10,
                 rewardPerResponse: 1,
+                participantsLimit: 1,
+                minimumRequiredBalance: 1,
+                minimumRequiredStake: 1,
+                minimumAgeInDays: 1,
+                validatorStatus: false,
             },
             user: {
                 _id: userId,
@@ -80,9 +85,7 @@ describe('Surveys Controller', () => {
 
         expect(res.status).toHaveBeenCalledWith(201);
         const jsonResponse = res.json.mock.calls[0][0];
-        expect(jsonResponse.title).toBe(req.body.title);
-        expect(jsonResponse.description).toBe(req.body.description);
-        expect(jsonResponse.createdBy.toString()).toBe(req.user._id.toString());
+        expect(jsonResponse).toHaveProperty('surveyId');
     });
 
     test('getSurvey should return a survey by its ID', async () => {
@@ -93,9 +96,9 @@ describe('Surveys Controller', () => {
                 {
                     text: 'What is your favorite color?',
                     answers: [
-                        { text: 'Red' },
-                        { text: 'Green' },
-                        { text: 'Blue' },
+                        { _id: new mongoose.Types.ObjectId(), text: 'Red' },
+                        { _id: new mongoose.Types.ObjectId(), text: 'Green' },
+                        { _id: new mongoose.Types.ObjectId(), text: 'Blue' },
                     ],
                 },
             ],
@@ -104,9 +107,13 @@ describe('Surveys Controller', () => {
             createdBy: userId,
             creationFee: 10,
             rewardPerResponse: 1,
+            minimumRequiredBalance: 1,
+            minimumRequiredStake: 1,
+            minimumAgeInDays: 1,
+            validatorStatus: false,
         });
         await survey.save();
-
+    
         // Mock request and response objects
         const req = {
             headers: {
@@ -120,16 +127,16 @@ describe('Surveys Controller', () => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn(),
         };
-
+    
         // Call the function
         await getSurvey(req, res);
-
+    
         // Check if the response status is 200 and the survey is returned
         const jsonResponse = res.json.mock.calls[0][0];
         expect(jsonResponse._id.toString()).toBe(survey._id.toString());
         expect(jsonResponse.title).toBe(survey.title);
     });
-
+    
     test('getSurveys should return all surveys', async () => {
         // Prepare two survey instances
         const survey1 = new Survey({
@@ -140,6 +147,10 @@ describe('Surveys Controller', () => {
             createdBy: userId,
             creationFee: 10,
             rewardPerResponse: 1,
+            minimumRequiredBalance: 1,
+            minimumRequiredStake: 1,
+            minimumAgeInDays: 1,
+            validatorStatus: false,
         });
         await survey1.save();
 
@@ -151,6 +162,10 @@ describe('Surveys Controller', () => {
             createdBy: userId,
             creationFee: 10,
             rewardPerResponse: 1,
+            minimumRequiredBalance: 1,
+            minimumRequiredStake: 1,
+            minimumAgeInDays: 1,
+            validatorStatus: false,
         });
         await survey2.save();
 
@@ -185,6 +200,10 @@ describe('Surveys Controller', () => {
             createdBy: userId,
             creationFee: 10,
             rewardPerResponse: 1,
+            minimumRequiredBalance: 1,
+            minimumRequiredStake: 1,
+            minimumAgeInDays: 1,
+            validatorStatus: false,
         });
         await survey.save();
 
@@ -198,9 +217,14 @@ describe('Surveys Controller', () => {
                 questions: [
                     {
                         text: 'Updated question?',
-                        answers: [{ text: 'Yes' }, { text: 'No' }],
+                        answers: [{ _id: new mongoose.Types.ObjectId(),text: 'Yes' }, { _id: new mongoose.Types.ObjectId(),text: 'No' }],
                     },
                 ],
+                endDate: new Date(),
+                pminbalance: 1,
+                pminstake: 1,
+                paccage: 1,
+                pvalidator: false,
             },
             user: {
                 _id: userId,
@@ -236,6 +260,10 @@ describe('Surveys Controller', () => {
             createdBy: userId,
             creationFee: 10,
             rewardPerResponse: 1,
+            minimumRequiredBalance: 1,
+            minimumRequiredStake: 1,
+            minimumAgeInDays: 1,
+            validatorStatus: false,
         });
         await survey.save();
 
@@ -273,9 +301,9 @@ describe('Surveys Controller', () => {
                 {
                     text: 'What is your favorite color?',
                     answers: [
-                        { text: 'Red' },
-                        { text: 'Green' },
-                        { text: 'Blue' },
+                        { _id: new mongoose.Types.ObjectId(), text: 'Red' },
+                        { _id: new mongoose.Types.ObjectId(), text: 'Green' },
+                        { _id: new mongoose.Types.ObjectId(), text: 'Blue' },
                     ],
                 },
             ],
@@ -284,23 +312,27 @@ describe('Surveys Controller', () => {
             createdBy: userId,
             creationFee: 10,
             rewardPerResponse: 1,
+            minimumRequiredBalance: 1,
+            minimumRequiredStake: 1,
+            minimumAgeInDays: 1,
+            validatorStatus: false,
         });
         await survey.save();
-    
+
         // Prepare a user
         const user = new User({
             publicAddress: '0x1234',
         });
         await user.save();
-    
+
         // Prepare a response
         const response = {
             user: user._id,
             answers: [
-                 'Red'
+                'Red'
             ],
         };
-    
+
         // Mock request and response objects
         const req = {
             params: {
@@ -317,13 +349,13 @@ describe('Surveys Controller', () => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn(),
         };
-    
+
         // Call the function
         await submitResponse(req, res);
-    
+
         // Check if the response status is 201
         expect(res.status).toHaveBeenCalledWith(201);
-    
+
         // Check if the survey response is created
         const updatedSurvey = await Survey.findById(survey._id);
         const surveyResponse = updatedSurvey.responses[0];
@@ -332,7 +364,5 @@ describe('Surveys Controller', () => {
         expect(surveyResponse.answers[0].questionIndex).toBe(response.answers[0].questionIndex);
         expect(surveyResponse.answers[0].answerIndex).toBe(response.answers[0].answerIndex);
     });
-    
-
 });
 

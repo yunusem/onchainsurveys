@@ -16,7 +16,7 @@ Object.defineProperty(window, 'CasperWalletEventTypes', {
 
 
 // Mock the CasperWalletContext
-jest.mock('../components/CasperWalletContext', () => {
+jest.mock('../contexts/CasperWalletContext', () => {
     const React = require('react');
     return {
         _esModule: true,
@@ -25,7 +25,7 @@ jest.mock('../components/CasperWalletContext', () => {
 });
 
 // Mock the useUserActivation hook
-jest.mock('../components/UserActivationContext', () => {
+jest.mock('../contexts/UserActivationContext', () => {
     return {
         useUserActivation: () => [false],
     };

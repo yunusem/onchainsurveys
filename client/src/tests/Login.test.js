@@ -4,7 +4,7 @@ import Login from '../components/Login';
 import '@testing-library/jest-dom';
 
 // Mock the UserActivationContext
-jest.mock('../components/UserActivationContext', () => {
+jest.mock('../contexts/UserActivationContext', () => {
     return {
         useUserActivation: () => [false, () => { }],
     };
